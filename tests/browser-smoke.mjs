@@ -28,7 +28,7 @@ try {
   await page.locator('#reset-lab').click();
   await page.locator('input[name="input-mode"][value="pulses"]').check({force:true});
   assert.equal(await page.locator('input[name="input-mode"][value="pulses"]').isChecked(),true,'pulse stimulus selectable');
-  assert.match(await page.locator('#spike-count').innerText(),/^\\d+$/,'pulse experiment returns spike count');
+  assert.match(await page.locator('#spike-count').innerText(),/^\d+$/,'pulse experiment returns spike count');
   await page.locator('#reset-lab').click();
 
   await page.locator('.filter-chip[data-filter="events"]').click();
