@@ -220,6 +220,7 @@
     cards.replaceChildren(fragment);empty.hidden=filtered.length!==0;
     if(more){
       more.hidden=focused||filtered.length<=initialResourceLimit;
+      more.parentElement.hidden=more.hidden;
       more.setAttribute("aria-expanded",String(expanded));
       more.firstChild.textContent=expanded?"Show fewer resources ":"View all "+filtered.length+" resources ";
       more.lastElementChild.textContent=expanded?"↑":"↓";
