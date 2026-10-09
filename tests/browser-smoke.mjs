@@ -8,7 +8,7 @@ const server=createServer((req,res)=>{
  const u=new URL(req.url,'http://localhost');
  const path=u.pathname.startsWith('/.github/')?u.pathname.slice(9):'';
  const name=path||'index.html';
- if(!['index.html','styles.css','app.js','neuron-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)){
+ if(!['index.html','styles.css','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)){
   res.writeHead(404);res.end('Not found');return;
  }
  const file=resolve('docs',name);
@@ -28,7 +28,7 @@ try {
  assert.equal(await page.locator('.resource-card').count(),6,'initially show six curated resources');
  assert.equal(await page.locator('#resource-more').isVisible(),true,'view all button is visible');
  await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),12,'view all reveals all twelve resources');
+ assert.equal(await page.locator('.resource-card').count(),22,'view all reveals all 22 indexed records');
  assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'true');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),6,'show fewer restores concise index');
@@ -69,17 +69,42 @@ try {
  assert.equal(og.headers()['content-type'],'image/png');
  assert.ok((await og.body()).length>5000);
 
- await page.locator('.filter-chip[data-filter="events"]').click();
- assert.equal(await page.locator('.resource-card').count(),3);
- await page.locator('#resource-search').fill('Gallego');
+ await page.locator('#atlas-format').selectOption('paper');
+ assert.equal(await page.locator('.resource-card').count(),13,'13 peer-reviewed records');
+ assert.equal(await page.locator('#resource-more').isVisible(),false,'filtered results are never truncated');
+ await page.locator('#atlas-year').selectOption('2026');
+ await page.locator('#atlas-venue-type').selectOption('Conference');
+ await page.locator('#atlas-venue').selectOption('ICML');
+ assert.equal(await page.locator('.resource-card').count(),2,'ICML 2026 intersection');
+ assert.match(await page.locator('.resource-card').first().innerText(),/ICML/);
+ await page.locator('#atlas-reset').click();
+ assert.equal(await page.locator('.resource-card').count(),6,'reset restores compact index');
+ await page.locator('#atlas-country').selectOption('United Kingdom');
+ await page.locator('#atlas-university').selectOption('University of Oxford');
+ assert.equal(await page.locator('.resource-card').count(),1,'institution and country intersection');
+ assert.match(await page.locator('.resource-card').first().innerText(),/SpikeLLM/);
+ await page.locator('.resource-evidence summary').first().click();
+ assert.match(await page.locator('.resource-aff-list').first().innerText(),/University of Oxford/);
+ await page.locator('#atlas-reset').click();
+ await page.locator('#atlas-country').selectOption('Germany');
+ await page.locator('#atlas-university').selectOption('Technische Universität Berlin');
+ assert.equal(await page.locator('.resource-card').count(),1,'verified Germany university');
+ assert.match(await page.locator('.resource-card').first().innerText(),/Event-based Vision/i);
+ await page.locator('#atlas-reset').click();
+ await page.locator('#atlas-country').selectOption('unknown');
+ await page.locator('#atlas-format').selectOption('paper');
+ assert.ok(await page.locator('.resource-card').count()>0,'unverified affiliation papers explicitly discoverable');
+ await page.locator('#atlas-reset').click();
+ await page.locator('.atlas-topic[data-topic="robotics-embodied"]').click();
+ assert.ok(await page.locator('.resource-card').count()>=2,'multi-topic discoverable');
+ await page.locator('#resource-search').fill('SpikeVLA');
  assert.equal(await page.locator('.resource-card').count(),1);
- assert.match(await page.locator('.resource-card').innerText(),/10.1109|DOI/);
  await page.locator('#resource-search').fill('impossible missing');
  assert.equal(await page.locator('.resource-card').count(),0);
  assert.equal(await page.locator('#resource-empty').isVisible(),true);
  await page.locator('#resource-search').fill('');
- await page.locator('.filter-chip[data-filter="all"]').click();
- assert.equal(await page.locator('.resource-card').count(),6,'all category restores the compact index');
+ await page.locator('#atlas-reset').click();
+ assert.equal(await page.locator('.resource-card').count(),6,'clear filters restores untruncated preview');
 
  await page.goto(base+'?tau=12&threshold=0.75&current=1.60&mode=pulses&compare=0&token=keep-private#lab');
  assert.equal(await page.locator('#tau').inputValue(),'12');
@@ -117,11 +142,11 @@ try {
     name,Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize)]));
  });
  for(const [name,min] of Object.entries({
-   "body":16,"resource description":15,"resource heading":21,
+   "body":16,"resource description":15,"resource heading":18,
    "model note":13,"parameter label":14,"lab action":14,
    "resource metadata":13,"navigation":14,"footer text":15
  }))assert.ok(sizes[name]>=min,name+" too small: "+sizes[name]+"px");
- const mobileTexts=await page.locator(".resource-card p").count();
+ const mobileTexts=await page.locator(".resource-card > p").count();
  assert.equal(mobileTexts,6,'default compact index contains six readable resource cards');
  await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:resolve(out,'desktop.png'),fullPage:true});
@@ -132,7 +157,7 @@ try {
   await page.reload();
   await page.locator('.resource-card').first().waitFor();
   const fit=await page.evaluate(()=>{
-    const sels=[".menu-toggle",".preset-button",".filter-chip",".lab-actions .button"];
+    const sels=[".menu-toggle",".preset-button",".atlas-topic",".atlas-field select",".lab-actions .button"];
     return sels.map(sel=>{
       const r=document.querySelector(sel).getBoundingClientRect();
       return {sel,width:r.width,height:r.height};
