@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d23">
+  <meta name="description" content="SNN Community: an open home for spiking neural networks. Learn neural dynamics, explore trusted resources, experiment with an interactive LIF neuron, and contribute to open research.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SNN Community — From spikes to systems">
+  <meta property="og:description" content="Explore the science of spiking neural networks. Learn, experiment, and build together.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/SNNCommunity/.github/main/assets/hero-light.svg">
+  <title>SNN Community — From spikes to systems.</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" id="top">
+    <nav class="navigation container" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="SNN Community home">
+        <span class="brand-icon" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+        <span class="brand-name">SNN<span class="brand-slash">/</span>COMMUNITY</span>
+      </a>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-controls="site-menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="site-menu">
+        <a href="#lab">The Lab</a>
+        <a href="#learn">Learn</a>
+        <a href="#library">Library</a>
+        <a href="#community">Community</a>
+        <a class="nav-cta" href="https://github.com/SNNCommunity" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="container hero-shell">
+        <div class="hero-main">
+          <div class="hero-copy">
+            <p class="eyebrow hero-eyebrow"><span class="signal-dot"></span> OPEN NEUROMORPHIC RESEARCH COMMUNITY</p>
+            <h1 id="hero-title">Intelligence,<br>in <em>spikes.</em></h1>
+            <p class="hero-description">A place to understand spiking neural networks, test the dynamics behind them, and build the next generation of efficient intelligent systems.</p>
+            <div class="hero-actions">
+              <a class="button button-accent" href="#lab">Explore the live lab <span aria-hidden="true">↗</span></a>
+              <a class="button button-quiet" href="#library">Browse resources <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Illustration of discrete neural spike events over time">
+            <div class="visual-heading"><span>FIG. 01 — EVENT-DRIVEN ACTIVITY</span><span class="visual-live"><span></span> SCHEMATIC</span></div>
+            <svg viewBox="0 0 610 390" role="img" aria-label="Six neurons produce discrete spike events at different moments in time.">
+              <defs>
+                <linearGradient id="rasterGradient" x1="0" x2="1"><stop offset="0" stop-color="#7ad7cb"/><stop offset="1" stop-color="#e2f6d1"/></linearGradient>
+              </defs>
+              <g class="plot-grid">
+                <path d="M42 45H568 M42 95H568 M42 145H568 M42 195H568 M42 245H568 M42 295H568 M42 345H568"/>
+                <path d="M42 45V345 M130 45V345 M218 45V345 M306 45V345 M394 45V345 M482 45V345 M568 45V345"/>
+              </g>
+              <g class="axis-labels"><text x="22" y="69">N1</text><text x="22" y="119">N2</text><text x="22" y="169">N3</text><text x="22" y="219">N4</text><text x="22" y="269">N5</text><text x="22" y="319">N6</text><text x="43" y="372">0</text><text x="568" y="372" text-anchor="end">TIME →</text></g>
+              <g class="spike-marks" stroke="url(#rasterGradient)" stroke-width="4" stroke-linecap="round">
+                <path d="M85 52V76 M156 52V76 M229 52V76 M388 52V76 M496 52V76 M531 52V76"/>
+                <path d="M113 102V126 M173 102V126 M285 102V126 M401 102V126 M468 102V126"/>
+                <path d="M94 152V176 M198 152V176 M252 152V176 M374 152V176 M499 152V176"/>
+                <path d="M148 202V226 M206 202V226 M320 202V226 M454 202V226 M548 202V226"/>
+                <path d="M74 252V276 M184 252V276 M290 252V276 M336 252V276 M485 252V276"/>
+                <path d="M124 302V326 M244 302V326 M344 302V326 M426 302V326 M523 302V326"/>
+              </g>
+              <path class="activity-trace" d="M42 33H130L156 29L176 15L186 33H236L252 28L265 19L278 33H347L366 26L379 17L394 33H473L487 27L499 13L514 33H568" stroke="#e9b373" stroke-width="2" fill="none" opacity=".85"/>
+              <rect x="42" y="44" width="526" height="302" fill="none" stroke="#b7d7da" opacity=".17"/>
+            </svg>
+            <div class="visual-footer"><span>DISCRETE EVENTS</span><span>6 NEURONS · ILLUSTRATIVE</span></div>
+          </div>
+        </div>
+        <div class="hero-bottom"><span>FROM SPIKES TO SYSTEMS.</span><span>SCROLL TO EXPLORE <span aria-hidden="true">↓</span></span></div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-label="Research areas"><div class="container ticker-inner"><span>NEURON DYNAMICS</span><i></i><span>LEARNING ALGORITHMS</span><i></i><span>EVENT VISION</span><i></i><span>NEUROMORPHIC SYSTEMS</span><i></i><span>EMBODIED AI</span></div></div>
+
+    <section class="section section-lab" id="lab" aria-labelledby="lab-title">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span class="section-index">01 /</span> INTERACTIVE RESEARCH</p><h2 id="lab-title">See a neuron<br><em>come to life.</em></h2></div>
+          <p>Turn the parameters. Change the input. Watch membrane potential accumulate and reset as spikes emerge. This is where the science starts.</p>
+        </div>
+        <div class="lab-layout">
+          <div class="lab-plot">
+            <div class="lab-topline"><span><span class="online-dot"></span> LIVE SIMULATION</span><span>LEAKY INTEGRATE-AND-FIRE</span></div>
+            <div class="plot-legend"><span><i class="legend-line"></i> Membrane potential</span><span><i class="legend-dash"></i> Threshold</span><span><i class="legend-spike"></i> Output spikes</span></div>
+            <canvas id="lif-canvas" width="960" height="420" role="img" aria-label="Neuron membrane potential and output spike train; interactive controls change the plotted response.">Canvas is unavailable; use the summary below the chart.</canvas>
+            <div class="lab-status" role="status" aria-live="polite"><div><small>SPIKES EMITTED</small><strong id="spike-count">—</strong></div><div><small>LAST INTERSPIKE INTERVAL</small><strong id="isi-stat">—</strong></div><div><small>SIMULATED DURATION</small><strong>200 ms</strong></div></div>
+          </div>
+          <div class="lab-controls">
+            <div class="panel-heading"><span>EXPERIMENT 001</span><span class="phase-tag">FOUNDATIONS</span></div>
+            <h3>Leaky integrate<br>&amp; fire.</h3>
+            <p class="control-explainer">A deterministic, discrete-time LIF model with hard reset. Adjust the controls to explore how input current, leak and threshold shape firing.</p>
+            <div class="control-field"><label for="tau">Membrane time constant <strong id="tau-value">20 ms</strong></label><input id="tau" type="range" min="5" max="45" step="1" value="20"><div class="range-label"><span>5 ms</span><span>45 ms</span></div></div>
+            <div class="control-field"><label for="threshold">Firing threshold <strong id="threshold-value">0.85</strong></label><input id="threshold" type="range" min="0.35" max="1.30" step="0.05" value="0.85"><div class="range-label"><span>0.35</span><span>1.30</span></div></div>
+            <div class="control-field"><label for="current">Input amplitude <strong id="current-value">1.55</strong></label><input id="current" type="range" min="0.50" max="2.30" step="0.05" value="1.55"><div class="range-label"><span>0.50</span><span>2.30</span></div></div>
+            <fieldset class="input-mode"><legend>Input pattern</legend><label><input type="radio" name="input-mode" value="step" checked><span>Step current</span></label><label><input type="radio" name="input-mode" value="pulses"><span>Pulse train</span></label></fieldset>
+            <div class="lab-actions"><button class="button button-dark" id="reset-lab" type="button">Reset experiment <span aria-hidden="true">↻</span></button><button class="button button-outline" id="copy-config" type="button">Copy config <span aria-hidden="true">↗</span></button></div>
+            <p class="model-note" id="model-summary">Model: forward Euler, 1 ms steps, initial V = 0, hard reset to 0 on threshold crossing. Example visualization, not benchmark evidence.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-paths" id="learn" aria-labelledby="learn-title">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">02 /</span> START LEARNING</p><h2 id="learn-title">A field to explore.<br><em>A path to follow.</em></h2></div><p>Whether you're discovering spikes for the first time or moving into research, build an understanding from the neuron outward.</p></div>
+        <div class="path-grid">
+          <a class="path-card" href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html" target="_blank" rel="noopener noreferrer"><div class="path-nr">01 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-a" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div><p class="path-type">START HERE · FOUNDATIONS</p><h3>Understand<br>the spike.</h3><p>Encoding, neuron models, gradients and the basic SNN training loop.</p></div><span class="path-source">snnTorch tutorials <span aria-hidden="true">↗</span></span></a>
+          <a class="path-card" href="https://spikingjelly.readthedocs.io/" target="_blank" rel="noopener noreferrer"><div class="path-nr">02 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-b" aria-hidden="true"><span></span><span></span><span></span></div><div><p class="path-type">GO DEEPER · ENGINEERING</p><h3>Build with<br>spikes.</h3><p>Develop networks with reusable components, training methods and real datasets.</p></div><span class="path-source">SpikingJelly docs <span aria-hidden="true">↗</span></span></a>
+          <a class="path-card" href="https://github.com/NeuroBench/neurobench" target="_blank" rel="noopener noreferrer"><div class="path-nr">03 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-c" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div><p class="path-type">GO FURTHER · EVALUATION</p><h3>Measure<br>what matters.</h3><p>Learn how to assess neuromorphic algorithms and systems with clear protocols.</p></div><span class="path-source">NeuroBench <span aria-hidden="true">↗</span></span></a>
+        </div>
+        <p class="attribution-note">These are independently maintained projects. SNNCommunity links to their official resources; no affiliation or endorsement is implied.</p>
+      </div>
+    </section>
+
+    <section class="section section-library" id="library" aria-labelledby="library-title">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>A starting collection of original sources, open tools and learning materials. Carefully linked; not presented as independently reproduced work.</p></div>
+        <div class="library-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search resources</label><input id="resource-search" type="search" placeholder="Search frameworks, papers, tools…" autocomplete="off"></div><div class="filter-chips" role="group" aria-label="Filter by topic"><button class="filter-chip active" data-filter="all" aria-pressed="true">All</button><button class="filter-chip" data-filter="learn" aria-pressed="false">Learn</button><button class="filter-chip" data-filter="frameworks" aria-pressed="false">Frameworks</button><button class="filter-chip" data-filter="evaluation" aria-pressed="false">Evaluation</button><button class="filter-chip" data-filter="events" aria-pressed="false">Events</button></div></div>
+        <div id="resource-grid" class="resource-grid" aria-live="polite"></div>
+        <p id="resource-empty" class="resource-empty" hidden>No matching resources. Try another keyword or category.</p>
+        <div class="library-bottom"><span id="resource-count">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </section>
+
+    <section class="section section-statement" aria-labelledby="statement-title">
+      <div class="container statement-inner">
+        <div class="statement-aside"><span class="eyebrow">THE RESEARCH FRONTIER</span><div class="statement-glyph" aria-hidden="true">∴</div></div>
+        <div><h2 id="statement-title">From neural dynamics<br>to <em>intelligent systems.</em></h2><p>Spiking intelligence connects temporal learning, efficient computation, event-driven sensing, and embodied interaction. We want a place where ideas travel across those boundaries.</p><div class="statement-tags"><span>NEURAL DYNAMICS</span><span>TEMPORAL LEARNING</span><span>EVENT VISION</span><span>EMBODIED SYSTEMS</span></div></div>
+      </div>
+    </section>
+
+    <section class="section section-community" id="community" aria-labelledby="community-title">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">04 /</span> OPEN COLLABORATION</p><h2 id="community-title">Built in the open.<br><em>Built by people.</em></h2></div><p>SNNCommunity is an independent project in its founding stage. You can help shape the resources, ask for a topic, or contribute improvements today.</p></div>
+        <div class="community-layout">
+          <div class="community-lead"><p class="eyebrow">CURRENT STATUS — FOUNDING STAGE</p><h3>Every strong community begins with something useful.</h3><p>We are laying the groundwork for a public discussion hub, a verified resource index, and transparent SNN experiments. See the actual tasks and join the conversation through GitHub issues while the full hub is being organized.</p><a class="button button-accent" href="https://github.com/SNNCommunity/.github/issues" target="_blank" rel="noopener noreferrer">Explore open tasks <span aria-hidden="true">↗</span></a></div>
+          <div class="community-list">
+            <a href="https://github.com/SNNCommunity/.github/issues/2" target="_blank" rel="noopener noreferrer"><span class="community-list-index">01</span><span><strong>Help launch the community hub</strong><small>Discussions · Governance · Open collaboration</small></span><span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer"><span class="community-list-index">02</span><span><strong>Curate the SNN research library</strong><small>Official references · Tutorials · Frameworks</small></span><span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/SNNCommunity/.github/issues/4" target="_blank" rel="noopener noreferrer"><span class="community-list-index">03</span><span><strong>Make experiments reproducible</strong><small>Protocols · Configurations · Evidence</small></span><span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer"><span class="community-list-index">04</span><span><strong>Read the contribution guide</strong><small>Start with a small improvement</small></span><span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="container footer-main"><div><a class="footer-brand" href="#top">SNN<span>/</span>COMMUNITY</a><p>From spikes to systems.<br>An independent open initiative for spiking neural networks.</p></div><div class="footer-links"><div><strong>EXPLORE</strong><a href="#lab">Neuron lab</a><a href="#learn">Learning</a><a href="#library">Resource library</a></div><div><strong>COMMUNITY</strong><a href="https://github.com/SNNCommunity">GitHub organization</a><a href="https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md">Governance</a><a href="https://github.com/SNNCommunity/.github/blob/main/CODE_OF_CONDUCT.md">Code of conduct</a><a href="https://github.com/SNNCommunity/.github/blob/main/SECURITY.md">Security</a></div></div></div><div class="container footer-bottom"><span>© 2026 SNNCommunity contributors · Independent open community</span><span>SCIENCE FIRST. OPEN BY DESIGN.</span></div></footer>
+</body>
+</html>
