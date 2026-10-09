@@ -7,6 +7,11 @@ This repository hosts the public GitHub organization profile and shared communit
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security reporting](SECURITY.md)
 - [Help and support](SUPPORT.md)
+- [Community governance](GOVERNANCE.md)
+- [Launch roadmap](ROADMAP.md)
+- [Research and reproducibility standards](RESEARCH_STANDARDS.md)
+- [One-time GitHub organization setup](SETUP.md)
+- [License](LICENSE)
 
 Issue and pull-request templates are maintained in [`.github/`](.github/).
 
