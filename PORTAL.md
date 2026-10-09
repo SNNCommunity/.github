@@ -60,7 +60,13 @@ The exported CSV identifies the exact normalized forward-Euler model; it is not 
 - Public scientific portal: https://snncommunity.github.io/.github/
 - Organization identity and code collaboration: https://github.com/SNNCommunity
 - GitHub cannot externally redirect its organization profile URL. The organization `profile/README.md` therefore features a prominent link into the portal.
-- GitHub Organization **Settings → Public profile → Website** should also be set to the portal URL by an Owner. The repository connector does not expose organization metadata administration.
+- The organization owner reports that the Organization **Website** field now points to the portal. This setting is not readable through the current repository connector, so its public presentation should be verified in a regular browser.
+
+## Share-link privacy and refresh behavior
+
+The sharing feature builds a fresh link to the canonical website from only the public keys `tau`, `threshold`, `current`, and `mode`, rather than copying unknown query parameters from the incoming URL. When an imported experiment is edited or reset, those four keys are removed from the visible URL using `history.replaceState` (without a reload), preventing refresh from silently restoring outdated settings. Unrelated URL keys in the user's current browser address are never included in the generated share link.
+
+Canvas resize handling observes the containing panel and schedules at most one redraw per animation frame. The site also exposes original third-party resource links without JavaScript and links its mathematical model specification from the lab.
 
 ## Curated sources
 
