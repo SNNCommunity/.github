@@ -111,7 +111,7 @@
     const {w,h}=dim,marginLeft=w<420?39:56,marginRight=12,plotRight=w-marginRight,
       X=t=>marginLeft+(plotRight-marginLeft)*t/DURATION;
     const pad=25,p1={top:26,bottom:h*.24},p2={top:h*.30,bottom:h*.76},p3={top:h*.81,bottom:h*.93};
-    const drawLabel=(text,x,y,align="left")=>{ctx.textAlign=align;ctx.fillStyle="#445e59";ctx.font="11px system-ui";ctx.fillText(text,x,y);};
+    const drawLabel=(text,x,y,align="left")=>{ctx.textAlign=align;ctx.fillStyle="#445e59";ctx.font=(w<420?"11px":"12px")+" system-ui";ctx.fillText(text,x,y);};
     const gridPanel=(p)=>{ctx.strokeStyle="#dce5de";ctx.lineWidth=1;for(let t=0;t<=DURATION;t+=40){const x=X(t);ctx.beginPath();ctx.moveTo(x,p.top);ctx.lineTo(x,p.bottom);ctx.stroke();}ctx.beginPath();ctx.moveTo(marginLeft,p.bottom);ctx.lineTo(plotRight,p.bottom);ctx.stroke();};
     [p1,p2,p3].forEach(gridPanel);
     drawLabel("INPUT I (normalized)",marginLeft,p1.top-10);
