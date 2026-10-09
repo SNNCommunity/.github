@@ -9,7 +9,7 @@
 - [x] Interactive dimensionless LIF neuron lab with preset experiments, exports and shareable configuration.
 - [x] Matched-gain nonleaky IF comparison with shared input, threshold and reset, labelled input/voltage/spike panels.
 - [x] Reference Python implementation + JavaScript cross-language checks with reproducible commands.
-- [x] Searchable JSON source index with 12 curated resources, original links, DOI for three papers, and explicit licensing/verification status.
+- [x] Searchable SNN Research Atlas with 22 initial records, 11 multi-label research areas, verified venue/year, and cited country-university affiliations where available. No indexed work is claimed reproduced.
 - [x] Research resource and experiment proposal issue templates.
 - [x] Social preview PNG (1200×630), editable vector source and 512 px organization-avatar PNG asset.
 - [x] Desktop, tablet and narrow-screen Chromium smoke-test workflow and accessible non-JavaScript resource fallback.
