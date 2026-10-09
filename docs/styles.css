@@ -241,7 +241,7 @@ input[type=range] { width:100%; accent-color:#247962; cursor:pointer; }
   .path-card { display:grid; grid-template-columns:1fr 1fr; column-gap:22px; }
   .path-nr,.path-source { grid-column:1/-1; }
   .path-illustration { grid-column:2; grid-row:2; height:200px; margin:20px 0; }
-  .path-card > div:nth-of-type(2) { grid-column:1; grid-row:2; }
+  .path-card > div:nth-of-type(3) { grid-column:1; grid-row:2; }
   .statement-inner { grid-template-columns:1fr; gap:25px; }
   .statement-glyph { display:none; }
   .community-layout { grid-template-columns:1fr; }
