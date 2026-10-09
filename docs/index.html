@@ -110,6 +110,13 @@
             <p class="plot-hint">Input (normalized) · Membrane potential (normalized) · Spike times (ms). Crossing peaks are pre-reset; CSV provides both pre-reset and post-reset values.</p>
             <div class="lab-status" aria-label="Simulation results"><div><small>LIF SPIKES / RATE</small><strong><span id="spike-count">—</span> <span class="status-suffix" id="lif-rate">—</span></strong></div><div><small>IF SPIKES / RATE</small><strong><span id="if-count">—</span> <span class="status-suffix" id="if-rate">—</span></strong></div><div><small>LIF MEAN ISI</small><strong id="isi-stat">—</strong></div></div>
             <p id="experiment-summary" class="experiment-summary">Simulation initializing…</p>
+            <div class="figure-method">
+              <p class="eyebrow">EXPERIMENTAL PROTOCOL</p>
+              <h4>One controlled difference: leak.</h4>
+              <p>Both models use the same discrete input, integration gain, threshold and zero-reset rule. The IF reference removes only the term proportional to the retained membrane voltage.</p>
+              <div class="figure-method-facts"><span><strong>1 ms</strong> time step</span><span><strong>200</strong> updates</span><span><strong>0</strong> reset voltage</span></div>
+              <a href="https://github.com/SNNCommunity/.github/tree/main/experiments/lif-reference" target="_blank" rel="noopener noreferrer">Inspect the independent Python reference ↗</a>
+            </div>
           </div>
           <div class="lab-controls">
             <div class="panel-heading"><span>EXPERIMENT 001</span><span class="phase-tag">FOUNDATIONS</span></div>
