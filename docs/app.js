@@ -222,8 +222,11 @@
       more.hidden=focused||filtered.length<=initialResourceLimit;
       more.setAttribute("aria-expanded",String(expanded));
       more.firstChild.textContent=expanded?"Show fewer resources ":"View all "+filtered.length+" resources ";
+      more.lastElementChild.textContent=expanded?"↑":"↓";
     }
-    count.textContent="Showing "+visible.length+" of "+filtered.length+" matches · "+all.length+" indexed sources";
+    count.textContent=focused
+      ?"Showing "+visible.length+" matching resources · "+all.length+" indexed"
+      :"Showing "+visible.length+" of "+all.length+" curated resources";
   }
   more?.addEventListener("click",()=>{
     expanded=!expanded;
