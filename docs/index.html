@@ -27,6 +27,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./neuron-core.js"></script>
+  <script defer src="./atlas-core.js"></script>
   <script defer src="./app.js"></script>
   <noscript><style>.lab-controls input,.lab-controls button{opacity:.6;pointer-events:none}.lab-controls::after{content:"The interactive neuron lab requires JavaScript.";display:block;margin-top:15px;font-weight:600;color:#315448}</style></noscript>
 </head>
@@ -157,9 +158,28 @@
 
     <section class="section section-library" id="library" aria-labelledby="library-title">
       <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>A starting collection of original sources, open tools and learning materials. Search and filter independently maintained resources; their inclusion is not scientific verification.</p></div>
-        <div class="library-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search resources</label><input id="resource-search" type="search" placeholder="Search frameworks, papers, tools…" autocomplete="off"></div><div class="filter-chips" role="group" aria-label="Filter by topic"><button class="filter-chip active" data-filter="all" aria-pressed="true">All</button><button class="filter-chip" data-filter="learn" aria-pressed="false">Learn</button><button class="filter-chip" data-filter="frameworks" aria-pressed="false">Frameworks</button><button class="filter-chip" data-filter="evaluation" aria-pressed="false">Evaluation</button><button class="filter-chip" data-filter="events" aria-pressed="false">Events</button></div></div>
-        <div class="resource-provenance"><strong>Index status ≠ reproduced.</strong> Entries include original source, publication DOI where available, code links and upstream licensing references. SNNCommunity has not independently certified any listed implementation or paper.</div>
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>Explore SNN papers, official implementations and learning resources by scientific topic, publication year, venue, country and author-affiliated university. Metadata is evidence-linked; inclusion is not independent reproduction.</p></div>
+        <div class="atlas-controls" aria-label="Research atlas search and filters">
+          <div class="atlas-search-row">
+            <div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search SNN papers and resources</label><input id="resource-search" type="search" placeholder="Search paper titles, universities, topics…" autocomplete="off"></div>
+            <button class="atlas-reset" id="atlas-reset" type="button">Clear filters <span aria-hidden="true">↻</span></button>
+          </div>
+          <div class="atlas-topic-heading"><span>EXPLORE BY RESEARCH AREA</span><span>Multi-label classification</span></div>
+          <div class="atlas-topics" id="atlas-topics" role="group" aria-label="Research area" aria-describedby="atlas-topic-help">
+            <button class="atlas-topic is-selected" type="button" data-topic="all" aria-pressed="true">All research</button>
+          </div>
+          <p class="atlas-hint" id="atlas-topic-help">One work may belong to multiple areas. Select a topic, then refine results using the facets below.</p>
+          <div class="atlas-filters">
+            <div class="atlas-field"><label for="atlas-format">Content type</label><select id="atlas-format"><option value="all">Papers &amp; resources</option><option value="paper">Research papers</option><option value="resource">Tools &amp; other resources</option></select></div>
+            <div class="atlas-field"><label for="atlas-year">Publication year</label><select id="atlas-year"><option value="all">Any year</option></select></div>
+            <div class="atlas-field"><label for="atlas-venue-type">Publication type</label><select id="atlas-venue-type"><option value="all">Any publication type</option><option value="Conference">Conference</option><option value="Journal">Journal</option></select></div>
+            <div class="atlas-field"><label for="atlas-venue">Conference / journal</label><select id="atlas-venue"><option value="all">All venues</option></select></div>
+            <div class="atlas-field"><label for="atlas-country">Author affiliation · country</label><select id="atlas-country"><option value="all">All countries</option><option value="unknown">Not verified / not applicable</option></select></div>
+            <div class="atlas-field"><label for="atlas-university">Author affiliation · university</label><select id="atlas-university"><option value="all">All institutions</option></select></div>
+            <div class="atlas-field atlas-sort-field"><label for="atlas-sort">Sort by</label><select id="atlas-sort"><option value="recent">Publication year · newest</option><option value="oldest">Publication year · oldest</option><option value="title">Title · A to Z</option></select></div>
+          </div>
+        </div>
+        <div class="resource-provenance"><strong>Research Atlas · Curated, not exhaustive.</strong> Countries and universities refer to cited <em>authors’ affiliations at publication</em>, not nationality or GitHub maintainers. Multi-institution papers appear in multiple countries. Unknown metadata remains unassigned. <a href="https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks" target="_blank" rel="noopener noreferrer">Research inspiration: Awesome Spiking Neural Networks ↗</a></div>
         <div id="resource-grid" class="resource-grid"></div>
         <div class="resource-expand" hidden>
           <button id="resource-more" type="button" class="resource-more" aria-controls="resource-grid" aria-expanded="false" hidden>View all resources <span aria-hidden="true">↓</span></button>

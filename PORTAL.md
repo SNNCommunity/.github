@@ -65,8 +65,9 @@ focus remain supported. These design targets are not an independent WCAG
 certification. Browser checks validate computed font sizes and minimum control
 bounds across 1440, 768, 390 and 320 CSS pixel viewports.
 
-The resource index initially renders **six** cards to reduce page length on
-small displays. The `View all resources` control reveals all indexed cards;
+The Research Atlas initially renders **six** cards to reduce page length on
+small displays. All seven metadata/search dimensions can be intersected, including
+multiple topic memberships and evidence-linked author institutions. The `View all resources` control reveals all indexed cards;
 active search or category filters display **all** matching entries without
 pagination or silent omission. Every index entry retains its source provenance
 and `indexed_not_reproduced` disclosure. The show-all section is hidden when
@@ -75,7 +76,7 @@ without JavaScript.
 
 ## Research resource governance
 
-`docs/resources.json` is the sole source of the 12 current curated records. Every entry has a stable ID, original source URL, resource category/type, publisher, DOI and original code when available, upstream license reference when known, and `verification: indexed_not_reproduced`. Null license means **not validated**, not public domain.
+`docs/resources.json` (schema v2) is the canonical source of 22 curated entries (13 papers plus 9 independent resources). It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/atlas-core.js` engine handles deterministic multi-facet filtering. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
 
 Paper DOIs are sourced from original publisher or authors' publication records. Resource inclusion is **not a claim of affiliation or of independent technical reproduction**.
 

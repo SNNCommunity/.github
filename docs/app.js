@@ -186,69 +186,167 @@
     canvas.toBlob(blob=>{if(blob){download(blob,"snncommunity-neuron-models.png");feedback("Plot saved.");}else feedback("Plot export failed.");},"image/png");
   });
 
-  // Static source index. Never infer project authorship, license or reproduction.
-  const cards=$("resource-grid"),count=$("resource-count"),search=$("resource-search"),empty=$("resource-empty"),more=$("resource-more");
+  // Research Atlas: bibliography, venues and author-affiliation evidence are
+  // independent facets. A software repository is NEVER assigned a university.
+  const atlas=window.SNNAtlas;
+  if(!atlas)throw Error("atlas-core.js must load before app.js");
+  const cards=$("resource-grid"),count=$("resource-count"),search=$("resource-search"),
+    empty=$("resource-empty"),more=$("resource-more"),topicBar=$("atlas-topics");
+  const facetIds={format:"atlas-format",year:"atlas-year",venueType:"atlas-venue-type",
+    venue:"atlas-venue",country:"atlas-country",university:"atlas-university",sort:"atlas-sort"};
+  const facetEls=Object.fromEntries(Object.entries(facetIds).map(([k,id])=>[k,$(id)]));
   const initialResourceLimit=6;
-  let all=[],category="all",expanded=false;
-  function node(tag,className,textContent){const el=document.createElement(tag);if(className)el.className=className;if(textContent!==undefined)el.textContent=String(textContent);return el;}
+  let all=[],topics=[],topic="all",expanded=false;
+  const topicName=id=>topics.find(t=>t.id===id)?.label||id;
+  function node(tag,className,value){
+    const el=document.createElement(tag);
+    if(className)el.className=className;
+    if(value!==undefined)el.textContent=String(value);
+    return el;
+  }
+  function link(href,label,cssClass,aria) {
+    const a=node("a",cssClass,label);
+    a.href=href;a.target="_blank";a.rel="noopener noreferrer";
+    if(aria)a.setAttribute("aria-label",aria);
+    return a;
+  }
+  function fillOptions(el,values) {
+    if(!el)return;
+    const selected=el.value,first=el.options[0].cloneNode(true);
+    const preserved=[first];
+    if(el.id==="atlas-country")preserved.push(new Option("Not verified / not applicable","unknown"));
+    el.replaceChildren(...preserved,...values.map(v=>new Option(String(v),String(v))));
+    el.value=[...el.options].some(o=>o.value===selected)?selected:"all";
+  }
+  function options() {
+    const f=atlas.facets(all);
+    fillOptions(facetEls.year,f.years);
+    fillOptions(facetEls.venue,f.venues);
+    fillOptions(facetEls.country,f.countries);
+    fillOptions(facetEls.university,f.universities(facetEls.country.value));
+  }
+  const selections=()=>({
+    query:search?.value||"",topic,
+    ...Object.fromEntries(Object.entries(facetEls).map(([k,el])=>[k,el.value]))
+  });
+  function renderTopics() {
+    const fragment=document.createDocumentFragment();
+    const items=[{id:"all",label:"All research"},...topics];
+    for(const t of items){
+      const button=node("button","atlas-topic",t.label);
+      button.type="button";button.dataset.topic=t.id;
+      const active=t.id===topic;
+      button.classList.toggle("is-selected",active);
+      button.setAttribute("aria-pressed",String(active));
+      const n=t.id==="all"?all.length:all.filter(x=>x.topics.includes(t.id)).length;
+      button.append(node("span","atlas-topic-count",n));
+      button.addEventListener("click",()=>{topic=t.id;expanded=false;renderTopics();renderResources();});
+      fragment.append(button);
+    }
+    topicBar.replaceChildren(fragment);
+  }
+  function addLinkIf(parent,url,label,aria) {
+    if(url && /^https:\/\//.test(url))parent.append(link(url,label,"resource-detail-link",aria));
+  }
+  function renderCard(x) {
+    const card=node("article","resource-card atlas-card");
+    const pub=x.publication,affs=x.affiliations||[],paper=x.type==="paper";
+    const top=node("div","resource-card-head");
+    top.append(node("span","resource-label",paper?"RESEARCH PAPER":"OPEN RESOURCE"));
+    if(pub)top.append(node("span","atlas-venue-label",pub.venue+" · "+pub.year));
+    card.append(top,node("h3","",x.title));
+    const tags=node("div","atlas-card-topics");
+    for(const id of x.topics.slice(0,3))tags.append(node("span","atlas-tag",topicName(id)));
+    card.append(tags,node("p","",x.description));
+    const summary=node("div","atlas-card-summary");
+    summary.append(node("span","",x.publisher));
+    if(paper){
+      const countries=[...new Set(affs.map(a=>a.country))];
+      summary.append(node("span","atlas-affiliation-hint",countries.length?
+        "Author affiliations · "+countries.join(" · "):"Author affiliations · Not verified"));
+    }else summary.append(node("span","atlas-affiliation-hint","Academic affiliation · Not applicable"));
+    card.append(summary);
+    const details=node("details","resource-evidence");
+    details.append(node("summary","", "Publication & source details"));
+    const inner=node("div","resource-evidence-body");
+    if(pub)inner.append(node("div","resource-evidence-line",pub.kind+" · "+pub.venue+" · "+pub.year));
+    if(paper){
+      inner.append(node("strong","resource-aff-heading","Author-affiliated universities"));
+      if(affs.length){
+        const list=node("ul","resource-aff-list");
+        for(const a of affs){
+          const li=node("li","");
+          li.append(document.createTextNode(a.university+" · "+a.country+" "));
+          addLinkIf(li,a.source,"Source ↗","Verified affiliation source for "+x.title);
+          list.append(li);
+        }
+        inner.append(list);
+      } else inner.append(node("p","resource-aff-unknown","Not yet verified from a publication source."));
+    } else inner.append(node("p","resource-aff-unknown","This is a software, documentation or community resource; country/university of publication does not apply."));
+    const links=node("div","resource-evidence-links");
+    if(x.doi)addLinkIf(links,"https://doi.org/"+encodeURIComponent(x.doi),"DOI ↗","DOI for "+x.title);
+    addLinkIf(links,x.bibliographySource,"Bibliography source ↗",null);
+    addLinkIf(links,x.code,"Original code ↗","Original code for "+x.title);
+    addLinkIf(links,x.licenseUrl,"Upstream license ↗",null);
+    inner.append(links,node("p","resource-review","Indexed · Not independently reproduced"));
+    inner.append(node("p","resource-license",x.license||x.licenseNote));
+    details.append(inner);
+    card.append(details,link(x.url,paper?"Read original paper ↗":"Visit original source ↗",
+      "resource-main-link","Visit original source: "+x.title));
+    return card;
+  }
   function renderResources() {
-    const q=(search?.value||"").toLowerCase().trim();
-    const filtered=all.filter(x=>(category==="all"||x.category===category)&&
-      [x.title,x.description,x.publisher,x.type,x.doi||""].join(" ").toLowerCase().includes(q));
-    // Show a readable sample first; filtered/search results always show every match.
-    const focused=Boolean(q)||category!=="all";
+    const selected=selections();
+    const filtered=atlas.filter(all,selected),focused=Boolean(selected.query.trim())||
+      selected.topic!=="all"||Object.entries(selected).some(([key,value])=>
+        !["query","topic","sort"].includes(key)&&value!=="all");
     const visible=focused||expanded?filtered:filtered.slice(0,initialResourceLimit);
     const fragment=document.createDocumentFragment();
-    for(const x of visible){
-      const card=node("article","resource-card");
-      const top=node("div","resource-card-head");
-      // No decorative link arrow on a non-clickable card container.
-      top.append(node("span","resource-label",x.category+" · "+x.type));
-      card.append(top,node("h3","",x.title),node("p","",x.description));
-      const meta=node("div","resource-metadata");
-      meta.append(node("span","",x.publisher+(x.year?" · "+x.year:"")));
-      meta.append(node("span","resource-review","Indexed · Not reproduced"));
-      if(x.doi){const a=node("a","resource-doi","DOI ↗");a.href="https://doi.org/"+encodeURIComponent(x.doi);a.target="_blank";a.rel="noopener noreferrer";a.setAttribute("aria-label","DOI for "+x.title);meta.append(a);}
-      if(x.code){const a=node("a","resource-doi","Code ↗");a.href=x.code;a.target="_blank";a.rel="noopener noreferrer";a.setAttribute("aria-label","Original code for "+x.title);meta.append(a);}
-      const license=node("span","resource-license",x.license||x.licenseNote);
-      if(x.licenseUrl){const a=node("a","resource-doi","Upstream license ↗");a.href=x.licenseUrl;a.target="_blank";a.rel="noopener noreferrer";meta.append(a);}
-      meta.append(license);
-      const open=node("a","resource-main-link","Visit original source ↗");
-      open.href=x.url;open.target="_blank";open.rel="noopener noreferrer";open.setAttribute("aria-label","Visit original source: "+x.title);
-      card.append(meta,open);fragment.append(card);
-    }
-    cards.replaceChildren(fragment);empty.hidden=filtered.length!==0;
+    for(const x of visible)fragment.append(renderCard(x));
+    cards.replaceChildren(fragment);
+    empty.hidden=filtered.length!==0;
     if(more){
       more.hidden=focused||filtered.length<=initialResourceLimit;
       more.parentElement.hidden=more.hidden;
       more.setAttribute("aria-expanded",String(expanded));
-      more.firstChild.textContent=expanded?"Show fewer resources ":"View all "+filtered.length+" resources ";
+      more.firstChild.textContent=expanded?"Show fewer resources ":"View all "+filtered.length+" records ";
       more.lastElementChild.textContent=expanded?"↑":"↓";
     }
-    count.textContent=focused
-      ?"Showing "+visible.length+" matching resources · "+all.length+" indexed"
-      :"Showing "+visible.length+" of "+all.length+" curated resources";
+    count.textContent="Showing "+visible.length+" of "+filtered.length+" matches · "+all.length+
+      " indexed records ("+all.filter(x=>x.type==="paper").length+" papers)";
   }
-  more?.addEventListener("click",()=>{
-    expanded=!expanded;
-    renderResources();
-  });
-  document.querySelectorAll(".filter-chip").forEach(button=>button.addEventListener("click",()=>{
-    category=button.dataset.filter||"all";
+  more?.addEventListener("click",()=>{expanded=!expanded;renderResources();});
+  search?.addEventListener("input",()=>{expanded=false;renderResources();});
+  for(const [key,el] of Object.entries(facetEls))el?.addEventListener("change",()=>{
     expanded=false;
-    for(const other of document.querySelectorAll(".filter-chip")){
-      const enabled=button===other;other.classList.toggle("active",enabled);other.setAttribute("aria-pressed",String(enabled));
+    if(key==="country") {
+      const next=atlas.facets(all).universities(facetEls.country.value);
+      fillOptions(facetEls.university,next);
+      if(facetEls.country.value==="unknown")facetEls.university.value="all";
+    }
+    if(key==="venueType"){
+      const matched=all.filter(x=>x.publication&&
+        (el.value==="all"||x.publication.kind===el.value));
+      fillOptions(facetEls.venue,atlas.facets(matched).venues);
     }
     renderResources();
-  }));
-  search?.addEventListener("input",renderResources);
+  });
+  $("atlas-reset")?.addEventListener("click",()=>{
+    search.value="";topic="all";expanded=false;
+    for(const [key,el] of Object.entries(facetEls))el.value=key==="sort"?"recent":"all";
+    options();renderTopics();renderResources();
+    search.focus();
+  });
   fetch("./resources.json").then(async res=>{
-    if(!res.ok)throw Error("Resource catalog is unavailable");
-    const body=await res.json();
-    if(body.schemaVersion!==1||!Array.isArray(body.items))throw Error("Unsupported resource schema");
-    all=body.items.filter(x=>typeof x.title==="string"&&/^https:\/\//.test(x.url)&&x.verification==="indexed_not_reproduced");
-    renderResources();
-  }).catch(()=>{if(count)count.textContent="Resource catalog unavailable. Please use the original links below.";const fallback=$("resource-fallback");if(fallback)fallback.hidden=false;});
+    if(!res.ok)throw Error("Research catalog unavailable");
+    const result=atlas.validate(await res.json());
+    all=result.items;topics=result.topics;
+    options();renderTopics();renderResources();
+  }).catch(error=>{
+    if(count)count.textContent="Research catalog unavailable. Please use the original links below.";
+    if($("resource-fallback"))$("resource-fallback").hidden=false;
+    console.error("Research Atlas initialization:",error);
+  });
   syncUI();paint();
 
   const menu=$("site-menu"),toggle=$("menu-toggle");
