@@ -15,6 +15,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./app.js"></script>
+  <noscript><style>.lab-controls input,.lab-controls button{opacity:.6;pointer-events:none}.lab-controls::after{content:"The interactive neuron lab requires JavaScript.";display:block;margin-top:15px;font-weight:600;color:#315448}</style></noscript>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -113,7 +114,7 @@
             </div>
             <p class="lab-feedback" id="lab-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
             <div class="share-fallback" id="share-fallback" hidden><label for="share-url">Your experiment URL</label><input type="text" id="share-url" readonly aria-label="Select and copy this experiment URL"></div>
-            <p class="model-note" id="model-summary">Normalized LIF model · forward Euler (1 ms steps) · hard reset at threshold crossing. Educational visualization, not benchmark evidence.</p>
+            <p class="model-note" id="model-summary">Normalized LIF model · forward Euler (1 ms steps) · hard reset at threshold crossing. Educational visualization, not benchmark evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#mathematical-definition" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
           </div>
         </div>
       </div>
@@ -136,6 +137,15 @@
         <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>A starting collection of original sources, open tools and learning materials. Search and filter independently maintained resources; their inclusion is not scientific verification.</p></div>
         <div class="library-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search resources</label><input id="resource-search" type="search" placeholder="Search frameworks, papers, tools…" autocomplete="off"></div><div class="filter-chips" role="group" aria-label="Filter by topic"><button class="filter-chip active" data-filter="all" aria-pressed="true">All</button><button class="filter-chip" data-filter="learn" aria-pressed="false">Learn</button><button class="filter-chip" data-filter="frameworks" aria-pressed="false">Frameworks</button><button class="filter-chip" data-filter="evaluation" aria-pressed="false">Evaluation</button><button class="filter-chip" data-filter="events" aria-pressed="false">Events</button></div></div>
         <div id="resource-grid" class="resource-grid"></div>
+        <noscript>
+          <div class="noscript-resources">
+            <p>The searchable directory requires JavaScript. You can still open the original projects directly:</p>
+            <a href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html">snnTorch tutorials</a> ·
+            <a href="https://spikingjelly.readthedocs.io/">SpikingJelly documentation</a> ·
+            <a href="https://github.com/norse/norse">Norse</a> ·
+            <a href="https://github.com/NeuroBench/neurobench">NeuroBench</a>
+          </div>
+        </noscript>
         <p id="resource-empty" class="resource-empty" hidden>No matching resources. Try another keyword or category.</p>
         <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
       </div>
@@ -150,9 +160,9 @@
 
     <section class="section section-community" id="community" aria-labelledby="community-title">
       <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">04 /</span> OPEN COLLABORATION</p><h2 id="community-title">Built in the open.<br><em>Built by people.</em></h2></div><p>SNNCommunity is an independent project in its founding stage. You can help shape the resources, ask for a topic, or contribute improvements today.</p></div>
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">04 /</span> OPEN COLLABORATION</p><h2 id="community-title">Built in the open.<br><em>Built by people.</em></h2></div><p>The interactive lab and an introductory resource library are available now. Help refine the tools, suggest research resources, and shape what we build next.</p></div>
         <div class="community-layout">
-          <div class="community-lead"><p class="eyebrow">CURRENT STATUS — FOUNDING STAGE</p><h3>Every strong community begins with something useful.</h3><p>We are laying the groundwork for a public discussion hub, a verified resource index, and transparent SNN experiments. See the actual tasks and join the conversation through GitHub issues while the full hub is being organized.</p><a class="button button-accent" href="https://github.com/SNNCommunity/.github/issues" target="_blank" rel="noopener noreferrer">Explore open tasks <span aria-hidden="true">↗</span></a></div>
+          <div class="community-lead"><p class="eyebrow">CURRENT STATUS — FOUNDING STAGE</p><h3>Every strong community begins with something useful.</h3><p>Our next milestones are a public discussion hub, a maintainable research index, and independently reviewable SNN experiments. Start with an open GitHub issue; these initiatives are not yet released.</p><a class="button button-accent" href="https://github.com/SNNCommunity/.github/issues" target="_blank" rel="noopener noreferrer">Explore open tasks <span aria-hidden="true">↗</span></a></div>
           <div class="community-list">
             <a href="https://github.com/SNNCommunity/.github/issues/2" target="_blank" rel="noopener noreferrer"><span class="community-list-index">01</span><span><strong>Help launch the community hub</strong><small>Discussions · Governance · Open collaboration</small></span><span aria-hidden="true">↗</span></a>
             <a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer"><span class="community-list-index">02</span><span><strong>Curate the SNN research library</strong><small>Official references · Tutorials · Frameworks</small></span><span aria-hidden="true">↗</span></a>
