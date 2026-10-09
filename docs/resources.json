@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updated": "2026-10-09",
-  "reviewNotice": "Curated references only; no claim of independent reproduction or endorsement.",
+  "reviewNotice": "Country and university refer to verified author affiliations on the paper, NOT researcher nationality. Non-paper resources have no academic affiliation; unknown metadata stays unassigned. Conference/journal and year refer to formal publication. Indexed does not imply reproduced.",
   "items": [
     {
       "id": "snntorch-tutorials",
@@ -17,7 +17,15 @@
       "code": "https://github.com/jeshraghian/snntorch",
       "description": "Introductory lessons for neuron models, spike encoding, and training SNNs.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "neuron-dynamics",
+        "learning-plasticity",
+        "benchmarks-tools"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "spikingjelly",
@@ -33,7 +41,15 @@
       "code": "https://github.com/fangwei123456/spikingjelly",
       "description": "Open-source infrastructure and learning guides for deep spiking networks.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "deep-architectures",
+        "event-vision"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "norse",
@@ -49,7 +65,14 @@
       "code": "https://github.com/norse/norse",
       "description": "Differentiable spiking neural components designed for PyTorch.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "neuron-dynamics"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "neurobench",
@@ -65,7 +88,14 @@
       "code": "https://github.com/NeuroBench/neurobench",
       "description": "Open harness and evaluation methods for neuromorphic algorithms and systems.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "efficiency-hardware"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "tonic",
@@ -81,7 +111,14 @@
       "code": "https://github.com/neuromorphs/tonic",
       "description": "Event-based dataset loading and transformation tools.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "event-vision",
+        "benchmarks-tools"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "nir",
@@ -97,7 +134,14 @@
       "code": "https://github.com/neuromorphs/NIR",
       "description": "A portable model representation for neuromorphic software and hardware.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "efficiency-hardware"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "eshraghian-2023",
@@ -113,7 +157,18 @@
       "code": "https://github.com/jeshraghian/snntorch",
       "description": "Tutorial perspective on learning, backpropagation and surrogate gradients in SNNs.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "learning-plasticity",
+        "neuron-dynamics"
+      ],
+      "publication": {
+        "kind": "Journal",
+        "venue": "Proceedings of the IEEE",
+        "year": 2023
+      },
+      "affiliations": [],
+      "bibliographySource": "https://doi.org/10.1109/JPROC.2023.3308088"
     },
     {
       "id": "neftci-2019",
@@ -129,7 +184,18 @@
       "code": null,
       "description": "Overview of gradient-based optimization using surrogate derivatives.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "learning-plasticity",
+        "neuron-dynamics"
+      ],
+      "publication": {
+        "kind": "Journal",
+        "venue": "IEEE Signal Processing Magazine",
+        "year": 2019
+      },
+      "affiliations": [],
+      "bibliographySource": "https://doi.org/10.1109/MSP.2019.2931595"
     },
     {
       "id": "gallego-2022",
@@ -145,7 +211,49 @@
       "code": null,
       "description": "Broad survey of event cameras, sensing and event-based perception.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "event-vision",
+        "robotics-embodied"
+      ],
+      "publication": {
+        "kind": "Journal",
+        "venue": "IEEE TPAMI",
+        "year": 2022
+      },
+      "affiliations": [
+        {
+          "university": "Technische Universität Berlin",
+          "country": "Germany",
+          "source": "https://arxiv.org/pdf/1904.08405"
+        },
+        {
+          "university": "ETH Zurich",
+          "country": "Switzerland",
+          "source": "https://arxiv.org/pdf/1904.08405"
+        },
+        {
+          "university": "University of Zurich",
+          "country": "Switzerland",
+          "source": "https://arxiv.org/pdf/1904.08405"
+        },
+        {
+          "university": "Imperial College London",
+          "country": "United Kingdom",
+          "source": "https://arxiv.org/pdf/1904.08405"
+        },
+        {
+          "university": "University of Pennsylvania",
+          "country": "United States",
+          "source": "https://arxiv.org/pdf/1904.08405"
+        },
+        {
+          "university": "KTH Royal Institute of Technology",
+          "country": "Sweden",
+          "source": "https://arxiv.org/pdf/1904.08405"
+        }
+      ],
+      "bibliographySource": "https://doi.org/10.1109/TPAMI.2020.3008413"
     },
     {
       "id": "snntorch-code",
@@ -161,7 +269,14 @@
       "code": "https://github.com/jeshraghian/snntorch",
       "description": "Open implementation of gradient-based spiking neural networks.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "learning-plasticity"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "open-neuromorphic",
@@ -177,7 +292,14 @@
       "code": null,
       "description": "Independent neuromorphic research, education and events community.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "efficiency-hardware"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
     },
     {
       "id": "neurobench-docs",
@@ -193,7 +315,409 @@
       "code": "https://github.com/NeuroBench/neurobench",
       "description": "Evaluation interface, metrics and example documentation for NeuroBench.",
       "verification": "indexed_not_reproduced",
-      "licenseNote": "Consult the original license or publishing terms"
+      "licenseNote": "Consult the original license or publishing terms",
+      "topics": [
+        "benchmarks-tools"
+      ],
+      "publication": null,
+      "affiliations": [],
+      "bibliographySource": null
+    },
+    {
+      "id": "sew-resnet-2021",
+      "title": "Deep Residual Learning in Spiking Neural Networks",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Fang et al. · NeurIPS",
+      "year": 2021,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.neurips.cc/paper/2021/hash/afe434653a898da20044041262b3ac74-Abstract.html",
+      "code": "https://github.com/fangwei123456/Spike-Element-Wise-ResNet",
+      "description": "Spike-element-wise residual learning and identity propagation in deep SNNs.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "deep-architectures",
+        "learning-plasticity"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "NeurIPS",
+        "year": 2021
+      },
+      "affiliations": [
+        {
+          "university": "Peking University",
+          "country": "China",
+          "source": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf"
+        },
+        {
+          "university": "Université Toulouse III – Paul Sabatier",
+          "country": "France",
+          "source": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf"
+        }
+      ],
+      "bibliographySource": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "plif-2021",
+      "title": "Incorporating Learnable Membrane Time Constant to Enhance Learning of Spiking Neural Networks",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Fang et al. · ICCV",
+      "year": 2021,
+      "doi": "10.1109/ICCV48922.2021.00266",
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://openaccess.thecvf.com/content/ICCV2021/html/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.html",
+      "code": "https://github.com/fangwei123456/Parametric-Leaky-Integrate-and-Fire-Spiking-Neuron",
+      "description": "Parametric LIF neurons with learnable membrane time constants.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "neuron-dynamics",
+        "learning-plasticity"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICCV",
+        "year": 2021
+      },
+      "affiliations": [
+        {
+          "university": "Peking University",
+          "country": "China",
+          "source": "https://openaccess.thecvf.com/content/ICCV2021/papers/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.pdf"
+        },
+        {
+          "university": "Université Toulouse III – Paul Sabatier",
+          "country": "France",
+          "source": "https://openaccess.thecvf.com/content/ICCV2021/papers/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.pdf"
+        }
+      ],
+      "bibliographySource": "https://openaccess.thecvf.com/content/ICCV2021/papers/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.pdf",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "spikformer-2023",
+      "title": "Spikformer: When Spiking Neural Network Meets Transformer",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Zhou et al. · ICLR",
+      "year": 2023,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://openreview.net/forum?id=frE4fUwz_h",
+      "code": "https://github.com/ZK-Zhou/spikformer",
+      "description": "Spiking self-attention and Transformer architectures for spiking computation.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "deep-architectures",
+        "efficiency-hardware"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICLR",
+        "year": 2023
+      },
+      "affiliations": [],
+      "bibliographySource": "https://openreview.net/forum?id=frE4fUwz_h",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "spikingjelly-paper-2023",
+      "title": "SpikingJelly: An open-source machine learning infrastructure platform for spike-based intelligence",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Fang et al. · Science Advances",
+      "year": 2023,
+      "doi": "10.1126/sciadv.adi1480",
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10558124/",
+      "code": "https://github.com/fangwei123456/spikingjelly",
+      "description": "Full-stack open-source infrastructure for SNN datasets, training and deployment.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "benchmarks-tools",
+        "deep-architectures",
+        "efficiency-hardware"
+      ],
+      "publication": {
+        "kind": "Journal",
+        "venue": "Science Advances",
+        "year": 2023
+      },
+      "affiliations": [
+        {
+          "university": "Peking University",
+          "country": "China",
+          "source": "https://pubmed.ncbi.nlm.nih.gov/37801497/"
+        },
+        {
+          "university": "Shanghai Jiao Tong University",
+          "country": "China",
+          "source": "https://pubmed.ncbi.nlm.nih.gov/37801497/"
+        },
+        {
+          "university": "University of Chinese Academy of Sciences",
+          "country": "China",
+          "source": "https://pubmed.ncbi.nlm.nih.gov/37801497/"
+        },
+        {
+          "university": "Université Toulouse III – Paul Sabatier",
+          "country": "France",
+          "source": "https://pubmed.ncbi.nlm.nih.gov/37801497/"
+        }
+      ],
+      "bibliographySource": "https://pubmed.ncbi.nlm.nih.gov/37801497/",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "spikellm-2025",
+      "title": "SpikeLLM: Scaling up Spiking Neural Network to Large Language Models via Saliency-based Spiking",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Xing et al. · ICLR",
+      "year": 2025,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2025/hash/510e7d39fce008a3e31de54b8f5be9ac-Abstract-Conference.html",
+      "code": "https://github.com/Xingrun-Xing2/SpikeLLM",
+      "description": "Spiking mechanisms and temporal coding for large language models.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "sequence-language",
+        "coding-conversion",
+        "efficiency-hardware"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICLR",
+        "year": 2025
+      },
+      "affiliations": [
+        {
+          "university": "University of Chinese Academy of Sciences",
+          "country": "China",
+          "source": "https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf"
+        },
+        {
+          "university": "Peking University",
+          "country": "China",
+          "source": "https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf"
+        },
+        {
+          "university": "University of Oxford",
+          "country": "United Kingdom",
+          "source": "https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf"
+        }
+      ],
+      "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "spikachu-2025",
+      "title": "A Scalable, Causal, and Energy Efficient Framework for Neural Decoding with Spiking Neural Networks",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Mentzelopoulos et al. · NeurIPS",
+      "year": 2025,
+      "doi": "10.52202/085713-1661",
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2025/hash/47387bb0aeb97785f608c11f2f4bb091-Abstract-Conference.html",
+      "code": "https://github.com/IoannisAsmanis/spikachu",
+      "description": "Causal spike-based neural decoding for brain–computer interfaces.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "neuroscience-bci",
+        "efficiency-hardware"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "NeurIPS",
+        "year": 2025
+      },
+      "affiliations": [
+        {
+          "university": "University of Pennsylvania",
+          "country": "United States",
+          "source": "https://neurips.cc/media/neurips-2025/Slides/116071.pdf"
+        }
+      ],
+      "bibliographySource": "https://neurips.cc/media/neurips-2025/Slides/116071.pdf",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "spike-htr-2026",
+      "title": "Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Liang et al. · ICML",
+      "year": 2026,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.mlr.press/v306/liang26j.html",
+      "code": "https://github.com/QomolangmaH/SpikeHTR",
+      "description": "Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "sequence-language",
+        "deep-architectures",
+        "coding-conversion"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICML",
+        "year": 2026
+      },
+      "affiliations": [],
+      "bibliographySource": "https://proceedings.mlr.press/v306/liang26j.html",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "spike-vla-2026",
+      "title": "SpikeVLA: Vision-Language-Action Models with Spiking Neural Networks",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Song et al. · ICML",
+      "year": 2026,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.mlr.press/v306/song26r.html",
+      "code": null,
+      "description": "Spiking vision-language-action modeling for embodied navigation and control.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "robotics-embodied",
+        "sequence-language",
+        "efficiency-hardware"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICML",
+        "year": 2026
+      },
+      "affiliations": [],
+      "bibliographySource": "https://proceedings.mlr.press/v306/song26r.html",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "dgn-2026",
+      "title": "A Brain-Inspired Gating Mechanism Unlocks Robust Computation in Spiking Neural Networks",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Bai et al. · ICLR",
+      "year": 2026,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/fc92064236f06645e0b5ec5a8a16565d-Abstract-Conference.html",
+      "code": null,
+      "description": "Activity-dependent membrane conductance for noise-robust spike processing.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "neuron-dynamics",
+        "theory-robustness"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICLR",
+        "year": 2026
+      },
+      "affiliations": [],
+      "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/fc92064236f06645e0b5ec5a8a16565d-Abstract-Conference.html",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    },
+    {
+      "id": "normalization-free-2026",
+      "title": "Training Deep Normalization-Free Spiking Neural Networks with Lateral Inhibition",
+      "category": "learn",
+      "type": "paper",
+      "publisher": "Liu et al. · ICLR",
+      "year": 2026,
+      "doi": null,
+      "license": null,
+      "licenseUrl": null,
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html",
+      "code": "https://github.com/vwOvOwv/DeepEISNN",
+      "description": "Excitatory–inhibitory interactions and learning to train deep SNNs without normalization.",
+      "verification": "indexed_not_reproduced",
+      "licenseNote": "Consult original publishing terms",
+      "topics": [
+        "learning-plasticity",
+        "deep-architectures",
+        "neuron-dynamics"
+      ],
+      "publication": {
+        "kind": "Conference",
+        "venue": "ICLR",
+        "year": 2026
+      },
+      "affiliations": [],
+      "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html",
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+    }
+  ],
+  "topics": [
+    {
+      "id": "neuron-dynamics",
+      "label": "Neuron dynamics"
+    },
+    {
+      "id": "learning-plasticity",
+      "label": "Learning & plasticity"
+    },
+    {
+      "id": "deep-architectures",
+      "label": "Deep architectures"
+    },
+    {
+      "id": "coding-conversion",
+      "label": "Coding & conversion"
+    },
+    {
+      "id": "efficiency-hardware",
+      "label": "Efficiency & hardware"
+    },
+    {
+      "id": "event-vision",
+      "label": "Event-based vision"
+    },
+    {
+      "id": "robotics-embodied",
+      "label": "Robotics & embodied AI"
+    },
+    {
+      "id": "sequence-language",
+      "label": "Sequence & language"
+    },
+    {
+      "id": "neuroscience-bci",
+      "label": "Neuroscience & BCI"
+    },
+    {
+      "id": "benchmarks-tools",
+      "label": "Benchmarks & tools"
+    },
+    {
+      "id": "theory-robustness",
+      "label": "Theory & robustness"
     }
   ]
 }
