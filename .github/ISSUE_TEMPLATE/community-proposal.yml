@@ -1,0 +1,33 @@
+name: Community proposal
+description: Propose a scoped change to community activities, guides, or research resources.
+title: "[Proposal] "
+labels: []
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Problem and goal
+      description: What user or research need would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed approach
+      description: Describe a minimal, maintainable first version.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant resources and references
+      description: Add related projects, papers, data sources, or prior discussions.
+    validations:
+      required: false
+  - type: textarea
+    id: involvement
+    attributes:
+      label: How could you help?
+      description: Optional — implementation, documentation, review, or testing.
+    validations:
+      required: false
