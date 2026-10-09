@@ -1,26 +1,28 @@
-<p align="center"><img src="assets/logo-mark.svg" width="96" alt="SNN Community discrete spiking events logo"></p>
+<p align="center"><img src="docs/favicon.svg" width="80" alt="SNN Community spike logo"></p>
 
 <h1 align="center">SNN Community</h1>
-<p align="center"><strong>Community identity, documentation and shared collaboration policies.</strong></p>
-
+<p align="center"><strong>From spikes to systems.</strong></p>
 <p align="center">
-<a href="profile/README.md">Organization profile</a> ·
-<a href="ROADMAP.md">Roadmap</a> ·
-<a href="CONTRIBUTING.md">Contribute</a> ·
-<a href="https://github.com/SNNCommunity/.github/issues">Open tasks</a>
+  <a href="https://snncommunity.github.io/.github/">Interactive website</a> ·
+  <a href="docs/">Website source</a> ·
+  <a href="PORTAL.md">Development guide</a> ·
+  <a href="https://github.com/SNNCommunity/.github/issues">Contribute</a>
 </p>
 
----
+This repository serves two purposes: the **public organization profile and shared community policies**, and the **published static portal** in `docs/`. It is not a general-purpose SNN framework or a validated benchmarking suite.
 
-### Shared community resources
+## Repository guide
 
-| Collaboration | Research and maintenance |
+| Area | Canonical location |
 | --- | --- |
-| [Contribution guide](CONTRIBUTING.md) | [Research standards](RESEARCH_STANDARDS.md) |
-| [Governance](GOVERNANCE.md) | [Roadmap](ROADMAP.md) |
-| [Code of Conduct](CODE_OF_CONDUCT.md) | [Support](SUPPORT.md) |
-| [Security reporting](SECURITY.md) | [Admin setup checklist](SETUP.md) |
+| Community homepage | [`profile/README.md`](profile/README.md) |
+| Interactive website | [`docs/`](docs/) |
+| Website engineering and model details | [`PORTAL.md`](PORTAL.md) |
+| Community roadmap | [`ROADMAP.md`](ROADMAP.md) |
+| Research and reproducibility policy | [`RESEARCH_STANDARDS.md`](RESEARCH_STANDARDS.md) |
+| Governance and contributor guidelines | [`GOVERNANCE.md`](GOVERNANCE.md) · [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| Support, security and conduct | [`SUPPORT.md`](SUPPORT.md) · [`SECURITY.md`](SECURITY.md) · [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) |
 
-This is a public GitHub **community-health** repository for the independent SNNCommunity organization. It does not host the main SNN software, a published benchmark, or a dedicated project website.
+Our first release is an independently maintained **educational SNN portal**. Its LIF playground is a clearly specified teaching example, and its resource index attributes external projects rather than implying that SNNCommunity authored or independently reproduced their work.
 
-Issue and pull-request templates are maintained in [`.github/`](.github/). Shared documents are available under this repository's [MIT license](LICENSE); other repositories may use separate licenses.
+All repository content is subject to [its own license](LICENSE); other community repositories may use different licenses.

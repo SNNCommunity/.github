@@ -103,12 +103,18 @@
   }
   function simulate() {
     let v=0;
-    const traces=[], spikeTimes=[], inputTrace=[];
-    for(let t=0;t<=simMs;t+=dt) {
+    // Record the initial state and exactly 200 one-millisecond updates.
+    // A recorded spike is timestamped at the end of the update that generated it.
+    const traces=[v], spikeTimes=[], inputTrace=[];
+    for(let t=0;t<simMs;t+=dt) {
       const i=currentInput(t);
       v+=(dt/state.tau)*(-v+i);
-      if (v>=state.threshold) {spikeTimes.push(t);v=0;}
-      traces.push(v);inputTrace.push(i);
+      if (v>=state.threshold) {
+        spikeTimes.push(t+dt);
+        v=0; // Hard reset: this is the stored sample at t+dt.
+      }
+      traces.push(v);
+      inputTrace.push(i);
     }
     return {traces,spikeTimes,inputTrace};
   }
@@ -147,7 +153,19 @@
     ctx.save();ctx.setLineDash([5,5]);ctx.strokeStyle="#ca8059";ctx.lineWidth=1.5;
     ctx.beginPath();ctx.moveTo(left,sy(state.threshold));ctx.lineTo(right,sy(state.threshold));ctx.stroke();ctx.restore();
     ctx.strokeStyle="#267d6b";ctx.lineWidth=2.35;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();
-    latestSim.traces.forEach((v,t)=>{const x=sx(t),y=sy(v);if(t===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+    // Represent each threshold crossing immediately before the hard reset,
+    // otherwise the membrane trace would misleadingly appear never to fire.
+    const eventTimes=new Set(latestSim.spikeTimes);
+    ctx.moveTo(sx(0),sy(latestSim.traces[0]));
+    for(let t=1;t<latestSim.traces.length;t++) {
+      const x=sx(t);
+      if(eventTimes.has(t)) {
+        ctx.lineTo(x,sy(state.threshold));
+        ctx.lineTo(x,sy(0));
+      } else {
+        ctx.lineTo(x,sy(latestSim.traces[t]));
+      }
+    }
     ctx.stroke();
     ctx.strokeStyle="#719e9c";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,spikeBottom);ctx.lineTo(right,spikeBottom);ctx.stroke();
     ctx.strokeStyle="#318a80";ctx.lineWidth=2.6;

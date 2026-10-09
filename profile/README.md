@@ -1,41 +1,42 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../assets/hero-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="../assets/hero-light.svg">
-    <img src="../assets/hero-light.svg" alt="SNN Community — spiking neural network activity and temporal dynamics" width="1100">
-  </picture>
+  <img src="../docs/favicon.svg" alt="SNN Community spike mark" width="78" height="78">
+  <h1>SNN Community</h1>
+  <p><strong>From spikes to systems.</strong></p>
+  <p>An independent, open community to learn, experiment, and build with spiking neural networks.</p>
+  <p>
+    <a href="https://snncommunity.github.io/.github/"><strong>Explore the interactive website ↗</strong></a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/SNNCommunity/.github/issues">Open tasks</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">Contribute</a>
+  </p>
 </div>
-
-<h3 align="center">From spikes to systems.</h3>
-<p align="center">
-  <strong>SNN Community</strong> is an independent home for people learning, researching, and building with spiking neural networks and neuromorphic computing.
-</p>
-
-<p align="center">
-  <a href="https://github.com/SNNCommunity/.github/tree/main/docs">Interactive portal source</a> ·
-  <a href="https://github.com/SNNCommunity/.github/issues">Join an open task</a> ·
-  <a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">How to contribute</a>
-</p>
 
 ---
 
-### Explore the science
+### Start exploring
 
-**Learn** · Understand spikes, temporal encoding, surrogate gradients, deep SNNs and event-driven perception through the [snnTorch tutorials](https://snntorch.readthedocs.io/) and [SpikingJelly documentation](https://spikingjelly.readthedocs.io/).
+**Learn** — Guided entry points to neuron models, event-driven processing, and SNN training. Explore [snnTorch](https://snntorch.readthedocs.io/) and [SpikingJelly](https://spikingjelly.readthedocs.io/) learning resources.
 
-**Experiment** · Explore an interactive LIF neuron and a curated, searchable research collection in our [next-generation portal source](https://github.com/SNNCommunity/.github/tree/main/docs). **The website's public URL is pending GitHub Pages activation**; see the [deployment guide](https://github.com/SNNCommunity/.github/blob/main/PORTAL.md).
+**Experiment** — Adjust membrane time constants, thresholds, and input currents in the [interactive LIF neuron lab](https://snncommunity.github.io/.github/#lab).
 
-**Build together** · Propose resources, improve documentation and support open, reproducible experiments through [public contributions](https://github.com/SNNCommunity/.github/issues).
+**Discover** — Search our introductory index of independently maintained [SNN research resources](https://snncommunity.github.io/.github/#library).
 
-### Open initiatives
+**Collaborate** — [Find an open issue](https://github.com/SNNCommunity/.github/issues), suggest improvements, and help develop reproducible research tools.
 
-| Collaboration | Current progress |
-| --- | --- |
-| [Community discussion hub](https://github.com/SNNCommunity/.github/issues/2) | Planning |
-| [SNN resource collection](https://github.com/SNNCommunity/.github/issues/3) | Initial external references in portal |
-| [Reproducible reference experiment](https://github.com/SNNCommunity/.github/issues/4) | Planning |
-| [Interactive SNN portal](https://github.com/SNNCommunity/.github/blob/main/PORTAL.md) | Code ready; deployment pending |
+### What we're building
 
-We publish the state of our work as it is. Our learning links reference independent third-party projects and do not imply affiliation or endorsement. SNNCommunity is not an official university or corporate organization.
+SNNCommunity is at an **early stage**. The interactive portal and curated introductory links are available; the dedicated community discussion hub, expanded resource repositories, and independent benchmark reproductions remain work in progress.
 
-<sub>[Roadmap](https://github.com/SNNCommunity/.github/blob/main/ROADMAP.md) · [Research standards](https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md) · [Governance](https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md) · [Security](https://github.com/SNNCommunity/.github/blob/main/SECURITY.md)</sub>
+We welcome work on neuron dynamics, temporal learning, event-based vision, efficient neuromorphic systems, and SNN-based embodied intelligence.
+
+<p align="center">
+  <sub>
+    <a href="https://github.com/SNNCommunity/.github/blob/main/ROADMAP.md">Roadmap</a> ·
+    <a href="https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md">Research standards</a> ·
+    <a href="https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md">Governance</a> ·
+    <a href="https://github.com/SNNCommunity/.github/blob/main/SECURITY.md">Security</a>
+  </sub>
+</p>
+
+<sub>Independent community initiative. Links to outside projects do not imply affiliation or endorsement.</sub>

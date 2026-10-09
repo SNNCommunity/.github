@@ -45,3 +45,32 @@ test('mobile and accessibility styling are included',()=>{
  assert.match(css,/:focus-visible/);
  assert.match(css, /\.nav-links\.is-open/);
 });
+
+test('canonical release has no legacy banner, old design or setup files',()=>{
+ for(const name of ['DESIGN.md','SETUP.md','assets/hero-dark.svg','assets/hero-light.svg','assets/logo-mark.svg']) {
+   assert.ok(!existsSync(join(root,name)),name+' is an obsolete prior-version artifact');
+ }
+ const profile=file('profile/README.md');
+ const readme=file('README.md');
+ const portal=file('PORTAL.md');
+ const roadmap=file('ROADMAP.md');
+ for(const content of [profile,readme,portal,roadmap]) {
+   assert.doesNotMatch(content,/legacy\s*(?:V[23]|draft)|[Pp]ages activation pending|deployment pending/);
+ }
+ assert.ok(profile.includes('https://snncommunity.github.io/.github/'));
+ assert.ok(readme.includes('docs/favicon.svg'));
+ assert.ok(html.includes('rel="canonical" href="https://snncommunity.github.io/.github/"'));
+ assert.ok(!html.includes('/assets/hero-light.svg'));
+});
+test('simulator uses exact 200 updates from initial state and hard-reset event times',()=>{
+ assert.match(js,/traces=\[v\]/);
+ assert.match(js,/for\(let t=0;t<simMs;t\+=dt\)/);
+ assert.match(js,/spikeTimes\.push\(t\+dt\)/);
+ assert.match(js,/new Set\(latestSim\.spikeTimes\)/);
+ assert.match(js,/ctx\.lineTo\(x,sy\(state\.threshold\)\)/);
+});
+test('404 navigation uses canonical homepage independent of missing URL depth',()=>{
+ const notFound=file('docs/404.html');
+ assert.ok(notFound.includes('href="https://snncommunity.github.io/.github/"'));
+ assert.ok(notFound.includes('min-height:100svh'));
+});
