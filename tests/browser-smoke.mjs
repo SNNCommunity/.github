@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { pathToFileURL } from 'node:url';
+import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import { mkdirSync, readFileSync, statSync } from 'node:fs';
 import assert from 'node:assert/strict';
@@ -10,7 +10,18 @@ const output=resolve('artifacts');
 mkdirSync(output,{recursive:true});
 const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
 page.on('pageerror',e=>errors.push(e.message));
-const url=pathToFileURL(resolve('docs/index.html')).href;
+// Serve the site from the same nested path used by GitHub Pages.
+const servedFiles=new Map([['index.html','text/html'],['styles.css','text/css'],
+  ['app.js','text/javascript'],['favicon.svg','image/svg+xml'],['404.html','text/html']]);
+const server=createServer((req,res)=>{
+  const pathname=new URL(req.url,'http://localhost').pathname;
+  const name=pathname.replace(/^\\/\\.github\\/?/,'')||'index.html';
+  if(!servedFiles.has(name)){res.writeHead(404);res.end('Not found');return;}
+  res.writeHead(200,{'Content-Type':servedFiles.get(name)+'; charset=utf-8'});
+  res.end(readFileSync(resolve('docs',name)));
+});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+const url='http://127.0.0.1:'+server.address().port+'/.github/';
 try {
   await page.goto(url,{waitUntil:'load'});
   await page.locator('#resource-grid .resource-card').first().waitFor();
@@ -87,6 +98,34 @@ try {
   assert.equal(await page.locator('#threshold').inputValue(),'0.85','invalid threshold ignored');
   assert.equal(await page.locator('#current').inputValue(),'1.55','invalid amplitude ignored');
 
+  // HTTP-origin checks: stale imported parameters must not return after reset.
+  await page.goto(url+'?tau=12&mode=pulses&unrelated=keep#lab');
+  await page.locator('#reset-lab').click();
+  const cleanURL=new URL(page.url());
+  assert.ok(!cleanURL.searchParams.has('tau')&&!cleanURL.searchParams.has('mode'),'reset strips stale imports');
+  assert.equal(cleanURL.searchParams.get('unrelated'),'keep','unrelated parameters are preserved in the current URL');
+  await page.reload();
+  assert.equal(await page.locator('#tau').inputValue(),'20','reload after reset retains defaults');
+  assert.ok(await page.locator('input[name="input-mode"][value="step"]').isChecked(),'default input restored');
+
+  // Shared setup must not include arbitrary incoming URL query parameters.
+  await page.goto(url+'?tau=12&mode=pulses&token=private-do-not-share#lab');
+  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
+  await page.locator('#share-lab').click();
+  const safeShare=await page.locator('#share-url').inputValue();
+  assert.ok(safeShare.startsWith('https://snncommunity.github.io/.github/'));
+  assert.ok(!safeShare.includes('token=')&&!safeShare.includes('private-do-not-share'),'share URL contains no incoming secret');
+  assert.equal(new URL(safeShare).searchParams.get('tau'),'12');
+  await page.locator('#current').evaluate(el=>{el.value='1.60';el.dispatchEvent(new Event('input',{bubbles:true}));});
+  assert.ok(!new URL(page.url()).searchParams.has('mode'),'editing removes superseded imported query');
+
+  const noJS=await browser.newPage({javaScriptEnabled:false,viewport:{width:390,height:844}});
+  try{
+    await noJS.goto(url);
+    assert.equal(await noJS.locator('.noscript-resources').isVisible(),true,'real resource links available without JS');
+    assert.ok(await noJS.locator('.noscript-resources a').count()>=4);
+  }finally{await noJS.close();}
+
   await page.screenshot({path:resolve(output,'desktop.png'),fullPage:true});
   console.log('PASS desktop: navigation, LIF simulation, reset and resource filtering');
   await page.setViewportSize({width:390,height:844});
@@ -106,4 +145,4 @@ try {
   await page.screenshot({path:resolve(output,'mobile.png'),fullPage:true});
   assert.deepEqual(errors,[],'no uncaught browser errors');
   console.log('PASS mobile: menu, in-page navigation, overflow and browser errors');
-} finally {await browser.close();}
+} finally {await browser.close();await new Promise(resolve=>server.close(resolve));}
