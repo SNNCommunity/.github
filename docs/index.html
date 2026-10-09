@@ -11,9 +11,15 @@
   <meta property="og:description" content="Explore the science of spiking neural networks. Learn, experiment, and build together.">
   <meta property="og:url" content="https://snncommunity.github.io/.github/">
   <meta name="robots" content="index,follow">
+  <meta property="og:site_name" content="SNN Community">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SNN Community — From Spikes to Systems">
+  <meta name="twitter:description" content="A hands-on home for spiking neural networks, numerical neuron models and open research.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"SNN Community","alternateName":"SNNCommunity","url":"https://snncommunity.github.io/.github/","sameAs":["https://github.com/SNNCommunity"],"description":"Independent open community for spiking neural networks and neuromorphic research"}</script>
   <title>SNN Community — From spikes to systems.</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
+  <script defer src="./neuron-core.js"></script>
   <script defer src="./app.js"></script>
   <noscript><style>.lab-controls input,.lab-controls button{opacity:.6;pointer-events:none}.lab-controls::after{content:"The interactive neuron lab requires JavaScript.";display:block;margin-top:15px;font-weight:600;color:#315448}</style></noscript>
 </head>
@@ -87,23 +93,26 @@
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow"><span class="section-index">01 /</span> INTERACTIVE RESEARCH</p><h2 id="lab-title">See a neuron<br><em>come to life.</em></h2></div>
-          <p>Turn the parameters. Change the input. Watch membrane potential accumulate and reset as spikes emerge. This is where the science starts.</p>
+          <p>Change the input, membrane dynamics and threshold. Compare a leaky neuron with its matched-gain nonleaky reference, then download the trace.</p>
         </div>
         <div class="lab-layout">
           <div class="lab-plot">
-            <div class="lab-topline"><span><span class="online-dot"></span> LIVE SIMULATION</span><span>LEAKY INTEGRATE-AND-FIRE</span></div>
-            <div class="plot-legend"><span><i class="legend-line"></i> Membrane potential</span><span><i class="legend-dash"></i> Threshold</span><span><i class="legend-spike"></i> Output spikes</span></div>
-            <canvas id="lif-canvas" width="960" height="420" role="img" aria-label="Neuron membrane potential and output spike train; interactive controls change the plotted response.">Canvas is unavailable; use the summary below the chart.</canvas>
-            <div class="lab-status" aria-label="Simulation results"><div><small>SPIKES EMITTED</small><strong id="spike-count">—</strong></div><div><small>LAST INTERSPIKE INTERVAL</small><strong id="isi-stat">—</strong></div><div><small>SIMULATED DURATION</small><strong>200 ms</strong></div></div>
+            <div class="lab-topline"><span><span class="online-dot"></span> LIVE SIMULATION</span><span>LIF &amp; NONLEAKY IF · EULER</span></div>
+            <div class="plot-legend"><span><i class="legend-line"></i> LIF voltage</span><span><i class="legend-line legend-if"></i> IF voltage</span><span><i class="legend-input"></i> Input current</span><span><i class="legend-dash"></i> Threshold</span></div>
+            <canvas id="lif-canvas" width="960" height="550" role="img" aria-describedby="experiment-summary model-summary" aria-label="Three-panel simulation: input current, membrane voltage and spike events. The text summary follows.">Canvas is unavailable; read the experiment summary below.</canvas>
+            <p class="plot-hint">Input (normalized) · Membrane potential (normalized) · Spike times (ms). Crossing peaks are pre-reset; CSV provides both pre-reset and post-reset values.</p>
+            <div class="lab-status" aria-label="Simulation results"><div><small>LIF SPIKES / RATE</small><strong><span id="spike-count">—</span> <span class="status-suffix" id="lif-rate">—</span></strong></div><div><small>IF SPIKES / RATE</small><strong><span id="if-count">—</span> <span class="status-suffix" id="if-rate">—</span></strong></div><div><small>LIF MEAN ISI</small><strong id="isi-stat">—</strong></div></div>
+            <p id="experiment-summary" class="experiment-summary">Simulation initializing…</p>
           </div>
           <div class="lab-controls">
             <div class="panel-heading"><span>EXPERIMENT 001</span><span class="phase-tag">FOUNDATIONS</span></div>
-            <h3>Leaky integrate<br>&amp; fire.</h3>
-            <p class="control-explainer">A deterministic, discrete-time LIF model with hard reset. Change the input, leak and threshold to observe how membrane state and spike timing respond.</p>
+            <h3>Dynamics<br>in comparison.</h3>
+            <p class="control-explainer">Two dimensionless Euler models with identical input gain and hard reset. IF differs only by removing the LIF leak term. These are illustrative numerical models, not experimental measurements.</p>
             <div class="lab-presets" role="group" aria-label="Example neuron configurations"><span class="preset-heading">TRY AN EXAMPLE</span><div class="preset-buttons"><button class="preset-button" type="button" data-preset="quiet">Quiet neuron</button><button class="preset-button" type="button" data-preset="regular">Regular firing</button><button class="preset-button" type="button" data-preset="burst">Pulsed input</button></div></div>
             <div class="control-field"><label for="tau">Membrane time constant <strong id="tau-value">20 ms</strong></label><input id="tau" type="range" min="5" max="45" step="1" value="20"><div class="range-label"><span>5 ms</span><span>45 ms</span></div></div>
             <div class="control-field"><label for="threshold">Firing threshold <strong id="threshold-value">0.85</strong></label><input id="threshold" type="range" min="0.35" max="1.30" step="0.05" value="0.85"><div class="range-label"><span>0.35</span><span>1.30</span></div></div>
             <div class="control-field"><label for="current">Input amplitude <strong id="current-value">1.55</strong></label><input id="current" type="range" min="0.50" max="2.30" step="0.05" value="1.55"><div class="range-label"><span>0.50</span><span>2.30</span></div></div>
+            <div class="compare-field"><label for="compare-if"><input type="checkbox" id="compare-if" checked> Compare with matched-gain nonleaky IF</label></div>
             <fieldset class="input-mode"><legend>Input pattern</legend><label><input type="radio" name="input-mode" value="step" checked><span>Step current</span></label><label><input type="radio" name="input-mode" value="pulses"><span>Pulse train</span></label></fieldset>
             <div class="lab-actions">
               <button class="button button-dark" id="reset-lab" type="button">Reset experiment <span aria-hidden="true">↻</span></button>
@@ -114,7 +123,7 @@
             </div>
             <p class="lab-feedback" id="lab-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
             <div class="share-fallback" id="share-fallback" hidden><label for="share-url">Your experiment URL</label><input type="text" id="share-url" readonly aria-label="Select and copy this experiment URL"></div>
-            <p class="model-note" id="model-summary">Normalized LIF model · forward Euler (1 ms steps) · hard reset at threshold crossing. Educational visualization, not benchmark evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#mathematical-definition" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
+            <p class="model-note" id="model-summary">LIF: V(t+1) = V(t) + [I(t) − V(t)] / τ. IF: V(t+1) = V(t) + I(t) / τ. Both use 1 ms steps and a hard zero-reset after crossing Vth. All values are normalized; this is not benchmark or biological evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#mathematical-definition" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
           </div>
         </div>
       </div>
@@ -136,6 +145,7 @@
       <div class="container">
         <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>A starting collection of original sources, open tools and learning materials. Search and filter independently maintained resources; their inclusion is not scientific verification.</p></div>
         <div class="library-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search resources</label><input id="resource-search" type="search" placeholder="Search frameworks, papers, tools…" autocomplete="off"></div><div class="filter-chips" role="group" aria-label="Filter by topic"><button class="filter-chip active" data-filter="all" aria-pressed="true">All</button><button class="filter-chip" data-filter="learn" aria-pressed="false">Learn</button><button class="filter-chip" data-filter="frameworks" aria-pressed="false">Frameworks</button><button class="filter-chip" data-filter="evaluation" aria-pressed="false">Evaluation</button><button class="filter-chip" data-filter="events" aria-pressed="false">Events</button></div></div>
+        <div class="resource-provenance"><strong>Index status ≠ reproduced.</strong> Entries include original source, publication DOI where available, code links and upstream licensing references. SNNCommunity has not independently certified any listed implementation or paper.</div>
         <div id="resource-grid" class="resource-grid"></div>
         <noscript>
           <div class="noscript-resources">
@@ -146,6 +156,7 @@
             <a href="https://github.com/NeuroBench/neurobench">NeuroBench</a>
           </div>
         </noscript>
+        <p id="resource-fallback" class="resource-empty" hidden>Directory unavailable. <a href="https://github.com/SNNCommunity/.github/blob/main/docs/resources.json">Browse the source catalog on GitHub ↗</a></p>
         <p id="resource-empty" class="resource-empty" hidden>No matching resources. Try another keyword or category.</p>
         <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
       </div>
