@@ -1,94 +1,97 @@
-# SNN Community — Website and engineering guide
+# SNN Community portal · Maintainer guide
 
-**Canonical public website:** https://snncommunity.github.io/.github/
+**Website:** https://snncommunity.github.io/.github/  
+**Source:** `main/docs` of `SNNCommunity/.github`  
+**Primary branch:** `main` · Static GitHub Pages, no runtime build.
 
-**Status:** GitHub's Pages deployment workflow reported a successful deployment to this URL on October 9, 2026. Public browsing should still be rechecked when verifying later changes. The published site is the `docs/` folder on `main`; no build step is required.
+## Directory overview
 
-## Single source of truth
+- `docs/index.html` — semantic layout, scientific explanation, social and search metadata.
+- `docs/styles.css` — responsive design tokens, accessibility and scientific figure styling.
+- `docs/neuron-core.js` — pure numerical reference used by the browser.
+- `docs/app.js` — plot, controls, navigation and resource rendering.
+- `docs/resources.json` — canonical machine-readable, provenance-indexed research links.
+- `docs/og-card.svg` and `docs/social-card.png` — editable OG artwork and PNG preview.
+- `docs/favicon.svg` and `docs/avatar.png` — icon source and 512 px avatar export.
+- `docs/404.html`, `docs/.nojekyll` — static Pages maintenance.
+- `experiments/lif-reference/run.py` — independent dependency-free numeric reference.
+- `tests/*.test.mjs`, `tests/browser-smoke.mjs` — numeric parity, content and browser smoke tests.
+
+## Numerical definition and comparison
+
+All variables are **normalized and dimensionless**, except the time coordinate, which is in milliseconds. Forward Euler step `dt = 1 ms`, duration `200 ms`, initial membrane `V[0]=0`. Each simulation returns 201 state observations and 200 inputs.
+
+LIF:
 
 ```text
-docs/
-├── index.html       # The website structure, semantics and content
-├── styles.css       # Responsive, light editorial visual language
-├── app.js           # LIF simulation, resource filters and navigation
-├── favicon.svg      # Canonical compact community icon
-├── 404.html         # Pages fallback
-└── .nojekyll        # Prevent Jekyll processing
+V_pre[t+1] = V[t] + (I[t] - V[t]) / tau
 ```
 
-There are **no other website themes, legacy assets, generators, frameworks, or runtime dependencies** in the published release. The GitHub organization profile uses `docs/favicon.svg` so the mark has only one source.
+Matched-gain nonleaky IF:
 
-## Local preview
+```text
+V_pre[t+1] = V[t] + I[t] / tau
+```
 
-From the repository root:
+Both models use **the same input gain** `1/tau`, threshold, input sequence, and hard reset `V[t+1]=0` whenever `V_pre[t+1]>=Vth`. This isolates the leak term as the only model difference, but does **not** imply that `tau` is a membrane decay time constant in nonleaky IF. It serves as a matched integration scale. IF is not a more biologically realistic benchmark.
+
+Input is on for `12 <= t < 188` (step stimulus), or repeats 22 ms ON of each 40 ms interval from t=12 with amplitude `1.75×` under pulse mode, restricted to that same interval.
+
+Charts show a three-panel common time axis: input current, membrane potential (LIF solid and optional IF dashed), and output spike markers. Threshold-crossing peaks correspond to `V_pre`; state traces exported as `V` are after hard reset.
+
+**Outputs:** current setup JSON, URL containing validated model parameters only, PNG of the current plot, and CSV with `time_ms`, previous interval input, LIF/IF pre-reset and post-reset voltages and event markers.
+
+## Reproduction evidence — what has and has not been done
+
+`experiments/lif-reference/run.py` is a separate standard-library Python implementation of the same discrete equations. The Node CI suite checks 5 different configurations × 2 models, comparing every voltage, current and spike time with `1e-12` absolute tolerance. The browser suite runs in headless Chromium on desktop/tablet/mobile sizes, exercises controls, downloadable PNG/CSV, parameter URLs and resource filtering.
+
+**Only mathematical cross-implementation checks are supported by this evidence.** We do not claim biological calibration, independent review, paper reproduction, task accuracy, low-power results, or benchmark outcomes.
+
+Re-run locally:
 
 ```bash
-python3 -m http.server 8000 --directory docs
+python3 experiments/lif-reference/run.py --model LIF --tau 20 --threshold 0.85 --current 1.55
+node --test tests/portal.test.mjs tests/neuron-core.test.mjs
 ```
 
-Open `http://localhost:8000/`. There are no Node or Python runtime requirements for visitors. Node is used only for development tests.
+The browser smoke suite is executed through GitHub Actions with Playwright/Chromium and screenshots attached to the run. It is not a complete WCAG 2.2 audit.
 
-## Mathematical definition
+## Research resource governance
 
-The interactive lab demonstrates a **dimensionless discrete-time Leaky Integrate-and-Fire neuron** using forward Euler, a fixed 1 ms step, zero initial state, and hard reset. Every parameter is normalized rather than biologically calibrated:
+`docs/resources.json` is the sole source of the 12 current curated records. Every entry has a stable ID, original source URL, resource category/type, publisher, DOI and original code when available, upstream license reference when known, and `verification: indexed_not_reproduced`. Null license means **not validated**, not public domain.
 
-```text
-V[t+1] = V[t] + (1 ms / tau) * ( -V[t] + I[t] )
-if V[t+1] >= threshold: emit a spike at t+1 ms; reset V[t+1] to 0
+Paper DOIs are sourced from original publisher or authors' publication records. Resource inclusion is **not a claim of affiliation or of independent technical reproduction**.
+
+In future, review submitted resources for persistent identifiers, current original URLs, version/commit, citation, upstream license and whether evidence of reproduction exists. Do not mark `reproduced` without public logs and executable instructions.
+
+## Search, sharing and previews
+
+The home page provides `Organization` structured data, canonical URL, Open Graph 1200×630 **PNG** and large Twitter card metadata. Source art is `docs/og-card.svg` and the generated binary asset is `docs/social-card.png`. To regenerate PNG locally after editing the SVG, use `rsvg-convert`:
+
+```bash
+rsvg-convert -w 1200 -h 630 docs/og-card.svg > docs/social-card.png
+rsvg-convert -w 512 -h 512 docs/favicon.svg > docs/avatar.png
 ```
 
-The simulation covers **200 update steps**, producing **201 membrane samples** from `t = 0` through `t = 200 ms`. Two input patterns are available:
+Social platforms may cache existing cards; preview appearance depends on their crawlers. A successfully deployed image and metadata does not guarantee identical presentation on every platform.
 
-- **Step**: amplitude `A` for `12 <= t < 188`, otherwise 0.
-- **Pulses**: amplitude `1.75 * A` for the first 22 ms of each 40 ms cycle starting at t=12, restricted to `12 <= t < 188`.
+No analytics, cookies, external fonts, CDN JavaScript or user-account services are used by the site. The local UI does not transmit experiment parameters or files to SNNCommunity servers; visitors may follow external research links.
 
-Spike counts and the last interspike interval are derived from recorded event times. Charted spike peaks illustrate the crossing before reset; the stored membrane sample following firing is zero. Input amplitudes and voltages are **normalized, not biologically calibrated**. This site does not make a research-performance or energy-efficiency claim.
+## GitHub organization and collaboration
 
-## Reproducible experiment controls
+`https://github.com/SNNCommunity` remains a GitHub-owned Organization page and cannot redirect via site code; its README links prominently to the canonical website. The owner reports that the Organization Website field was configured; actual public display needs human visual verification.
 
-The live lab includes **quiet, regular-firing, and pulsed-input presets**. Sliders and input patterns can be changed independently, then reset to the default configuration.
+**GitHub Discussions:** The Organization currently has no dedicated community source repository. To enable cross-repository discussions, an Organization Owner must visit **Organization Settings → Code, planning, and automation → Discussions**, enable discussions, and select a source repository (the existing `.github` is possible; a dedicated `community` repository is preferred for clean separation). Do not link a nonexistent Discussions page as active.
 
-- **Share setup:** encodes the four scalar controls as validated, bounded URL query parameters (`tau`, `threshold`, `current`, `mode`). Opening a shared link restores the setup entirely in the browser. If clipboard access is restricted, the URL is displayed in a selectable field.
-- **Copy JSON:** exports the current model protocol and parameters to the clipboard, if browser permissions allow.
-- **Download CSV:** stores 201 state observations, including `t=0`, their post-reset membrane values, a binary spike event indicator, and the current injected over the **previous** 1 ms update interval. Input is intentionally empty at `t=0`; the last row represents the state after the 200th interval. The first two metadata comment lines start with `#` (for example, use `comment='#'` when reading with pandas).
-- **Save plot:** exports the current rendered canvas as PNG. The plotted voltage briefly reaches threshold immediately before a spike resets the stored state to zero. PNG curves are educational visualizations; the CSV is the precise time-series source.
+**Website and avatar:** The `docs/avatar.png` file is ready for an Owner to upload as the Organization avatar. The repository connector does not change Organization profile/avatar, create new repositories, or enable Discussions.
 
-The exported CSV identifies the exact normalized forward-Euler model; it is not a biological recording or a benchmark result. Generated files are created client-side and never uploaded to our server. The share URL includes model parameters but no private data, credentials, or recorded user information.
+## Release and accessibility checklist
 
-## Official entry points
+1. Open a PR. Run Node source tests and Python↔JS numeric parity.
+2. Require Chromium desktop, tablet and 390/320px checks: no horizontal overflow, clear focus, keyboard controls, data exports, fallback content and readable labels.
+3. Review color contrast for text and UI boundaries; check WCAG 2.2 2.5.8 target size and 1.4.11 non-text contrast.
+4. Check social card PNG is present and OG/Twitter links use the deployed Pages URL.
+5. Merge only with green checks and inspect the resulting GitHub Pages run.
+6. Verify real browser navigation and visuals separately from automation.
 
-- Public scientific portal: https://snncommunity.github.io/.github/
-- Organization identity and code collaboration: https://github.com/SNNCommunity
-- GitHub cannot externally redirect its organization profile URL. The organization `profile/README.md` therefore features a prominent link into the portal.
-- The organization owner reports that the Organization **Website** field now points to the portal. This setting is not readable through the current repository connector, so its public presentation should be verified in a regular browser.
-
-## Share-link privacy and refresh behavior
-
-The sharing feature builds a fresh link to the canonical website from only the public keys `tau`, `threshold`, `current`, and `mode`, rather than copying unknown query parameters from the incoming URL. When an imported experiment is edited or reset, those four keys are removed from the visible URL using `history.replaceState` (without a reload), preventing refresh from silently restoring outdated settings. Unrelated URL keys in the user's current browser address are never included in the generated share link.
-
-Canvas resize handling observes the containing panel and schedules at most one redraw per animation frame. The site also exposes original third-party resource links without JavaScript and links its mathematical model specification from the lab.
-
-## Curated sources
-
-The introductory collection links to independently maintained documentation, frameworks, benchmarks and original research. Indexing a resource **does not validate or certify a paper**, nor does it imply partnership. The resource schema is currently a local static array in `docs/app.js`; move it to separately validated structured content only when the library grows enough to warrant a dedicated data pipeline.
-
-## Release quality gates
-
-The `portal-check.yml` GitHub Actions workflow runs:
-
-- Node.js syntax and source-contract checks.
-- Headless Chromium tests for default spike output, subthreshold conditions, presets, parameter reset, share-link restoration, file exports, resource filtering, mobile navigation and horizontal overflow.
-- Accessibility-conscious element and keyboard-navigation smoke checks.
-- Test screenshots uploaded as CI artifacts.
-
-This is a smoke-testing baseline, not a replacement for human visual review or a formal accessibility audit.
-
-## Deployment
-
-The current branch-based GitHub Pages source is expected to be **`main /docs`**. An organization owner may review this in [repository Pages settings](https://github.com/SNNCommunity/.github/settings/pages). GitHub publishes changes to the selected source folder after merges to `main`; verify the Pages deployment and actual live page after each release.
-
-The owner controls Organization **avatar, display name, URL and pinned repositories** in GitHub's organization settings; those properties are not set by code in this repository.
-
-## Scientific and community integrity
-
-Contributions should follow [CONTRIBUTING.md](CONTRIBUTING.md), [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md), and [GOVERNANCE.md](GOVERNANCE.md). Avoid invented affiliation, artificial community metrics, unsafe credential exposure, or unpublished data. Other GitHub project history and merged PRs remain part of normal Git history even when obsolete files are removed from the working tree.
+See [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md) for wider scientific contribution policy, and [GOVERNANCE.md](GOVERNANCE.md) for the provisional maintenance model.
