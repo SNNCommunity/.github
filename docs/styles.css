@@ -170,9 +170,9 @@ input[type=range] { width:100%; height:32px; accent-color:#247962; cursor:pointe
 .resource-label { text-transform:uppercase; color:#458070; letter-spacing:.12em; font-size:12px; font-weight:850; }
 .resource-card h3 { font-size:21px; letter-spacing:-.028em; line-height:1.32; margin:20px 0 12px; }
 .resource-card p { font-size:15px; line-height:1.7; color:#62736b; margin:0; flex:1; }
-.resource-card-bottom { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8e1; padding-top:14px; margin-top:23px; gap:15px; }
-.resource-card-bottom span { font-size:10px; font-weight:800; color:#61786e; letter-spacing:.06em; }
-.resource-card-bottom em { font-size:10px; font-style:normal; color:#949f95; }
+
+
+
 .library-bottom { display:flex; justify-content:space-between; gap:20px; margin-top:28px; align-items:center; font-size:14px; font-weight:750; }
 .library-bottom > span { color:#697b70; }
 .library-bottom a { color:#237761; }
