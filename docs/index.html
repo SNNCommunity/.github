@@ -10,6 +10,7 @@
   <meta property="og:title" content="SNN Community — From spikes to systems">
   <meta property="og:description" content="Explore the science of spiking neural networks. Learn, experiment, and build together.">
   <meta property="og:url" content="https://snncommunity.github.io/.github/">
+  <meta name="robots" content="index,follow">
   <title>SNN Community — From spikes to systems.</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
@@ -92,17 +93,26 @@
             <div class="lab-topline"><span><span class="online-dot"></span> LIVE SIMULATION</span><span>LEAKY INTEGRATE-AND-FIRE</span></div>
             <div class="plot-legend"><span><i class="legend-line"></i> Membrane potential</span><span><i class="legend-dash"></i> Threshold</span><span><i class="legend-spike"></i> Output spikes</span></div>
             <canvas id="lif-canvas" width="960" height="420" role="img" aria-label="Neuron membrane potential and output spike train; interactive controls change the plotted response.">Canvas is unavailable; use the summary below the chart.</canvas>
-            <div class="lab-status" role="status" aria-live="polite"><div><small>SPIKES EMITTED</small><strong id="spike-count">—</strong></div><div><small>LAST INTERSPIKE INTERVAL</small><strong id="isi-stat">—</strong></div><div><small>SIMULATED DURATION</small><strong>200 ms</strong></div></div>
+            <div class="lab-status" aria-label="Simulation results"><div><small>SPIKES EMITTED</small><strong id="spike-count">—</strong></div><div><small>LAST INTERSPIKE INTERVAL</small><strong id="isi-stat">—</strong></div><div><small>SIMULATED DURATION</small><strong>200 ms</strong></div></div>
           </div>
           <div class="lab-controls">
             <div class="panel-heading"><span>EXPERIMENT 001</span><span class="phase-tag">FOUNDATIONS</span></div>
             <h3>Leaky integrate<br>&amp; fire.</h3>
             <p class="control-explainer">A deterministic, discrete-time LIF model with hard reset. Change the input, leak and threshold to observe how membrane state and spike timing respond.</p>
+            <div class="lab-presets" role="group" aria-label="Example neuron configurations"><span class="preset-heading">TRY AN EXAMPLE</span><div class="preset-buttons"><button class="preset-button" type="button" data-preset="quiet">Quiet neuron</button><button class="preset-button" type="button" data-preset="regular">Regular firing</button><button class="preset-button" type="button" data-preset="burst">Pulsed input</button></div></div>
             <div class="control-field"><label for="tau">Membrane time constant <strong id="tau-value">20 ms</strong></label><input id="tau" type="range" min="5" max="45" step="1" value="20"><div class="range-label"><span>5 ms</span><span>45 ms</span></div></div>
             <div class="control-field"><label for="threshold">Firing threshold <strong id="threshold-value">0.85</strong></label><input id="threshold" type="range" min="0.35" max="1.30" step="0.05" value="0.85"><div class="range-label"><span>0.35</span><span>1.30</span></div></div>
             <div class="control-field"><label for="current">Input amplitude <strong id="current-value">1.55</strong></label><input id="current" type="range" min="0.50" max="2.30" step="0.05" value="1.55"><div class="range-label"><span>0.50</span><span>2.30</span></div></div>
             <fieldset class="input-mode"><legend>Input pattern</legend><label><input type="radio" name="input-mode" value="step" checked><span>Step current</span></label><label><input type="radio" name="input-mode" value="pulses"><span>Pulse train</span></label></fieldset>
-            <div class="lab-actions"><button class="button button-dark" id="reset-lab" type="button">Reset experiment <span aria-hidden="true">↻</span></button><button class="button button-outline" id="copy-config" type="button">Copy config <span aria-hidden="true">↗</span></button></div>
+            <div class="lab-actions">
+              <button class="button button-dark" id="reset-lab" type="button">Reset experiment <span aria-hidden="true">↻</span></button>
+              <button class="button button-outline" id="copy-config" type="button">Copy JSON <span aria-hidden="true">↗</span></button>
+              <button class="button button-outline" id="share-lab" type="button">Share setup <span aria-hidden="true">↗</span></button>
+              <button class="button button-outline" id="export-csv" type="button">Download CSV <span aria-hidden="true">↓</span></button>
+              <button class="button button-outline" id="export-png" type="button">Save plot <span aria-hidden="true">↓</span></button>
+            </div>
+            <p class="lab-feedback" id="lab-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+            <div class="share-fallback" id="share-fallback" hidden><label for="share-url">Your experiment URL</label><input type="text" id="share-url" readonly aria-label="Select and copy this experiment URL"></div>
             <p class="model-note" id="model-summary">Normalized LIF model · forward Euler (1 ms steps) · hard reset at threshold crossing. Educational visualization, not benchmark evidence.</p>
           </div>
         </div>
@@ -123,11 +133,11 @@
 
     <section class="section section-library" id="library" aria-labelledby="library-title">
       <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>A starting collection of original sources, open tools and learning materials. Carefully linked; not presented as independently reproduced work.</p></div>
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>A starting collection of original sources, open tools and learning materials. Search and filter independently maintained resources; their inclusion is not scientific verification.</p></div>
         <div class="library-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search resources</label><input id="resource-search" type="search" placeholder="Search frameworks, papers, tools…" autocomplete="off"></div><div class="filter-chips" role="group" aria-label="Filter by topic"><button class="filter-chip active" data-filter="all" aria-pressed="true">All</button><button class="filter-chip" data-filter="learn" aria-pressed="false">Learn</button><button class="filter-chip" data-filter="frameworks" aria-pressed="false">Frameworks</button><button class="filter-chip" data-filter="evaluation" aria-pressed="false">Evaluation</button><button class="filter-chip" data-filter="events" aria-pressed="false">Events</button></div></div>
-        <div id="resource-grid" class="resource-grid" aria-live="polite"></div>
+        <div id="resource-grid" class="resource-grid"></div>
         <p id="resource-empty" class="resource-empty" hidden>No matching resources. Try another keyword or category.</p>
-        <div class="library-bottom"><span id="resource-count">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
+        <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 
