@@ -6,7 +6,7 @@ const html=read('docs/index.html'),js=read('docs/app.js'),css=read('docs/styles.
   catalog=JSON.parse(read('docs/resources.json')),profile=read('profile/README.md');
 test('production files, metadata and required controls are present',()=>{
  for(const p of ['docs/index.html','docs/app.js','docs/neuron-core.js','docs/resources.json',
-  'docs/styles.css','docs/favicon.svg','docs/404.html','docs/og-card.svg','docs/.nojekyll'])
+  'docs/atlas-core.js','docs/styles.css','docs/favicon.svg','docs/404.html','docs/og-card.svg','docs/.nojekyll'])
   assert.ok(existsSync(new URL('../'+p,import.meta.url)),p);
  for(const id of ['lif-canvas','compare-if','if-count','spike-count','lif-rate','if-rate',
   'experiment-summary','export-csv','export-png','share-lab','resource-grid','resource-search'])
@@ -17,9 +17,9 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/aria-describedby="experiment-summary model-summary"/);
 });
 test('open source provenance entries use unique structured records',()=>{
- assert.equal(catalog.schemaVersion,1);
- assert.equal(catalog.items.length,12);
- assert.equal(new Set(catalog.items.map(x=>x.id)).size,12);
+ assert.equal(catalog.schemaVersion,2);
+ assert.equal(catalog.items.length,22);
+ assert.equal(new Set(catalog.items.map(x=>x.id)).size,22);
  for(const x of catalog.items){
   assert.match(x.url,/^https:\/\//);
   assert.equal(x.verification,'indexed_not_reproduced');
@@ -27,7 +27,10 @@ test('open source provenance entries use unique structured records',()=>{
   assert.ok('license' in x&&'licenseUrl' in x&&'doi' in x&&'code' in x);
  }
  const doi=catalog.items.filter(x=>x.type==='paper').map(x=>x.doi);
- assert.deepEqual(doi,['10.1109/JPROC.2023.3308088','10.1109/MSP.2019.2931595','10.1109/TPAMI.2020.3008413']);
+ for(const id of ['10.1109/JPROC.2023.3308088','10.1109/MSP.2019.2931595','10.1109/TPAMI.2020.3008413'])assert.ok(doi.includes(id));
+ assert.equal(catalog.topics.length,11);
+ assert.equal(catalog.items.filter(x=>x.type==='paper').length,13);
+ assert.ok(catalog.items.some(x=>(x.affiliations||[]).some(a=>a.country==='France')));
 });
 test('no abandoned V2/V3 assets and no invented evidence',()=>{
  for(const p of ['DESIGN.md','SETUP.md','assets/hero-dark.svg','assets/hero-light.svg','assets/logo-mark.svg'])
@@ -68,4 +71,22 @@ test('research cards are progressively disclosed without leaving legacy layout c
  assert.doesNotMatch(css,/\.resource-card-bottom/);
  assert.doesNotMatch(css,/\.resource-arrow/);
  assert.match(css,/\.resource-more\[hidden\]/);
+});
+
+test('atlas metadata separates university affiliations from software ownership',()=>{
+ for(const item of catalog.items){
+  assert.ok(Array.isArray(item.topics)&&item.topics.length);
+  assert.ok(Array.isArray(item.affiliations));
+  if(item.type==='paper'){
+    assert.ok(item.publication&&item.publication.venue&&Number.isInteger(item.publication.year));
+    assert.ok(item.bibliographySource.startsWith('https://'));
+  }else {
+    assert.equal(item.publication,null);
+    assert.deepEqual(item.affiliations,[]);
+  }
+  for(const a of item.affiliations){
+    assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
+  }
+ }
+ assert.match(html,/authors’ affiliations at publication/);
 });
