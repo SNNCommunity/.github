@@ -23,6 +23,14 @@ try {
   assert.equal(weakerCount,0,'subthreshold step stimulus should emit no spikes');
   await page.locator('#reset-lab').click();
   assert.equal(Number(await page.locator('#spike-count').innerText()),initialCount,'reset restores baseline spike count');
+  await page.locator('#threshold').evaluate(el=>{el.value='1.25';el.dispatchEvent(new Event('input',{bubbles:true}));});
+  assert.ok(Number(await page.locator('#spike-count').innerText())<=initialCount,'higher threshold cannot increase spikes for this constant stimulus');
+  await page.locator('#reset-lab').click();
+  await page.locator('input[name="input-mode"][value="pulses"]').check({force:true});
+  assert.equal(await page.locator('input[name="input-mode"][value="pulses"]').isChecked(),true,'pulse stimulus selectable');
+  assert.match(await page.locator('#spike-count').innerText(),/^\\d+$/,'pulse experiment returns spike count');
+  await page.locator('#reset-lab').click();
+
   await page.locator('.filter-chip[data-filter="events"]').click();
   assert.equal(await page.locator('#resource-grid .resource-card').count(),3,'events category filter');
   await page.locator('#resource-search').fill('no-such-resource-1234');
@@ -43,6 +51,10 @@ try {
   assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','menu closes on navigation');
   const overflow=await page.evaluate(()=>({viewport:window.innerWidth,scroll:document.documentElement.scrollWidth}));
   assert.ok(overflow.scroll<=overflow.viewport+1,'no mobile horizontal overflow: '+JSON.stringify(overflow));
+  await page.setViewportSize({width:320,height:700});
+  const narrow=await page.evaluate(()=>({viewport:window.innerWidth,scroll:document.documentElement.scrollWidth}));
+  assert.ok(narrow.scroll<=narrow.viewport+1,'no 320px horizontal overflow: '+JSON.stringify(narrow));
+  await page.setViewportSize({width:390,height:844});
   await page.screenshot({path:resolve(output,'mobile.png'),fullPage:true});
   assert.deepEqual(errors,[],'no uncaught browser errors');
   console.log('PASS mobile: menu, in-page navigation, overflow and browser errors');
