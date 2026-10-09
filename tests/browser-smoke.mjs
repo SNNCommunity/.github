@@ -134,7 +134,7 @@ try {
     "model note":".model-note",
     "parameter label":".control-field label",
     "lab action":".lab-actions .button",
-    "resource metadata":".resource-metadata",
+    "resource metadata":".atlas-card-summary",
     "navigation":".nav-links > a",
     "footer text":".footer-main p"
   };
