@@ -380,7 +380,7 @@ input[type=range] { width:100%; height:32px; accent-color:#247962; cursor:pointe
 .resource-expand { display:flex;justify-content:center;margin:25px 0 4px; }
 .resource-more { min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:17px;min-width:228px;padding:13px 22px;border:1px solid #557a68;background:transparent;color:#1c5a49;font-size:14px;font-weight:800;border-radius:3px; }
 .resource-more:hover { background:#e5f2e9; }
-.resource-more[hidden] { display:none; }
+.resource-more[hidden],.resource-expand[hidden] { display:none; }
 .resource-more:focus-visible { outline:3px solid #d17a48;outline-offset:4px; }
 @media (max-width:560px) {
   .resource-expand { margin:19px 0 0; }
