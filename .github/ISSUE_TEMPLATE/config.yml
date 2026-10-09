@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Read contribution guidelines
+    url: https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md
+    about: Submission requirements, citations, licenses, and research reproducibility.
+  - name: Community support and appropriate channels
+    url: https://github.com/SNNCommunity/.github/blob/main/SUPPORT.md
+    about: Where to ask questions and how to report sensitive issues safely.
