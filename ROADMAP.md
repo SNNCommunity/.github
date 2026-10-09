@@ -1,39 +1,36 @@
 # SNN Community roadmap
 
-**Last updated: October 2026.** This roadmap records current public deliverables and verifiable next steps. It is not a promise of membership, partnerships or completed research results.
+**Last updated: October 2026.** A factual record of delivered artifacts and pending organizational actions, not a claim of completed scientific benchmarks.
 
 ## Released foundation
 
-- [x] Set up the independent GitHub Organization and the public `.github` community-health repository.
-- [x] Publish the organization profile, contribution guidance, Code of Conduct, support and security policies.
-- [x] Publish provisional governance and research/reproducibility standards.
-- [x] Build an interactive community website with a deterministic LIF neuron lab and curated external resource index.
-- [x] Add automated Node.js checks and Chromium desktop/mobile browser smoke tests.
-- [x] Observe a successful GitHub Pages deployment workflow at https://snncommunity.github.io/.github/.
-- [x] Consolidate the site as one canonical `docs/` implementation and remove legacy visual design files.
-- [ ] Perform a human visual review of the deployed website across screen sizes and themes.
-- [x] Organization owner reports the public Website field was set to the released community portal (public appearance still requires browser verification).\n- [ ] Confirm the organization avatar matches the released icon and finish a signed-out profile review.
+- [x] Independent GitHub Organization, profile, contribution and conduct policies.
+- [x] GitHub Pages scientific website and concise GitHub home entry.
+- [x] Interactive dimensionless LIF neuron lab with preset experiments, exports and shareable configuration.
+- [x] Matched-gain nonleaky IF comparison with shared input, threshold and reset, labelled input/voltage/spike panels.
+- [x] Reference Python implementation + JavaScript cross-language checks with reproducible commands.
+- [x] Searchable JSON source index with 12 curated resources, original links, DOI for three papers, and explicit licensing/verification status.
+- [x] Research resource and experiment proposal issue templates.
+- [x] Social preview PNG (1200×630), editable vector source and 512 px organization-avatar PNG asset.
+- [x] Desktop, tablet and narrow-screen Chromium smoke-test workflow and accessible non-JavaScript resource fallback.
+- [x] Organization Owner reports public Website URL has been set.
 
-## Next: Community collaboration
+## Needs organization owner or human browser confirmation
 
-- [ ] Create a public `community` repository and designate it as the source of organization-wide Discussions.
-- [ ] Publish a welcome message, question guidelines, and initial good-first-issue tasks.
-- [ ] Set a sustainable triage routine and recruit at least one independent technical reviewer.
+- [ ] Verify live mobile/desktop appearance in signed-out browsers; automated tests are not a full WCAG audit.
+- [ ] Upload the prepared [`docs/avatar.png`](docs/avatar.png) as the Organization avatar and confirm its public appearance.
+- [ ] Create a public `community` repository and enable organization Discussions using it as the source (see [GitHub documentation](https://docs.github.com/en/organizations/managing-organization-settings/enabling-or-disabling-github-discussions-for-an-organization)).
+- [ ] Create a dedicated, maintainable `snn-resources` repository as the collection grows.
+- [ ] Review older merged feature branches and enable automatic deletion after PR merge.
 
-## Next: Research resources
+## Scientific research expansion (not completed)
 
-- [ ] Create a dedicated `snn-resources` repository once there is a maintainable, reviewed collection.
-- [ ] Structure official papers, implementations, tutorials, datasets, hardware and SNN embodied-intelligence work.
-- [ ] Add license metadata, accurate provenance and an explicit distinction between links and reproduced evidence.
+- [ ] Independent review of the educational Python↔JavaScript numeric fixtures.
+- [ ] Reproduce a task-level published SNN benchmark with dataset, exact revision, commands, logs, multiple seeds and citations.
+- [ ] Test additional explicitly defined neuron dynamics with controlled comparisons.
+- [ ] Verify upstream licenses and maintenance versions for the external resource index.
+- [ ] Publish first community Discussions and triage process after the organization feature is enabled.
 
-## Next: Transparent experiments
+**Evidence boundary:** Matching independent implementations on a deterministic neuron update is *not* paper reproduction, biological validation, accuracy/energy benchmarking or proof of hardware acceleration.
 
-- [ ] Select an openly shareable baseline and publish the precise dataset protocol, dependencies, seed controls, commands, results, and limitations.
-- [ ] Validate the experiment with independent review when possible.
-- [ ] Expand to numerical neuron tests, cross-framework checks and efficient execution only when maintenance capacity exists.
-
-## How to participate
-
-Open a [community proposal issue](https://github.com/SNNCommunity/.github/issues/new/choose), review [existing tasks](https://github.com/SNNCommunity/.github/issues), or submit a pull request following [CONTRIBUTING.md](CONTRIBUTING.md).
-
-[Website](https://snncommunity.github.io/.github/) · [Repository guide](README.md)
+[Website](https://snncommunity.github.io/.github/) · [Reference experiments](experiments/lif-reference/README.md) · [Maintainer guide](PORTAL.md) · [Open tasks](https://github.com/SNNCommunity/.github/issues)
