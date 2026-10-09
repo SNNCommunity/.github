@@ -116,6 +116,7 @@ try {
  }))assert.ok(sizes[name]>=min,name+" too small: "+sizes[name]+"px");
  const mobileTexts=await page.locator(".resource-card p").count();
  assert.equal(mobileTexts,12);
+ await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:resolve(out,'desktop.png'),fullPage:true});
  console.log('PASS desktop models, chart, downloads, resource provenance, URL safety and no-JS navigation');
 
