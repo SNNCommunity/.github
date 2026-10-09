@@ -59,3 +59,13 @@ test('share preview and avatar are real PNG binaries with specified dimensions',
  assert.match(html,/og:image" content="https:\/\/snncommunity\.github\.io\/\.github\/social-card\.png"/);
  assert.match(html,/twitter:card" content="summary_large_image"/);
 });
+
+test('research cards are progressively disclosed without leaving legacy layout code',()=>{
+ assert.match(html,/id="resource-more"[^>]+aria-expanded="false" hidden/);
+ assert.match(js,/initialResourceLimit=6/);
+ assert.match(js,/focused\|\|expanded\?filtered:filtered\.slice\(0,initialResourceLimit\)/);
+ assert.doesNotMatch(js,/resource-arrow/);
+ assert.doesNotMatch(css,/\.resource-card-bottom/);
+ assert.doesNotMatch(css,/\.resource-arrow/);
+ assert.match(css,/\.resource-more\[hidden\]/);
+});
