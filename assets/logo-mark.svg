@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="SNN Community symbol: spikes and network nodes">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07131E"/><stop offset="1" stop-color="#142B41"/></linearGradient><linearGradient id="pulse" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#42DEC8"/><stop offset="1" stop-color="#A5A1FF"/></linearGradient></defs>
+<rect width="512" height="512" rx="116" fill="url(#bg)"/>
+<g fill="none" stroke="#478B99" stroke-width="7" opacity=".33"><path d="M111 151L186 95L282 118L384 164L396 284L303 392L172 373L99 261Z"/><path d="M186 95L172 373M282 118L303 392M111 151L384 164M99 261L396 284"/></g>
+<g fill="#42DEC8"><circle cx="111" cy="151" r="14"/><circle cx="186" cy="95" r="11"/><circle cx="172" cy="373" r="13"/><circle cx="396" cy="284" r="13"/></g>
+<g fill="#A5A1FF"><circle cx="282" cy="118" r="13"/><circle cx="384" cy="164" r="12"/><circle cx="303" cy="392" r="13"/><circle cx="99" cy="261" r="11"/></g>
+<path d="M76 258H141L167 196L205 328L254 148L305 325L346 236L370 258H436" fill="none" stroke="url(#pulse)" stroke-width="21" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
