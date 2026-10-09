@@ -347,3 +347,13 @@ input[type=range] { width:100%; accent-color:#247962; cursor:pointer; }
   .preset-button {min-height:42px}
   .resource-card {min-height:230px}
 }
+
+
+.figure-method {border-top:1px solid #d8e3db;padding:25px 0 25px;color:#436056}
+.figure-method .eyebrow {font-size:10px;color:#276b59;margin:0 0 13px}
+.figure-method h4 {font-size:22px;line-height:1.2;letter-spacing:-.04em;margin:0 0 10px;color:#153c32}
+.figure-method > p:not(.eyebrow) {font-size:12px;line-height:1.75;margin:0 0 17px;max-width:530px}
+.figure-method-facts {display:flex;flex-wrap:wrap;gap:9px 24px;margin:0 0 18px;font-size:11px;color:#557369}
+.figure-method-facts strong {color:#196a52;font-size:15px}
+.figure-method > a {font-size:12px;font-weight:750;color:#176c52;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:560px){.figure-method {padding:21px 0}.figure-method h4{font-size:20px}}
