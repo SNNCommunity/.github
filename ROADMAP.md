@@ -12,7 +12,7 @@
 - [x] Observe a successful GitHub Pages deployment workflow at https://snncommunity.github.io/.github/.
 - [x] Consolidate the site as one canonical `docs/` implementation and remove legacy visual design files.
 - [ ] Perform a human visual review of the deployed website across screen sizes and themes.
-- [ ] Confirm the Organization public website field and avatar match the released site and icon.
+- [x] Organization owner reports the public Website field was set to the released community portal (public appearance still requires browser verification).\n- [ ] Confirm the organization avatar matches the released icon and finish a signed-out profile review.
 
 ## Next: Community collaboration
 

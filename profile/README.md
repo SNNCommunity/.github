@@ -7,8 +7,8 @@
   <p><strong>From spikes to systems.</strong></p>
   <p>An open home for spiking neural networks, neuromorphic research, and people building event-driven intelligence.</p>
 
-  <h2><a href="https://snncommunity.github.io/.github/">↗ ENTER THE SNN COMMUNITY WEBSITE</a></h2>
-  <p><a href="https://snncommunity.github.io/.github/"><strong>Interactive neuron lab · Learning paths · Research resources</strong></a></p>
+  <h2><a href="https://snncommunity.github.io/.github/">Explore SNN Community ↗</a></h2>
+  <p><a href="https://snncommunity.github.io/.github/"><strong>Interactive LIF lab · Learning paths · Open research resources</strong></a></p>
 
   <p>
     <a href="https://snncommunity.github.io/.github/#lab">Try the neuron lab</a> ·
@@ -32,4 +32,4 @@
   </sub>
 </p>
 
-<sub>GitHub Organization pages cannot be configured to issue an automatic external-site HTTP redirect. This profile provides the closest GitHub-native one-click website entry. External frameworks and papers linked on the website are independently maintained and do not imply affiliation or endorsement.</sub>
+<sub>Independent community. Third-party research and software are credited to their original authors; links do not imply affiliation or endorsement.</sub>

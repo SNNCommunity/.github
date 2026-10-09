@@ -77,9 +77,10 @@ test('404 navigation uses canonical homepage independent of missing URL depth',(
 
 test('GitHub organization profile prioritizes the official website as a one-click entry',()=>{
  const profile=file('profile/README.md');
- assert.match(profile,/ENTER THE SNN COMMUNITY WEBSITE/);
+ assert.match(profile,/Explore SNN Community/);
  assert.match(profile,/href="https:\/\/snncommunity\.github\.io\/\.github\/"/);
  assert.doesNotMatch(profile,/<meta\s+http-equiv|<script/i);
+ assert.doesNotMatch(profile,/cannot be configured to issue an automatic external-site/i);
 });
 test('reproducible lab includes functional download and sharing controls',()=>{
  for(const id of ['copy-config','export-csv','export-png','share-lab','lab-feedback','share-url','share-fallback'])
@@ -96,4 +97,18 @@ test('reproducible lab includes functional download and sharing controls',()=>{
  assert.match(html,/data-preset="quiet"/);
  assert.match(html,/data-preset="regular"/);
  assert.match(html,/data-preset="burst"/);
+});
+
+test('share URLs are parameter allowlists and imports never overwrite a changed experiment after refresh',()=>{
+ assert.match(js,/const url=new URL\("https:\/\/snncommunity\.github\.io\/\.github\/"\)/);
+ assert.match(js,/function clearImportedParameters\(\)/);
+ assert.match(js,/window\.history\.replaceState/);
+ assert.match(js,/clearImportedParameters\(\);syncInputs\(\)/);
+});
+test('scientific methods and no-JavaScript resources remain discoverable',()=>{
+ assert.match(html,/Model specification/);
+ assert.match(html,/<noscript>/);
+ assert.match(html,/The searchable directory requires JavaScript/);
+ assert.match(html,/https:\/\/github\.com\/NeuroBench\/neurobench/);
+ assert.match(css,/\.noscript-resources/);
 });
