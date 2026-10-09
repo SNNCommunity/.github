@@ -14,7 +14,8 @@ This repository serves two purposes: the **public organization profile and share
 ## Research & web assets
 
 - [Numerical reference experiments](experiments/lif-reference/)
-- [Provenance-indexed research resource collection](docs/resources.json)
+- [SNN Research Atlas: 11 areas, venue/year, country-university filters](RESEARCH_ATLAS.md)
+- [Provenance-indexed research catalog (22 initial records)](docs/resources.json)
 - [Share preview PNG](docs/social-card.png) and [organization avatar PNG](docs/avatar.png)
 
 ## Repository guide
