@@ -13,6 +13,15 @@
 - [ ] Verify organization security settings, owner roles, base permissions, and private vulnerability reporting where available.
 - [ ] Check that the organization homepage and reusable issue templates render correctly.
 
+## Phase 0.5 — Interactive portal release
+
+- [x] Design and merge responsive scientific community portal ([PR #6](https://github.com/SNNCommunity/.github/pull/6)).
+- [x] Create deterministic LIF neuron experiment with adjustable current, threshold, and time constant.
+- [x] Add a searchable resource index with independently maintained source attribution.
+- [x] Run Node source tests and Chromium browser smoke checks (desktop/mobile).
+- [ ] Activate GitHub Pages from `main /docs` in the repository Settings — see [Issue #7](https://github.com/SNNCommunity/.github/issues/7).
+- [ ] Verify the public website URL and link it from the organization profile and Organization Website setting.
+
 ## Phase 1 — Community collaboration hub
 
 - [ ] Create a public `SNNCommunity/community` repository with an initial README.
