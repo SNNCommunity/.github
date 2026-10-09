@@ -123,7 +123,7 @@
             <h3>Dynamics<br>in comparison.</h3>
             <p class="control-explainer">Two dimensionless Euler models with identical input gain and hard reset. IF differs only by removing the LIF leak term. These are illustrative numerical models, not experimental measurements.</p>
             <div class="lab-presets" role="group" aria-label="Example neuron configurations"><span class="preset-heading">TRY AN EXAMPLE</span><div class="preset-buttons"><button class="preset-button" type="button" data-preset="quiet">Quiet neuron</button><button class="preset-button" type="button" data-preset="regular">Regular firing</button><button class="preset-button" type="button" data-preset="burst">Pulsed input</button></div></div>
-            <div class="control-field"><label for="tau">Membrane time constant <strong id="tau-value">20 ms</strong></label><input id="tau" type="range" min="5" max="45" step="1" value="20"><div class="range-label"><span>5 ms</span><span>45 ms</span></div></div>
+            <div class="control-field"><label for="tau">LIF time constant / shared gain scale <strong id="tau-value">20 ms</strong></label><input id="tau" type="range" min="5" max="45" step="1" value="20"><div class="range-label"><span>5 ms</span><span>45 ms</span></div></div>
             <div class="control-field"><label for="threshold">Firing threshold <strong id="threshold-value">0.85</strong></label><input id="threshold" type="range" min="0.35" max="1.30" step="0.05" value="0.85"><div class="range-label"><span>0.35</span><span>1.30</span></div></div>
             <div class="control-field"><label for="current">Input amplitude <strong id="current-value">1.55</strong></label><input id="current" type="range" min="0.50" max="2.30" step="0.05" value="1.55"><div class="range-label"><span>0.50</span><span>2.30</span></div></div>
             <div class="compare-field"><label for="compare-if"><input type="checkbox" id="compare-if" checked> Compare with matched-gain nonleaky IF</label></div>
@@ -137,7 +137,7 @@
             </div>
             <p class="lab-feedback" id="lab-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
             <div class="share-fallback" id="share-fallback" hidden><label for="share-url">Your experiment URL</label><input type="text" id="share-url" readonly aria-label="Select and copy this experiment URL"></div>
-            <p class="model-note" id="model-summary">LIF: V(t+1) = V(t) + [I(t) − V(t)] / τ. IF: V(t+1) = V(t) + I(t) / τ. Both use 1 ms steps and a hard zero-reset after crossing Vth. All values are normalized; this is not benchmark or biological evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#mathematical-definition" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
+            <p class="model-note" id="model-summary">LIF: V(t+1) = V(t) + [I(t) − V(t)] / τ. IF: V(t+1) = V(t) + I(t) / τ. Both use 1 ms steps and a hard zero-reset after crossing Vth. IF uses τ as an integration scale, not a decay time constant. All voltages and inputs are normalized; this is not benchmark or biological evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#mathematical-definition" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
           </div>
         </div>
       </div>
