@@ -97,8 +97,39 @@
   const initial = {tau:20,threshold:0.85,current:1.55,mode:"step"};
   const state = {...initial};
   const simMs=200,dt=1;
+  const presetConfigs = {
+    quiet: {tau:20,threshold:1.1,current:0.50,mode:"step"},
+    regular: {...initial},
+    burst: {tau:12,threshold:0.75,current:1.60,mode:"pulses"}
+  };
+  function applySharedParameters() {
+    const params=new URLSearchParams(window.location.search);
+    for(const key of ["tau","threshold","current"]) {
+      const value=params.get(key), input=configEls[key];
+      if(value === null || value.trim()==="") continue;
+      const numeric=Number(value),min=Number(input.min),max=Number(input.max),step=Number(input.step);
+      if(Number.isFinite(numeric) && numeric>=min && numeric<=max) {
+        const rounded=min+Math.round((numeric-min)/step)*step;
+        state[key]=Number(Math.min(max,Math.max(min,rounded)).toFixed(5));
+      }
+    }
+    const mode=params.get("mode");
+    if(mode==="step" || mode==="pulses") state.mode=mode;
+  }
+  function syncInputs() {
+    for(const [key,el] of Object.entries(configEls)) el.value=String(state[key]);
+    document.querySelectorAll('input[name="input-mode"]').forEach(el=>{el.checked=el.value===state.mode;});
+    document.querySelectorAll(".preset-button").forEach(button=>{
+      const cfg=presetConfigs[button.dataset.preset];
+      button.setAttribute("aria-pressed", String(Object.entries(cfg).every(([key,val])=>state[key]===val)));
+    });
+  }
+  function feedback(message) { const target=$("lab-feedback");if(target)target.textContent=message; }
+  function clearShareFallback() { const field=$("share-fallback");if(field)field.hidden=true; }
+  applySharedParameters();
+  syncInputs();
   function currentInput(t) {
-    if(state.mode==="pulses") return t >= 12 && t <= 188 && (t-12)%40<22 ? state.current*1.75 : 0;
+    if(state.mode==="pulses") return t >= 12 && t < 188 && (t-12)%40<22 ? state.current*1.75 : 0;
     return t>=12&&t<188? state.current:0;
   }
   function simulate() {
@@ -172,29 +203,84 @@
     latestSim.spikeTimes.forEach(t=>{const x=sx(t);ctx.beginPath();ctx.moveTo(x,spikeBottom);ctx.lineTo(x,spikeTop);ctx.stroke();});
     ctx.fillStyle="#7c9084";ctx.font="10px system-ui, sans-serif";ctx.textAlign="right";ctx.fillText("TIME (ms)",right,spikeBottom+35);
   }
-  for(const [key,el] of Object.entries(configEls)){
-    el?.addEventListener("input",()=>{state[key]=Number(el.value);paint();});
+  function config() {
+    return {model:"LIF",integration:"forward_euler",dt_ms:dt,duration_ms:simMs,
+      reset:"hard_to_zero",initial_voltage:0,tau_ms:state.tau,threshold:state.threshold,
+      amplitude:state.current,input_pattern:state.mode};
   }
-  document.querySelectorAll('input[name="input-mode"]').forEach(el=>el.addEventListener("change",()=>{if(el.checked){state.mode=el.value;paint();}}));
+  function shareURL() {
+    const url=new URL(window.location.protocol==="file:"?"https://snncommunity.github.io/.github/":window.location.href);
+    for(const key of ["tau","threshold","current","mode"])url.searchParams.set(key,String(state[key]));
+    url.hash="lab";
+    return url.href;
+  }
+  function download(blob,filename) {
+    const objectURL=URL.createObjectURL(blob);
+    const anchor=document.createElement("a");
+    anchor.href=objectURL;
+    anchor.download=filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(()=>URL.revokeObjectURL(objectURL),1500);
+  }
+  async function copyText(value) {
+    if(!navigator.clipboard?.writeText)throw new Error("Clipboard API unavailable");
+    await navigator.clipboard.writeText(value);
+  }
+  for(const [key,el] of Object.entries(configEls)){
+    el?.addEventListener("input",()=>{
+      state[key]=Number(el.value);
+      syncInputs();clearShareFallback();paint();
+    });
+  }
+  document.querySelectorAll('input[name="input-mode"]').forEach(el=>el.addEventListener("change",()=>{
+    if(el.checked){state.mode=el.value;syncInputs();clearShareFallback();paint();}
+  }));
+  document.querySelectorAll(".preset-button").forEach(button=>button.addEventListener("click",()=>{
+    Object.assign(state,presetConfigs[button.dataset.preset]);
+    syncInputs();clearShareFallback();paint();
+    feedback(button.textContent+" example loaded.");
+  }));
   $("reset-lab")?.addEventListener("click",()=>{
     Object.assign(state,initial);
-    for(const [key,el] of Object.entries(configEls))el.value=String(state[key]);
-    document.querySelectorAll('input[name="input-mode"]').forEach(el=>{el.checked=el.value===state.mode;});
-    paint();
+    syncInputs();clearShareFallback();paint();
+    feedback("Default experiment restored.");
   });
-  $("copy-config")?.addEventListener("click",async(event)=>{
-    const payload=JSON.stringify({model:"LIF",integration:"forward_euler",dt_ms:1,duration_ms:200,reset:"hard_to_zero",initial_voltage:0,tau_ms:state.tau,threshold:state.threshold,amplitude:state.current,input_pattern:state.mode},null,2);
-    const button=event.currentTarget, original="Copy config ↗";
-    try{
-      if(!navigator.clipboard?.writeText)throw new Error("Clipboard is not available");
-      await navigator.clipboard.writeText(payload);
-      button.textContent="Copied ✓";
-      window.setTimeout(()=>{button.textContent=original;},1800);
-    }catch(e){
-      button.textContent="Clipboard unavailable";
-      button.title=payload;
-      window.setTimeout(()=>{button.textContent=original;},2100);
+  $("copy-config")?.addEventListener("click",async()=>{
+    const payload=JSON.stringify(config(),null,2);
+    try {await copyText(payload);feedback("Experiment configuration copied as JSON.");}
+    catch(e){feedback("Clipboard unavailable. Use Download CSV to save simulation data.");}
+  });
+  $("share-lab")?.addEventListener("click",async()=>{
+    const link=shareURL();
+    try { await copyText(link);clearShareFallback();feedback("Shareable experiment link copied."); }
+    catch(e){
+      $("share-url").value=link;
+      $("share-fallback").hidden=false;
+      $("share-url").focus();
+      $("share-url").select();
+      feedback("Copy the selected experiment link manually.");
     }
+  });
+  $("export-csv")?.addEventListener("click",()=>{
+    const result=simulate();
+    const rows=["# SNNCommunity educational normalized LIF; dt_ms=1; integration=forward_euler; hard_reset=0",
+      "# config="+JSON.stringify(config()),
+      "time_ms,membrane_after_reset,spike,input_previous_interval"];
+    const events=new Set(result.spikeTimes);
+    for(let t=0;t<=simMs;t++) {
+      rows.push([t,result.traces[t].toFixed(8),events.has(t)?1:0,t===0?"":result.inputTrace[t-1].toFixed(8)].join(","));
+    }
+    download(new Blob([rows.join("\n")+"\n"],{type:"text/csv;charset=utf-8"}),"snncommunity-lif-trace.csv");
+    feedback("CSV downloaded: 201 time samples, 200 input intervals.");
+  });
+  $("export-png")?.addEventListener("click",()=>{
+    if(!canvas?.toBlob){feedback("Image export is not supported in this browser.");return;}
+    canvas.toBlob(blob=>{
+      if(blob){download(blob,"snncommunity-lif-plot.png");feedback("Neuron plot saved as PNG.");}
+      else feedback("Unable to export this plot.");
+    },"image/png");
   });
   let observer;
   if(typeof ResizeObserver!=="undefined") {

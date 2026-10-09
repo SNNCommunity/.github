@@ -74,3 +74,26 @@ test('404 navigation uses canonical homepage independent of missing URL depth',(
  assert.ok(notFound.includes('href="https://snncommunity.github.io/.github/"'));
  assert.ok(notFound.includes('min-height:100svh'));
 });
+
+test('GitHub organization profile prioritizes the official website as a one-click entry',()=>{
+ const profile=file('profile/README.md');
+ assert.match(profile,/ENTER THE SNN COMMUNITY WEBSITE/);
+ assert.match(profile,/href="https:\/\/snncommunity\.github\.io\/\.github\/"/);
+ assert.doesNotMatch(profile,/<meta\s+http-equiv|<script/i);
+});
+test('reproducible lab includes functional download and sharing controls',()=>{
+ for(const id of ['copy-config','export-csv','export-png','share-lab','lab-feedback','share-url','share-fallback'])
+   assert.ok(html.includes('id="'+id+'"'),id+' missing');
+ assert.match(html,/role="status" aria-live="polite"/);
+ assert.match(js,/function shareURL\(\)/);
+ assert.match(js,/function download\(blob,filename\)/);
+ assert.match(js,/URL\.revokeObjectURL/);
+ assert.match(js,/membrane_after_reset,spike,input_previous_interval/);
+ assert.match(js,/canvas\.toBlob/);
+ assert.match(js,/new URLSearchParams\(window\.location\.search\)/);
+ assert.match(js,/Number\.isFinite\(numeric\)/);
+ assert.match(js,/function syncInputs\(\)/);
+ assert.match(html,/data-preset="quiet"/);
+ assert.match(html,/data-preset="regular"/);
+ assert.match(html,/data-preset="burst"/);
+});
