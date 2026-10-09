@@ -30,6 +30,12 @@ Our focus is **spiking neural networks**; related areas are welcome when there i
 
 We follow a [Code of Conduct](https://github.com/SNNCommunity/.github/blob/main/CODE_OF_CONDUCT.md) in all community spaces.
 
+## How this community is run
+
+We keep decisions, contributions, and scientific evidence transparent. See the [community governance policy](https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md), [research and reproduction standards](https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md), and [current roadmap](https://github.com/SNNCommunity/.github/blob/main/ROADMAP.md).
+
+**Please note:** new collaboration repositories and organization-wide Discussions are still in preparation. The [community documentation issue tracker](https://github.com/SNNCommunity/.github/issues) is currently the available place to suggest improvements or corrections to this homepage.
+
 ## Community roadmap
 
 **Current phase: initial setup.** The community website, central discussion space, curated resource collection, and reproducibility initiatives are being developed incrementally. Repositories or events not yet linked here should not be assumed to exist.
@@ -55,6 +61,6 @@ We learn from and may link to independent projects such as [SpikingJelly](https:
 
 ---
 
-**Community status:** early-stage and community-driven. This is an independent initiative, not an official university, company, or conference organization.
+**Community status:** early-stage and community-driven. This is an independent initiative, not an official university, company, or conference organization. Contributions and public experiments will be attributed to their actual authors; repository publication does not certify scientific claims.
 
 [GitHub organization](https://github.com/SNNCommunity) · [Contributing](https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md) · [Support](https://github.com/SNNCommunity/.github/blob/main/SUPPORT.md)
