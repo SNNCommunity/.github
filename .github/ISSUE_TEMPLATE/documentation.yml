@@ -1,0 +1,29 @@
+name: Documentation or resource correction
+description: Report an error, broken link, or missing citation in community documentation.
+title: "[Docs] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "Thank you for helping keep community information accurate. Do not include sensitive or private information."
+  - type: input
+    id: location
+    attributes:
+      label: Page or resource URL
+      placeholder: https://github.com/SNNCommunity/.github/blob/main/profile/README.md
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What should change?
+      description: Describe the issue or proposed improvement.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Supporting sources (if applicable)
+      description: Link authoritative citations or reproducible evidence.
+    validations:
+      required: false
