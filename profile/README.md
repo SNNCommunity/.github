@@ -1,42 +1,35 @@
 <div align="center">
-  <img src="../docs/favicon.svg" alt="SNN Community spike mark" width="78" height="78">
+  <a href="https://snncommunity.github.io/.github/">
+    <img src="../docs/favicon.svg" alt="SNN Community spike mark — open the official website" width="88" height="88">
+  </a>
+
   <h1>SNN Community</h1>
   <p><strong>From spikes to systems.</strong></p>
-  <p>An independent, open community to learn, experiment, and build with spiking neural networks.</p>
+  <p>An open home for spiking neural networks, neuromorphic research, and people building event-driven intelligence.</p>
+
+  <h2><a href="https://snncommunity.github.io/.github/">↗ ENTER THE SNN COMMUNITY WEBSITE</a></h2>
+  <p><a href="https://snncommunity.github.io/.github/"><strong>Interactive neuron lab · Learning paths · Research resources</strong></a></p>
+
   <p>
-    <a href="https://snncommunity.github.io/.github/"><strong>Explore the interactive website ↗</strong></a>
-    &nbsp;·&nbsp;
-    <a href="https://github.com/SNNCommunity/.github/issues">Open tasks</a>
-    &nbsp;·&nbsp;
-    <a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">Contribute</a>
+    <a href="https://snncommunity.github.io/.github/#lab">Try the neuron lab</a> ·
+    <a href="https://snncommunity.github.io/.github/#library">Explore resources</a> ·
+    <a href="https://github.com/SNNCommunity/.github/issues">Contribute on GitHub</a>
   </p>
 </div>
 
 ---
 
-### Start exploring
-
-**Learn** — Guided entry points to neuron models, event-driven processing, and SNN training. Explore [snnTorch](https://snntorch.readthedocs.io/) and [SpikingJelly](https://spikingjelly.readthedocs.io/) learning resources.
-
-**Experiment** — Adjust membrane time constants, thresholds, and input currents in the [interactive LIF neuron lab](https://snncommunity.github.io/.github/#lab).
-
-**Discover** — Search our introductory index of independently maintained [SNN research resources](https://snncommunity.github.io/.github/#library).
-
-**Collaborate** — [Find an open issue](https://github.com/SNNCommunity/.github/issues), suggest improvements, and help develop reproducible research tools.
-
-### What we're building
-
-SNNCommunity is at an **early stage**. The interactive portal and curated introductory links are available; the dedicated community discussion hub, expanded resource repositories, and independent benchmark reproductions remain work in progress.
-
-We welcome work on neuron dynamics, temporal learning, event-based vision, efficient neuromorphic systems, and SNN-based embodied intelligence.
+<p align="center">
+  <sub>Independent, early-stage open community. The website is the primary learning and exploration entry point; GitHub hosts code, contribution workflows, and project history.</sub>
+</p>
 
 <p align="center">
   <sub>
     <a href="https://github.com/SNNCommunity/.github/blob/main/ROADMAP.md">Roadmap</a> ·
+    <a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">Contributing</a> ·
     <a href="https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md">Research standards</a> ·
-    <a href="https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md">Governance</a> ·
-    <a href="https://github.com/SNNCommunity/.github/blob/main/SECURITY.md">Security</a>
+    <a href="https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md">Governance</a>
   </sub>
 </p>
 
-<sub>Independent community initiative. Links to outside projects do not imply affiliation or endorsement.</sub>
+<sub>GitHub Organization pages cannot be configured to issue an automatic external-site HTTP redirect. This profile provides the closest GitHub-native one-click website entry. External frameworks and papers linked on the website are independently maintained and do not imply affiliation or endorsement.</sub>
