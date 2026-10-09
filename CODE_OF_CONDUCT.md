@@ -25,7 +25,7 @@ These expectations apply to SNNCommunity GitHub repositories, issues, pull reque
 
 Maintainers may request changes, hide or remove content, close discussions, restrict participation, or escalate severe abuse through GitHub's reporting tools. Responses should be proportionate to severity and repeated behavior.
 
-For urgent abuse or threats, use GitHub's [report abuse](https://docs.github.com/en/site-policy/acceptable-use-policies/github-appeal-and-reinstatement) and account safety options. To request a non-public reporting channel from community maintainers, open a minimal issue **without sensitive details** asking how to contact maintainers privately. A dedicated confidential community contact method is not yet published.
+For urgent abuse or threats, use GitHub's [report abuse](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam) and account safety options. To request a non-public reporting channel from community maintainers, open a minimal issue **without sensitive details** asking how to contact maintainers privately. A dedicated confidential community contact method is not yet published.
 
 Maintainers will aim to consider reports impartially, protect privacy where feasible, and avoid retaliation. We cannot promise absolute confidentiality via GitHub issues or public discussions.
 
