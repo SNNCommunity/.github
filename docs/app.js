@@ -1,310 +1,248 @@
-/* SNN Community portal — deterministic client-side examples, no network requests. */
+/* SNN Community portal. Source of truth: neuron-core.js + resources.json. */
 "use strict";
 (() => {
-  const $ = (id) => document.getElementById(id);
-  const menuButton = $("menu-toggle");
-  const menu = $("site-menu");
-  menuButton?.addEventListener("click", () => {
-    const next = menuButton.getAttribute("aria-expanded") !== "true";
-    menuButton.setAttribute("aria-expanded", String(next));
-    menuButton.setAttribute("aria-label", next ? "Close navigation" : "Open navigation");
-    menu?.classList.toggle("is-open", next);
-  });
-  menu?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
-    menu.classList.remove("is-open");
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Open navigation");
-  }));
-  window.addEventListener("keydown", e => {
-    if (e.key === "Escape" && menu?.classList.contains("is-open")) {
-      menu.classList.remove("is-open");
-      menuButton.setAttribute("aria-expanded", "false");
-      menuButton.focus();
-    }
-  });
-
-  const resources = [
-    { title:"snnTorch — Tutorials", tag:"learn", kind:"GUIDED LESSONS", description:"A practical progression from spike encoding and LIF neurons to surrogate-gradient training and event datasets.", source:"snnTorch", url:"https://snntorch.readthedocs.io/en/latest/tutorials/index.html" },
-    { title:"SpikingJelly — Documentation", tag:"frameworks", kind:"PYTORCH FRAMEWORK", description:"A deep-learning framework for spiking networks with components, training utilities, and model examples.", source:"SpikingJelly", url:"https://spikingjelly.readthedocs.io/" },
-    { title:"Norse", tag:"frameworks", kind:"NEURAL COMPUTING", description:"Open neural computation components designed to integrate differentiable spiking models with PyTorch.", source:"Norse", url:"https://github.com/norse/norse" },
-    { title:"NeuroBench", tag:"evaluation", kind:"BENCHMARK SUITE", description:"Open benchmark methodology and code for evaluating neuromorphic models and systems.", source:"NeuroBench", url:"https://github.com/NeuroBench/neurobench" },
-    { title:"Tonic", tag:"events", kind:"EVENT DATA", description:"Tools and datasets for event-based data loading, transformations and neuromorphic learning workflows.", source:"Tonic", url:"https://github.com/neuromorphs/tonic" },
-    { title:"Neuromorphic Intermediate Representation", tag:"frameworks", kind:"MODEL INTEROPERABILITY", description:"NIR: a common representation for communicating spiking neural models across software and hardware systems.", source:"neuromorphs / NIR", url:"https://github.com/neuromorphs/NIR" },
-    { title:"Training SNNs using Lessons from Deep Learning", tag:"learn", kind:"RESEARCH READING", description:"A broad tutorial review of spiking neural network training from a modern deep learning perspective.", source:"Eshraghian et al.", url:"https://arxiv.org/abs/2109.12894" },
-    { title:"Surrogate Gradient Learning in SNNs", tag:"learn", kind:"RESEARCH READING", description:"A foundational review of learning with surrogate gradients in spiking neural networks.", source:"Neftci et al.", url:"https://arxiv.org/abs/1901.09948" },
-    { title:"Event-based Vision: A Survey", tag:"events", kind:"RESEARCH SURVEY", description:"A survey introducing event cameras, representations, and event-based computer vision methods.", source:"Gallego et al.", url:"https://arxiv.org/abs/1904.08405" },
-    { title:"snnTorch — Source Code", tag:"frameworks", kind:"OPEN SOURCE", description:"Reference implementation and development discussions for snnTorch spiking neural network tooling.", source:"snnTorch", url:"https://github.com/jeshraghian/snntorch" },
-    { title:"Open Neuromorphic", tag:"events", kind:"WIDER ECOSYSTEM", description:"An independent community connecting research, neuromorphic hardware, events, and shared learning.", source:"Open Neuromorphic", url:"https://open-neuromorphic.org/" },
-    { title:"NeuroBench — Documentation", tag:"evaluation", kind:"BENCHMARK REFERENCE", description:"Public API documentation describing model wrappers, evaluation components and metrics.", source:"NeuroBench docs", url:"https://neurobench.readthedocs.io/" }
-  ];
-
-  const cards = $("resource-grid");
-  const search = $("resource-search");
-  const count = $("resource-count");
-  const empty = $("resource-empty");
-  let activeTag = "all";
-  function makeResource(resource) {
-    const a = document.createElement("a");
-    a.className = "resource-card";
-    a.href = resource.url;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.setAttribute("aria-label", resource.title + " — external resource (opens new tab)");
-    const head = document.createElement("div");
-    head.className = "resource-card-head";
-    const kind = document.createElement("span");
-    kind.className = "resource-label";
-    kind.textContent = resource.kind;
-    const arrow = document.createElement("span");
-    arrow.className = "resource-arrow";
-    arrow.setAttribute("aria-hidden","true");
-    arrow.textContent = "↗";
-    head.append(kind, arrow);
-    const h = document.createElement("h3"); h.textContent=resource.title;
-    const p = document.createElement("p"); p.textContent=resource.description;
-    const bottom = document.createElement("div"); bottom.className="resource-card-bottom";
-    const source=document.createElement("span"); source.textContent=resource.source;
-    const badge=document.createElement("em"); badge.textContent="EXTERNAL LINK";
-    bottom.append(source,badge);
-    a.append(head,h,p,bottom);
-    return a;
-  }
-  function renderResources() {
-    const q = (search?.value || "").toLowerCase().trim();
-    const selected = resources.filter(item => (activeTag === "all" || item.tag === activeTag) &&
-      [item.title,item.description,item.source,item.kind,item.tag].some(s=>s.toLowerCase().includes(q)));
-    cards?.replaceChildren(...selected.map(makeResource));
-    if(count)count.textContent = selected.length + " of " + resources.length + " curated resources";
-    if(empty)empty.hidden=selected.length!==0;
-  }
-  document.querySelectorAll(".filter-chip").forEach(button => {
-    button.addEventListener("click", () => {
-      activeTag = button.getAttribute("data-filter") || "all";
-      document.querySelectorAll(".filter-chip").forEach(other => {
-        const active = other === button;
-        other.classList.toggle("active",active);
-        other.setAttribute("aria-pressed",String(active));
-      });
-      renderResources();
-    });
-  });
-  search?.addEventListener("input", renderResources);
-  renderResources();
-
-  const canvas = $("lif-canvas");
-  const ctx = canvas?.getContext?.("2d");
-  const configEls = {tau:$("tau"),threshold:$("threshold"),current:$("current")};
-  const initial = {tau:20,threshold:0.85,current:1.55,mode:"step"};
-  const state = {...initial};
-  const simMs=200,dt=1;
-  const presetConfigs = {
-    quiet: {tau:20,threshold:1.1,current:0.50,mode:"step"},
-    regular: {...initial},
-    burst: {tau:12,threshold:0.75,current:1.60,mode:"pulses"}
+  const $=id=>document.getElementById(id);
+  const core=window.SNNCore;
+  if(!core)throw new Error("neuron-core.js must load before app.js");
+  const {DURATION,DT,defaults}=core;
+  const state={...defaults};
+  const controls={tau:$("tau"),threshold:$("threshold"),current:$("current")};
+  const presetConfigs={
+    quiet:{tau:20,threshold:1.10,current:0.50,mode:"step",compare:true},
+    regular:{...defaults},
+    burst:{tau:12,threshold:0.75,current:1.60,mode:"pulses",compare:true}
   };
-  function applySharedParameters() {
-    const params=new URLSearchParams(window.location.search);
-    for(const key of ["tau","threshold","current"]) {
-      const value=params.get(key), input=configEls[key];
-      if(value === null || value.trim()==="") continue;
-      const numeric=Number(value),min=Number(input.min),max=Number(input.max),step=Number(input.step);
-      if(Number.isFinite(numeric) && numeric>=min && numeric<=max) {
-        const rounded=min+Math.round((numeric-min)/step)*step;
-        state[key]=Number(Math.min(max,Math.max(min,rounded)).toFixed(5));
-      }
-    }
-    const mode=params.get("mode");
-    if(mode==="step" || mode==="pulses") state.mode=mode;
-  }
-  function syncInputs() {
-    for(const [key,el] of Object.entries(configEls)) el.value=String(state[key]);
-    document.querySelectorAll('input[name="input-mode"]').forEach(el=>{el.checked=el.value===state.mode;});
-    document.querySelectorAll(".preset-button").forEach(button=>{
-      const cfg=presetConfigs[button.dataset.preset];
-      button.setAttribute("aria-pressed", String(Object.entries(cfg).every(([key,val])=>state[key]===val)));
-    });
-  }
-  function feedback(message) { const target=$("lab-feedback");if(target)target.textContent=message; }
-  function clearShareFallback() { const field=$("share-fallback");if(field)field.hidden=true; }
-  applySharedParameters();
-  syncInputs();
-  function currentInput(t) {
-    if(state.mode==="pulses") return t >= 12 && t < 188 && (t-12)%40<22 ? state.current*1.75 : 0;
-    return t>=12&&t<188? state.current:0;
-  }
-  function simulate() {
-    let v=0;
-    // Record the initial state and exactly 200 one-millisecond updates.
-    // A recorded spike is timestamped at the end of the update that generated it.
-    const traces=[v], spikeTimes=[], inputTrace=[];
-    for(let t=0;t<simMs;t+=dt) {
-      const i=currentInput(t);
-      v+=(dt/state.tau)*(-v+i);
-      if (v>=state.threshold) {
-        spikeTimes.push(t+dt);
-        v=0; // Hard reset: this is the stored sample at t+dt.
-      }
-      traces.push(v);
-      inputTrace.push(i);
-    }
-    return {traces,spikeTimes,inputTrace};
-  }
-  let latestSim=null;
-  function paint() {
-    latestSim=simulate();
+  const canvas=$("lif-canvas"),ctx=canvas?.getContext?.("2d");
+  let latest=null,resizeFrame=0;
+  const feedback=message=>{if($("lab-feedback"))$("lab-feedback").textContent=message;};
+  function resetShareField(){if($("share-fallback"))$("share-fallback").hidden=true;}
+  function syncUI() {
+    for(const [key,el] of Object.entries(controls))el.value=String(state[key]);
+    for(const el of document.querySelectorAll('input[name="input-mode"]'))el.checked=el.value===state.mode;
+    if($("compare-if"))$("compare-if").checked=Boolean(state.compare);
     $("tau-value").textContent=state.tau+" ms";
     $("threshold-value").textContent=state.threshold.toFixed(2);
     $("current-value").textContent=state.current.toFixed(2);
-    $("spike-count").textContent=String(latestSim.spikeTimes.length);
-    const n=latestSim.spikeTimes.length;
-    $("isi-stat").textContent=n>=2?(latestSim.spikeTimes[n-1]-latestSim.spikeTimes[n-2])+" ms":"—";
-    if(!ctx)return;
-    const rect=canvas.getBoundingClientRect();
-    const w=Math.max(320,rect.width||800),h=Math.max(250,rect.height||350);
-    const dpr=Math.min(window.devicePixelRatio||1,2);
-    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.clearRect(0,0,w,h);
-    const left=41,right=w-17,top=28,upperBottom=h*.56,spikeTop=h*.67,spikeBottom=h*.86;
-    const sx=t=>left+(right-left)*t/simMs;
-    const yMax=Math.max(1.45,state.threshold+0.2,state.current*.85);
-    const sy=v=>upperBottom-(upperBottom-top)*v/yMax;
-    ctx.font="11px system-ui, sans-serif";
-    ctx.textBaseline="middle";
-    ctx.strokeStyle="#dbe6dd";ctx.lineWidth=1;
-    for(let v=0;v<=yMax+.001;v+=.25){
-      const y=sy(v);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
+    for(const button of document.querySelectorAll(".preset-button")) {
+      const cfg=presetConfigs[button.dataset.preset];
+      button.setAttribute("aria-pressed",String(Object.entries(cfg).every(([k,v])=>state[k]===v)));
     }
-    for(let t=0;t<=simMs;t+=40){
-      const x=sx(t);ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,spikeBottom);ctx.stroke();
-      ctx.fillStyle="#81958b";ctx.textAlign="center";ctx.fillText(String(t),x,spikeBottom+19);
-    }
-    ctx.textAlign="left";ctx.fillStyle="#617e73";
-    ctx.fillText("V(t)",4,top+6);ctx.fillText("spikes",4,spikeTop+6);
-    ctx.save();ctx.setLineDash([5,5]);ctx.strokeStyle="#ca8059";ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(left,sy(state.threshold));ctx.lineTo(right,sy(state.threshold));ctx.stroke();ctx.restore();
-    ctx.strokeStyle="#267d6b";ctx.lineWidth=2.35;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();
-    // Represent each threshold crossing immediately before the hard reset,
-    // otherwise the membrane trace would misleadingly appear never to fire.
-    const eventTimes=new Set(latestSim.spikeTimes);
-    ctx.moveTo(sx(0),sy(latestSim.traces[0]));
-    for(let t=1;t<latestSim.traces.length;t++) {
-      const x=sx(t);
-      if(eventTimes.has(t)) {
-        ctx.lineTo(x,sy(state.threshold));
-        ctx.lineTo(x,sy(0));
-      } else {
-        ctx.lineTo(x,sy(latestSim.traces[t]));
-      }
-    }
-    ctx.stroke();
-    ctx.strokeStyle="#719e9c";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,spikeBottom);ctx.lineTo(right,spikeBottom);ctx.stroke();
-    ctx.strokeStyle="#318a80";ctx.lineWidth=2.6;
-    latestSim.spikeTimes.forEach(t=>{const x=sx(t);ctx.beginPath();ctx.moveTo(x,spikeBottom);ctx.lineTo(x,spikeTop);ctx.stroke();});
-    ctx.fillStyle="#7c9084";ctx.font="10px system-ui, sans-serif";ctx.textAlign="right";ctx.fillText("TIME (ms)",right,spikeBottom+35);
   }
-  function config() {
-    return {model:"LIF",integration:"forward_euler",dt_ms:dt,duration_ms:simMs,
-      reset:"hard_to_zero",initial_voltage:0,tau_ms:state.tau,threshold:state.threshold,
-      amplitude:state.current,input_pattern:state.mode};
-  }
-  // Share links contain only the four public experiment parameters.
-  // Never forward arbitrary incoming query keys (which could carry tokens).
-  function shareURL() {
-    const url=new URL("https://snncommunity.github.io/.github/");
-    for(const key of ["tau","threshold","current","mode"])url.searchParams.set(key,String(state[key]));
-    url.hash="lab";
-    return url.href;
-  }
-  // Once an imported setup is edited, remove the old parameters from the
-  // browser URL so reloading cannot silently restore the superseded state.
-  function clearImportedParameters() {
-    if(window.location.protocol==="file:" || !window.history?.replaceState) return;
-    const url=new URL(window.location.href);
-    let changed=false;
-    for(const key of ["tau","threshold","current","mode"]) {
-      if(url.searchParams.has(key)){url.searchParams.delete(key);changed=true;}
+  function importURL() {
+    const query=new URLSearchParams(window.location.search);
+    for(const key of ["tau","threshold","current"]) {
+      const value=query.get(key),el=controls[key];
+      if(value===null||value.trim()==="")continue;
+      const v=Number(value),min=Number(el.min),max=Number(el.max),step=Number(el.step);
+      if(!Number.isFinite(v)||v<min||v>max)continue;
+      state[key]=Number(Math.max(min,Math.min(max,min+Math.round((v-min)/step)*step)).toFixed(5));
     }
-    if(changed)window.history.replaceState(window.history.state,"",url.pathname+url.search+url.hash);
+    if(["step","pulses"].includes(query.get("mode")))state.mode=query.get("mode");
+    if(["0","1"].includes(query.get("compare")))state.compare=query.get("compare")==="1";
+  }
+  function clearImported() {
+    if(window.location.protocol==="file:"||!window.history?.replaceState)return;
+    const u=new URL(window.location.href);
+    let dirty=false;
+    for(const k of ["tau","threshold","current","mode","compare"])
+      if(u.searchParams.has(k)){u.searchParams.delete(k);dirty=true;}
+    if(dirty)window.history.replaceState(window.history.state,"",u.pathname+u.search+u.hash);
+  }
+  function updateExperiment(message) {
+    clearImported();resetShareField();syncUI();paint();
+    if(message)feedback(message);
+  }
+  importURL();
+  const config=()=>({models:state.compare?["LIF","IF"]:["LIF"],integration:"forward_euler",
+    dt_ms:DT,duration_ms:DURATION,reset:"hard_to_zero",initial_voltage:0,
+    tau_ms:state.tau,threshold:state.threshold,amplitude:state.current,
+    input_pattern:state.mode,comparison_same_input_gain:true});
+  function shareURL(){
+    const u=new URL("https://snncommunity.github.io/.github/");
+    for(const k of ["tau","threshold","current","mode"])
+      u.searchParams.set(k,String(state[k]));
+    u.searchParams.set("compare",state.compare?"1":"0");
+    u.hash="lab";return u.href;
   }
   function download(blob,filename) {
-    const objectURL=URL.createObjectURL(blob);
-    const anchor=document.createElement("a");
-    anchor.href=objectURL;
-    anchor.download=filename;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(()=>URL.revokeObjectURL(objectURL),1500);
+    const url=URL.createObjectURL(blob),link=document.createElement("a");
+    link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
   }
-  async function copyText(value) {
-    if(!navigator.clipboard?.writeText)throw new Error("Clipboard API unavailable");
-    await navigator.clipboard.writeText(value);
+  function toCSV(main,other){
+    const rows=["# SNNCommunity dimensionless discrete-time neuron models; forward Euler dt_ms=1; hard reset to zero",
+      "# config="+JSON.stringify(config()),
+      "time_ms,input_previous_interval,lif_after_reset,lif_pre_reset,lif_spike,if_after_reset,if_pre_reset,if_spike"];
+    const lifEvents=new Set(main.spikeTimes),ifEvents=new Set(other?.spikeTimes||[]);
+    for(let t=0;t<=DURATION;t++){
+      const input=t===0?"":main.input[t-1].toFixed(8);
+      rows.push([t,input,main.traces[t].toFixed(8),main.unreset[t].toFixed(8),lifEvents.has(t)?1:0,
+        other?other.traces[t].toFixed(8):"",other?other.unreset[t].toFixed(8):"",
+        other?(ifEvents.has(t)?1:0):""].join(","));
+    }
+    return rows.join("\n")+"\n";
   }
-  for(const [key,el] of Object.entries(configEls)){
-    el?.addEventListener("input",()=>{
-      state[key]=Number(el.value);
-      clearImportedParameters();syncInputs();clearShareFallback();paint();
+  function setCanvas() {
+    if(!ctx)return null;
+    const bounds=canvas.getBoundingClientRect(),w=Math.max(270,bounds.width||600),
+      h=Math.max(300,bounds.height||400),dpr=Math.min(window.devicePixelRatio||1,2);
+    const cw=Math.round(w*dpr),ch=Math.round(h*dpr);
+    if(canvas.width!==cw)canvas.width=cw;
+    if(canvas.height!==ch)canvas.height=ch;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {w,h};
+  }
+  function paint() {
+    const main=core.simulate("LIF",state),other=state.compare?core.simulate("IF",state):null;
+    latest={main,other};
+    $("spike-count").textContent=String(main.spikeTimes.length);
+    $("isi-stat").textContent=main.meanISI===null?"—":main.meanISI.toFixed(1)+" ms";
+    $("if-count").textContent=other?String(other.spikeTimes.length):"Off";
+    $("if-rate").textContent=other?other.firingRateHz.toFixed(0)+" Hz":"—";
+    $("lif-rate").textContent=main.firingRateHz.toFixed(0)+" Hz";
+    $("experiment-summary").textContent="Over "+DURATION+" ms, LIF emitted "+main.spikeTimes.length+
+      " spikes ("+main.firingRateHz.toFixed(0)+" Hz). "+
+      (other?"Matched-gain IF without leak emitted "+other.spikeTimes.length+" spikes ("+
+       other.firingRateHz.toFixed(0)+" Hz). ":"Comparison is disabled. ")+
+      "Threshold "+state.threshold.toFixed(2)+", input "+state.mode+
+      ", τ "+state.tau+" ms; 201 post-reset voltage samples.";
+    const dim=setCanvas();if(!dim)return;
+    const {w,h}=dim,marginLeft=w<420?39:56,marginRight=12,plotRight=w-marginRight,
+      X=t=>marginLeft+(plotRight-marginLeft)*t/DURATION;
+    const pad=25,p1={top:26,bottom:h*.24},p2={top:h*.30,bottom:h*.76},p3={top:h*.81,bottom:h*.93};
+    const drawLabel=(text,x,y,align="left")=>{ctx.textAlign=align;ctx.fillStyle="#445e59";ctx.font="11px system-ui";ctx.fillText(text,x,y);};
+    const gridPanel=(p)=>{ctx.strokeStyle="#dce5de";ctx.lineWidth=1;for(let t=0;t<=DURATION;t+=40){const x=X(t);ctx.beginPath();ctx.moveTo(x,p.top);ctx.lineTo(x,p.bottom);ctx.stroke();}ctx.beginPath();ctx.moveTo(marginLeft,p.bottom);ctx.lineTo(plotRight,p.bottom);ctx.stroke();};
+    [p1,p2,p3].forEach(gridPanel);
+    drawLabel("INPUT I (normalized)",marginLeft,p1.top-10);
+    drawLabel("MEMBRANE V (normalized)",marginLeft,p2.top-10);
+    drawLabel("SPIKES",marginLeft,p3.top-8);
+    const gainMax=Math.max(state.current*1.75,0.5);
+    const Yinput=value=>p1.bottom-4-(p1.bottom-p1.top-10)*(value/gainMax);
+    ctx.strokeStyle="#ad7048";ctx.lineWidth=2.2;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(X(0),Yinput(main.input[0]));
+    for(let t=0;t<DURATION;t++){ctx.lineTo(X(t+1),Yinput(main.input[t]));if(t+1<DURATION)ctx.lineTo(X(t+1),Yinput(main.input[t+1]));}
+    ctx.stroke();
+    const vmax=Math.max(1.5,state.threshold*1.18,state.current*.7);
+    const Yv=v=>p2.bottom-4-(p2.bottom-p2.top-12)*v/vmax;
+    ctx.save();ctx.setLineDash([6,4]);ctx.strokeStyle="#b97b48";ctx.lineWidth=1.6;
+    ctx.beginPath();ctx.moveTo(marginLeft,Yv(state.threshold));ctx.lineTo(plotRight,Yv(state.threshold));ctx.stroke();ctx.restore();
+    drawLabel("Vth "+state.threshold.toFixed(2),plotRight,Yv(state.threshold)-5,"right");
+    const drawVoltage=(result,color,dashed)=>{
+      ctx.save();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dashed?[5,4]:[]);ctx.lineJoin="round";
+      const fired=new Set(result.spikeTimes);ctx.beginPath();ctx.moveTo(X(0),Yv(0));
+      for(let t=1;t<=DURATION;t++){
+        if(fired.has(t)){ctx.lineTo(X(t),Yv(result.unreset[t]));ctx.lineTo(X(t),Yv(0));}
+        else ctx.lineTo(X(t),Yv(result.traces[t]));
+      }
+      ctx.stroke();ctx.restore();
+    };
+    drawVoltage(main,"#217b68",false);
+    if(other)drawVoltage(other,"#536db0",true);
+    ctx.strokeStyle="#237c6a";ctx.lineWidth=2.5;
+    main.spikeTimes.forEach(t=>{ctx.beginPath();ctx.moveTo(X(t),p3.top+5);ctx.lineTo(X(t),p3.top+23);ctx.stroke();});
+    if(other){ctx.strokeStyle="#536db0";other.spikeTimes.forEach(t=>{ctx.beginPath();ctx.moveTo(X(t),p3.top+30);ctx.lineTo(X(t),p3.top+47);ctx.stroke();});}
+    drawLabel("LIF",marginLeft,p3.top+18);if(other)drawLabel("IF",marginLeft,p3.top+44);
+    for(let t=0;t<=DURATION;t+=40)drawLabel(String(t),X(t),h-12,"center");
+    drawLabel("Time (ms)",plotRight,h-1,"right");
+  }
+  let pending=0;
+  const schedule=()=>{if(pending)return;pending=requestAnimationFrame(()=>{pending=0;paint();});};
+  if(typeof ResizeObserver!=="undefined"){
+    const observer=new ResizeObserver(schedule);
+    if(canvas?.parentElement)observer.observe(canvas.parentElement);
+  }else window.addEventListener("resize",schedule);
+  for(const [key,el] of Object.entries(controls))el?.addEventListener("input",()=>{
+    state[key]=Number(el.value);updateExperiment();
+  });
+  for(const el of document.querySelectorAll('input[name="input-mode"]'))
+    el.addEventListener("change",()=>{if(el.checked){state.mode=el.value;updateExperiment();}});
+  $("compare-if")?.addEventListener("change",e=>{
+    state.compare=Boolean(e.currentTarget.checked);updateExperiment("Model comparison updated.");
+  });
+  for(const button of document.querySelectorAll(".preset-button"))
+    button.addEventListener("click",()=>{
+      Object.assign(state,presetConfigs[button.dataset.preset]);updateExperiment(button.textContent+" loaded.");
     });
-  }
-  document.querySelectorAll('input[name="input-mode"]').forEach(el=>el.addEventListener("change",()=>{
-    if(el.checked){state.mode=el.value;clearImportedParameters();syncInputs();clearShareFallback();paint();}
-  }));
-  document.querySelectorAll(".preset-button").forEach(button=>button.addEventListener("click",()=>{
-    Object.assign(state,presetConfigs[button.dataset.preset]);
-    clearImportedParameters();syncInputs();clearShareFallback();paint();
-    feedback(button.textContent+" example loaded.");
-  }));
   $("reset-lab")?.addEventListener("click",()=>{
-    Object.assign(state,initial);
-    clearImportedParameters();syncInputs();clearShareFallback();paint();
-    feedback("Default experiment restored.");
+    Object.assign(state,defaults);updateExperiment("Default experiment restored.");
   });
   $("copy-config")?.addEventListener("click",async()=>{
-    const payload=JSON.stringify(config(),null,2);
-    try {await copyText(payload);feedback("Experiment configuration copied as JSON.");}
-    catch(e){feedback("Clipboard unavailable. Use Download CSV to save simulation data.");}
+    try{await navigator.clipboard.writeText(JSON.stringify(config(),null,2));feedback("JSON configuration copied.");}
+    catch(e){feedback("Clipboard unavailable; export CSV for a saved record.");}
   });
   $("share-lab")?.addEventListener("click",async()=>{
-    const link=shareURL();
-    try { await copyText(link);clearShareFallback();feedback("Shareable experiment link copied."); }
-    catch(e){
-      $("share-url").value=link;
-      $("share-fallback").hidden=false;
-      $("share-url").focus();
-      $("share-url").select();
-      feedback("Copy the selected experiment link manually.");
-    }
+    const url=shareURL();
+    try{await navigator.clipboard.writeText(url);$("share-fallback").hidden=true;feedback("Shareable experiment URL copied.");}
+    catch(e){$("share-url").value=url;$("share-fallback").hidden=false;$("share-url").focus();$("share-url").select();feedback("Copy the selected experiment link manually.");}
   });
   $("export-csv")?.addEventListener("click",()=>{
-    const result=simulate();
-    const rows=["# SNNCommunity educational normalized LIF; dt_ms=1; integration=forward_euler; hard_reset=0",
-      "# config="+JSON.stringify(config()),
-      "time_ms,membrane_after_reset,spike,input_previous_interval"];
-    const events=new Set(result.spikeTimes);
-    for(let t=0;t<=simMs;t++) {
-      rows.push([t,result.traces[t].toFixed(8),events.has(t)?1:0,t===0?"":result.inputTrace[t-1].toFixed(8)].join(","));
-    }
-    download(new Blob([rows.join("\n")+"\n"],{type:"text/csv;charset=utf-8"}),"snncommunity-lif-trace.csv");
-    feedback("CSV downloaded: 201 time samples, 200 input intervals.");
+    if(!latest)paint();
+    download(new Blob([toCSV(latest.main,latest.other)],{type:"text/csv;charset=utf-8"}),"snncommunity-model-comparison.csv");
+    feedback("CSV exported: 201 states with input, pre-reset and post-reset voltages.");
   });
   $("export-png")?.addEventListener("click",()=>{
-    if(!canvas?.toBlob){feedback("Image export is not supported in this browser.");return;}
-    canvas.toBlob(blob=>{
-      if(blob){download(blob,"snncommunity-lif-plot.png");feedback("Neuron plot saved as PNG.");}
-      else feedback("Unable to export this plot.");
-    },"image/png");
+    if(!canvas?.toBlob){feedback("PNG export unavailable.");return;}
+    canvas.toBlob(blob=>{if(blob){download(blob,"snncommunity-neuron-models.png");feedback("Plot saved.");}else feedback("Plot export failed.");},"image/png");
   });
-  // Observe the containing panel, not the canvas whose backing dimensions
-  // are modified by paint(). Coalesce multiple resize notifications.
-  let observer, pendingFrame=0;
-  const schedulePaint=()=>{
-    if(pendingFrame)return;
-    pendingFrame=window.requestAnimationFrame(()=>{pendingFrame=0;paint();});
-  };
-  if(typeof ResizeObserver!=="undefined") {
-    observer=new ResizeObserver(schedulePaint);
-    if(canvas?.parentElement)observer.observe(canvas.parentElement);
-  } else window.addEventListener("resize",schedulePaint);
-  paint();
+
+  // Static source index. Never infer project authorship, license or reproduction.
+  const cards=$("resource-grid"),count=$("resource-count"),search=$("resource-search"),empty=$("resource-empty");
+  let all=[],category="all";
+  function node(tag,className,textContent){const el=document.createElement(tag);if(className)el.className=className;if(textContent!==undefined)el.textContent=String(textContent);return el;}
+  function renderResources() {
+    const q=(search?.value||"").toLowerCase().trim();
+    const filtered=all.filter(x=>(category==="all"||x.category===category)&&
+      [x.title,x.description,x.publisher,x.type,x.doi||""].join(" ").toLowerCase().includes(q));
+    const fragment=document.createDocumentFragment();
+    for(const x of filtered){
+      const card=node("article","resource-card");
+      const top=node("div","resource-card-head");
+      top.append(node("span","resource-label",x.category+" · "+x.type),node("span","resource-arrow","↗"));
+      card.append(top,node("h3","",x.title),node("p","",x.description));
+      const meta=node("div","resource-metadata");
+      meta.append(node("span","",x.publisher+(x.year?" · "+x.year:"")));
+      meta.append(node("span","resource-review","Indexed · Not reproduced"));
+      if(x.doi){const a=node("a","resource-doi","DOI ↗");a.href="https://doi.org/"+encodeURIComponent(x.doi);a.target="_blank";a.rel="noopener noreferrer";a.setAttribute("aria-label","DOI for "+x.title);meta.append(a);}
+      if(x.code){const a=node("a","resource-doi","Code ↗");a.href=x.code;a.target="_blank";a.rel="noopener noreferrer";a.setAttribute("aria-label","Original code for "+x.title);meta.append(a);}
+      const license=node("span","resource-license",x.license||x.licenseNote);
+      if(x.licenseUrl){const a=node("a","resource-doi","Upstream license ↗");a.href=x.licenseUrl;a.target="_blank";a.rel="noopener noreferrer";meta.append(a);}
+      meta.append(license);
+      const open=node("a","resource-main-link","Visit original source ↗");
+      open.href=x.url;open.target="_blank";open.rel="noopener noreferrer";open.setAttribute("aria-label","Visit original source: "+x.title);
+      card.append(meta,open);fragment.append(card);
+    }
+    cards.replaceChildren(fragment);empty.hidden=filtered.length!==0;
+    count.textContent=filtered.length+" of "+all.length+" indexed sources";
+  }
+  document.querySelectorAll(".filter-chip").forEach(button=>button.addEventListener("click",()=>{
+    category=button.dataset.filter||"all";
+    for(const other of document.querySelectorAll(".filter-chip")){
+      const enabled=button===other;other.classList.toggle("active",enabled);other.setAttribute("aria-pressed",String(enabled));
+    }
+    renderResources();
+  }));
+  search?.addEventListener("input",renderResources);
+  fetch("./resources.json").then(async res=>{
+    if(!res.ok)throw Error("Resource catalog is unavailable");
+    const body=await res.json();
+    if(body.schemaVersion!==1||!Array.isArray(body.items))throw Error("Unsupported resource schema");
+    all=body.items.filter(x=>typeof x.title==="string"&&/^https:\/\//.test(x.url)&&x.verification==="indexed_not_reproduced");
+    renderResources();
+  }).catch(()=>{if(count)count.textContent="Resource catalog unavailable. Please use the original links below.";const fallback=$("resource-fallback");if(fallback)fallback.hidden=false;});
+  syncUI();paint();
+
+  const menu=$("site-menu"),toggle=$("menu-toggle");
+  toggle?.addEventListener("click",()=>{
+    const next=toggle.getAttribute("aria-expanded")!=="true";
+    toggle.setAttribute("aria-expanded",String(next));
+    toggle.setAttribute("aria-label",next?"Close navigation":"Open navigation");
+    menu?.classList.toggle("is-open",next);
+  });
+  menu?.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{
+    menu.classList.remove("is-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation");
+  }));
+  window.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu?.classList.contains("is-open")){
+    menu.classList.remove("is-open");toggle.setAttribute("aria-expanded","false");toggle.focus();
+  }});
 })();

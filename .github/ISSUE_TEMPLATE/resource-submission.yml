@@ -1,0 +1,49 @@
+name: Suggest an SNN resource
+description: Propose an independently maintained paper, tutorial, dataset or framework for review.
+title: "[Resource] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Resource inclusion does not imply endorsement, license clearance or independent reproduction.
+  - type: input
+    id: title
+    attributes:
+      label: Original title
+      placeholder: Name of the original source
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Original source URL
+      placeholder: https://...
+    validations:
+      required: true
+  - type: input
+    id: doi
+    attributes:
+      label: DOI or persistent identifier (if applicable)
+  - type: input
+    id: code
+    attributes:
+      label: Original source-code URL (if available)
+  - type: input
+    id: license
+    attributes:
+      label: Verified license and primary license URL (or unknown)
+  - type: textarea
+    id: significance
+    attributes:
+      label: Why this resource belongs in the SNN collection
+      description: Describe its relevance and distinguish original work from third-party implementations.
+    validations:
+      required: true
+  - type: checkboxes
+    id: policies
+    attributes:
+      label: Verification statements
+      options:
+        - label: I have not claimed that SNNCommunity independently reproduced or endorsed this resource.
+          required: true

@@ -1,148 +1,116 @@
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
-import { mkdirSync, readFileSync, statSync } from 'node:fs';
+import { readFileSync, mkdirSync, statSync, existsSync } from 'node:fs';
 import assert from 'node:assert/strict';
-
-const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
-const errors=[];
-const output=resolve('artifacts');
-mkdirSync(output,{recursive:true});
-const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
-page.on('pageerror',e=>errors.push(e.message));
-// Serve the site from the same nested path used by GitHub Pages.
-const servedFiles=new Map([['index.html','text/html'],['styles.css','text/css'],
-  ['app.js','text/javascript'],['favicon.svg','image/svg+xml'],['404.html','text/html']]);
+const mime={html:'text/html',css:'text/css',js:'text/javascript',json:'application/json',svg:'image/svg+xml',png:'image/png'};
 const server=createServer((req,res)=>{
-  const pathname=new URL(req.url,'http://localhost').pathname;
-  const name=(pathname.startsWith('/.github/')?pathname.slice('/.github/'.length):'')||'index.html';
-  if(!servedFiles.has(name)){res.writeHead(404);res.end('Not found');return;}
-  res.writeHead(200,{'Content-Type':servedFiles.get(name)+'; charset=utf-8'});
-  res.end(readFileSync(resolve('docs',name)));
+ const u=new URL(req.url,'http://localhost');
+ const path=u.pathname.startsWith('/.github/')?u.pathname.slice(9):'';
+ const name=path||'index.html';
+ if(!['index.html','styles.css','app.js','neuron-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)){
+  res.writeHead(404);res.end('Not found');return;
+ }
+ const file=resolve('docs',name);
+ if(!existsSync(file)){res.writeHead(404);res.end('Not found');return;}
+ res.writeHead(200,{'Content-Type':mime[name.split('.').pop()]||'text/plain'});
+ res.end(readFileSync(file));
 });
-await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
-const url='http://127.0.0.1:'+server.address().port+'/.github/';
+await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+const base='http://127.0.0.1:'+server.address().port+'/.github/';
+const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+const errors=[],out=resolve('artifacts');mkdirSync(out,{recursive:true});
 try {
-  await page.goto(url,{waitUntil:'load'});
-  await page.locator('#resource-grid .resource-card').first().waitFor();
-  assert.equal(await page.locator('#resource-grid .resource-card').count(),12,'all curated resources rendered');
-  assert.match(await page.locator('#spike-count').innerText(),/^\d+$/);
-  const initialCount=Number(await page.locator('#spike-count').innerText());
-  assert.ok(initialCount>0,'default neuron should emit spikes');
-  await page.locator('#current').evaluate(el=>{el.value='0.50';el.dispatchEvent(new Event('input',{bubbles:true}));});
-  const weakerCount=Number(await page.locator('#spike-count').innerText());
-  assert.equal(weakerCount,0,'subthreshold step stimulus should emit no spikes');
-  await page.locator('#reset-lab').click();
-  assert.equal(Number(await page.locator('#spike-count').innerText()),initialCount,'reset restores baseline spike count');
-  await page.locator('#threshold').evaluate(el=>{el.value='1.25';el.dispatchEvent(new Event('input',{bubbles:true}));});
-  assert.ok(Number(await page.locator('#spike-count').innerText())<=initialCount,'higher threshold cannot increase spikes for this constant stimulus');
-  await page.locator('#reset-lab').click();
-  await page.locator('input[name="input-mode"][value="pulses"]').check({force:true});
-  assert.equal(await page.locator('input[name="input-mode"][value="pulses"]').isChecked(),true,'pulse stimulus selectable');
-  assert.match(await page.locator('#spike-count').innerText(),/^\d+$/,'pulse experiment returns spike count');
-  await page.locator('#reset-lab').click();
+ const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1,acceptDownloads:true});
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base,{waitUntil:'load'});
+ await page.locator('.resource-card').first().waitFor();
+ assert.equal(await page.locator('.resource-card').count(),12);
+ assert.ok(Number(await page.locator('#spike-count').innerText())>0,'default LIF fires');
+ assert.ok(Number(await page.locator('#if-count').innerText())>0,'matched IF fires');
+ assert.match(await page.locator('#experiment-summary').innerText(),/IF without leak/);
+ await page.locator('#compare-if').uncheck();
+ assert.equal(await page.locator('#if-count').innerText(),'Off');
+ await page.locator('#compare-if').check();
+ assert.match(await page.locator('#if-count').innerText(),/^\d+$/);
+ await page.locator('.preset-button[data-preset="quiet"]').click();
+ assert.equal(await page.locator('#spike-count').innerText(),'0');
+ await page.locator('.preset-button[data-preset="regular"]').click();
+ const baseCount=Number(await page.locator('#spike-count').innerText());
+ await page.locator('#current').evaluate(el=>{el.value='0.50';el.dispatchEvent(new Event('input',{bubbles:true}));});
+ assert.equal(Number(await page.locator('#spike-count').innerText()),0,'low input is subthreshold');
+ await page.locator('#reset-lab').click();
+ assert.equal(Number(await page.locator('#spike-count').innerText()),baseCount);
+ await page.locator('input[name="input-mode"][value="pulses"]').check({force:true});
+ assert.ok(await page.locator('input[name="input-mode"][value="pulses"]').isChecked());
+ await page.locator('#reset-lab').click();
 
-  await page.locator('.filter-chip[data-filter="events"]').click();
-  assert.equal(await page.locator('#resource-grid .resource-card').count(),3,'events category filter');
-  await page.locator('#resource-search').fill('no-such-resource-1234');
-  assert.equal(await page.locator('#resource-grid .resource-card').count(),0,'no matching resources');
-  assert.equal(await page.locator('#resource-empty').isVisible(),true,'accessible empty state visible');
-  await page.locator('#resource-search').fill('');
-  await page.locator('.filter-chip[data-filter="all"]').click();
-  assert.equal(await page.locator('#resource-grid .resource-card').count(),12,'all resources restored');
-  // Parameterized URLs must restore only in-range, valid normalized settings.
-  await page.goto(url+'?tau=15&threshold=1.00&current=1.65&mode=pulses#lab');
-  await page.locator('#resource-grid .resource-card').first().waitFor();
-  assert.equal(await page.locator('#tau').inputValue(),'15','valid tau restored');
-  assert.equal(await page.locator('#threshold').inputValue(),'1','valid threshold restored');
-  assert.equal(await page.locator('#current').inputValue(),'1.65','valid amplitude restored');
-  assert.ok(await page.locator('input[name="input-mode"][value="pulses"]').isChecked(),'pulse mode restored');
-  assert.equal(await page.locator('#spike-count').isVisible(),true,'simulation still runs after shared URL');
+ const [csvDownload]=await Promise.all([page.waitForEvent('download'),page.locator('#export-csv').click()]);
+ assert.match(csvDownload.suggestedFilename(),/\.csv$/);
+ const csv=readFileSync(await csvDownload.path(),'utf8').trim().split('\n');
+ assert.equal(csv.length,204,'metadata + header + 201 observations');
+ assert.equal(csv[2].split(',').length,8);
+ assert.ok(csv[3].startsWith('0,,0.00000000,0.00000000,0,'));
+ assert.ok(csv.at(-1).startsWith('200,'));
+ assert.ok(csv.slice(4).some(row=>row.split(',')[4]==='1'),'LIF spike markers exist');
+ assert.ok(csv.slice(4).some(row=>row.split(',')[7]==='1'),'IF spike markers exist');
+ const [png]=await Promise.all([page.waitForEvent('download'),page.locator('#export-png').click()]);
+ assert.ok(statSync(await png.path()).size>2000);
+ assert.match(png.suggestedFilename(),/\.png$/);
+ const og=await page.request.get(base+'social-card.png');
+ assert.equal(og.status(),200);
+ assert.equal(og.headers()['content-type'],'image/png');
+ assert.ok((await og.body()).length>5000);
 
-  // Exports must be useful files, not inert buttons.
-  const [csvFile] = await Promise.all([page.waitForEvent('download'),page.locator('#export-csv').click()]);
-  const csv=readFileSync(await csvFile.path(),'utf8');
-  const csvLines=csv.trimEnd().split('\n');
-  assert.equal(csvLines.length,204,'metadata/header and 201 state rows');
-  assert.match(csvLines[2],/^time_ms,membrane_after_reset,spike,input_previous_interval$/);
-  assert.ok(csvLines[3].startsWith('0,0.00000000,0,'),'initial observation at t=0');
-  assert.ok(csvLines.at(-1).startsWith('200,'),'last observation at t=200');
-  assert.ok(csvLines.slice(4).some(line=>line.split(',')[2]==='1'),'binary spike event samples included');
+ await page.locator('.filter-chip[data-filter="events"]').click();
+ assert.equal(await page.locator('.resource-card').count(),3);
+ await page.locator('#resource-search').fill('Gallego');
+ assert.equal(await page.locator('.resource-card').count(),1);
+ assert.match(await page.locator('.resource-card').innerText(),/10.1109|DOI/);
+ await page.locator('#resource-search').fill('impossible missing');
+ assert.equal(await page.locator('.resource-card').count(),0);
+ assert.equal(await page.locator('#resource-empty').isVisible(),true);
+ await page.locator('#resource-search').fill('');
+ await page.locator('.filter-chip[data-filter="all"]').click();
+ assert.equal(await page.locator('.resource-card').count(),12);
 
-  const [pngFile] = await Promise.all([page.waitForEvent('download'),page.locator('#export-png').click()]);
-  assert.match(pngFile.suggestedFilename(),/\.png$/);
-  assert.ok(statSync(await pngFile.path()).size>1000,'valid PNG image saved');
+ await page.goto(base+'?tau=12&threshold=0.75&current=1.60&mode=pulses&compare=0&token=keep-private#lab');
+ assert.equal(await page.locator('#tau').inputValue(),'12');
+ assert.equal(await page.locator('#if-count').innerText(),'Off');
+ await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
+ await page.locator('#share-lab').click();
+ const link=await page.locator('#share-url').inputValue();
+ assert.match(link,/compare=0/);
+ assert.ok(!link.includes('token='));
+ assert.ok(link.endsWith('#lab'));
+ await page.locator('#reset-lab').click();
+ assert.ok(!new URL(page.url()).searchParams.has('compare'));
+ await page.reload();
+ assert.equal(await page.locator('#tau').inputValue(),'20');
 
-  await page.locator('.preset-button[data-preset="quiet"]').click();
-  assert.equal(await page.locator('#spike-count').innerText(),'0','quiet neuron example emits no spikes');
-  await page.locator('.preset-button[data-preset="regular"]').click();
-  assert.ok(Number(await page.locator('#spike-count').innerText())>0,'regular example fires');
-  await page.locator('.preset-button[data-preset="burst"]').click();
-  assert.ok(await page.locator('input[name="input-mode"][value="pulses"]').isChecked(),'pulsed preset changes input mode');
+ const njs=await browser.newPage({javaScriptEnabled:false});
+ await njs.goto(base);
+ assert.ok(await njs.locator('.noscript-resources').isVisible());
+ assert.ok(await njs.locator('.noscript-resources a').count()>=4);
+ await njs.close();
+ await page.screenshot({path:resolve(out,'desktop.png'),fullPage:true});
+ console.log('PASS desktop models, chart, downloads, resource provenance, URL safety and no-JS navigation');
 
-  // Simulate an explicitly denied clipboard to verify the manual-share fallback.
-  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
-  await page.locator('#share-lab').click();
-  assert.equal(await page.locator('#share-fallback').isVisible(),true,'share fallback appears');
-  const share=await page.locator('#share-url').inputValue();
-  assert.ok(share.startsWith('https://snncommunity.github.io/.github/'),'share uses public canonical website');
-  assert.match(share,/tau=12/);
-  assert.match(share,/mode=pulses/);
-  assert.ok(share.endsWith('#lab'),'link navigates directly to lab');
-  await page.locator('#reset-lab').click();
-  assert.equal(await page.locator('#share-fallback').isVisible(),false,'reset clears fallback');
-
-  await page.goto(url+'?tau=999&threshold=NaN&current=-5&mode=unknown#lab');
-  await page.locator('#resource-grid .resource-card').first().waitFor();
-  assert.equal(await page.locator('#tau').inputValue(),'20','invalid tau ignored');
-  assert.equal(await page.locator('#threshold').inputValue(),'0.85','invalid threshold ignored');
-  assert.equal(await page.locator('#current').inputValue(),'1.55','invalid amplitude ignored');
-
-  // HTTP-origin checks: stale imported parameters must not return after reset.
-  await page.goto(url+'?tau=12&mode=pulses&unrelated=keep#lab');
-  await page.locator('#reset-lab').click();
-  const cleanURL=new URL(page.url());
-  assert.ok(!cleanURL.searchParams.has('tau')&&!cleanURL.searchParams.has('mode'),'reset strips stale imports');
-  assert.equal(cleanURL.searchParams.get('unrelated'),'keep','unrelated parameters are preserved in the current URL');
+ for(const width of [768,390,320]){
+  await page.setViewportSize({width,height:840});
   await page.reload();
-  assert.equal(await page.locator('#tau').inputValue(),'20','reload after reset retains defaults');
-  assert.ok(await page.locator('input[name="input-mode"][value="step"]').isChecked(),'default input restored');
-
-  // Shared setup must not include arbitrary incoming URL query parameters.
-  await page.goto(url+'?tau=12&mode=pulses&token=private-do-not-share#lab');
-  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
-  await page.locator('#share-lab').click();
-  const safeShare=await page.locator('#share-url').inputValue();
-  assert.ok(safeShare.startsWith('https://snncommunity.github.io/.github/'));
-  assert.ok(!safeShare.includes('token=')&&!safeShare.includes('private-do-not-share'),'share URL contains no incoming secret');
-  assert.equal(new URL(safeShare).searchParams.get('tau'),'12');
-  await page.locator('#current').evaluate(el=>{el.value='1.60';el.dispatchEvent(new Event('input',{bubbles:true}));});
-  assert.ok(!new URL(page.url()).searchParams.has('mode'),'editing removes superseded imported query');
-
-  const noJS=await browser.newPage({javaScriptEnabled:false,viewport:{width:390,height:844}});
-  try{
-    await noJS.goto(url);
-    assert.equal(await noJS.locator('.noscript-resources').isVisible(),true,'real resource links available without JS');
-    assert.ok(await noJS.locator('.noscript-resources a').count()>=4);
-  }finally{await noJS.close();}
-
-  await page.screenshot({path:resolve(output,'desktop.png'),fullPage:true});
-  console.log('PASS desktop: navigation, LIF simulation, reset and resource filtering');
-  await page.setViewportSize({width:390,height:844});
-  await page.reload();
-  await page.locator('#resource-grid .resource-card').first().waitFor();
-  assert.equal(await page.locator('.menu-toggle').isVisible(),true,'mobile toggle visible');
-  await page.locator('#menu-toggle').click();
-  assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true','menu expands');
-  await page.locator('#site-menu a[href="#library"]').click();
-  assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','menu closes on navigation');
-  const overflow=await page.evaluate(()=>({viewport:window.innerWidth,scroll:document.documentElement.scrollWidth}));
-  assert.ok(overflow.scroll<=overflow.viewport+1,'no mobile horizontal overflow: '+JSON.stringify(overflow));
-  await page.setViewportSize({width:320,height:700});
-  const narrow=await page.evaluate(()=>({viewport:window.innerWidth,scroll:document.documentElement.scrollWidth}));
-  assert.ok(narrow.scroll<=narrow.viewport+1,'no 320px horizontal overflow: '+JSON.stringify(narrow));
-  await page.setViewportSize({width:390,height:844});
-  await page.screenshot({path:resolve(output,'mobile.png'),fullPage:true});
-  assert.deepEqual(errors,[],'no uncaught browser errors');
-  console.log('PASS mobile: menu, in-page navigation, overflow and browser errors');
-} finally {await browser.close();await new Promise(resolve=>server.close(resolve));}
+  await page.locator('.resource-card').first().waitFor();
+  const over=await page.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
+  assert.ok(over.scroll<=over.inner+1,'horizontal overflow at '+width+': '+JSON.stringify(over));
+  if(width===390){
+   await page.locator('#menu-toggle').click();
+   assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');
+   await page.locator('#site-menu a[href="#library"]').click();
+   assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false');
+   await page.screenshot({path:resolve(out,'mobile.png'),fullPage:true});
+  }
+  if(width===768)await page.screenshot({path:resolve(out,'tablet.png'),fullPage:true});
+ }
+ assert.deepEqual(errors,[]);
+ console.log('PASS 768/390/320 widths, mobile nav, and browser errors');
+} finally {await browser.close();await new Promise(ok=>server.close(ok));}

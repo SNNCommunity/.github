@@ -1,0 +1,40 @@
+name: Propose a reproducible experiment
+description: Submit a concrete protocol for an openly auditable SNN experiment.
+title: "[Reproduction] "
+labels: []
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Original paper or specification
+      placeholder: DOI or official source link
+    validations:
+      required: true
+  - type: textarea
+    id: model
+    attributes:
+      label: Mathematical model and implementation
+      description: Neuron reset, time step, surrogate gradients, architecture and exact code revision.
+    validations:
+      required: true
+  - type: textarea
+    id: protocol
+    attributes:
+      label: Dataset / inputs and execution protocol
+      description: Data licensing, preprocessing, splits, seeds, hardware, environment and commands.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Execution evidence and limitations
+      description: Separate a planned protocol from runs actually executed, and link logs/configs where available.
+    validations:
+      required: true
+  - type: checkboxes
+    id: declaration
+    attributes:
+      label: Claim boundaries
+      options:
+        - label: I will not claim independent reproduction or benchmark equivalence without matching executable evidence.
+          required: true

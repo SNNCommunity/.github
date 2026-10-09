@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">SNN Community — From spikes to systems.</title>
+<desc id="desc">An editorial dark navy banner showing neural spike trains, time axes and a scientific community wordmark.</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#101d23"/><stop offset="1" stop-color="#173b36"/></linearGradient>
+<linearGradient id="spike" x1="0" x2="1"><stop offset="0" stop-color="#b8edce"/><stop offset="1" stop-color="#e2f0c3"/></linearGradient>
+</defs>
+<rect width="1200" height="630" rx="24" fill="url(#bg)"/>
+<g stroke="#77b4a6" stroke-width="1" opacity=".12">
+<path d="M0 120H1200 M0 240H1200 M0 360H1200 M0 480H1200 M0 600H1200"/>
+<path d="M130 0V630 M260 0V630 M390 0V630 M520 0V630 M650 0V630 M780 0V630 M910 0V630 M1040 0V630"/>
+</g>
+<path d="M60 60H1140" stroke="#456e62" opacity=".8"/>
+<g fill="#b8edce"><rect x="76" y="78" width="9" height="28" rx="4"/><rect x="100" y="64" width="9" height="42" rx="4"/><rect x="124" y="88" width="9" height="18" rx="4"/><rect x="148" y="70" width="9" height="36" rx="4"/></g>
+<text x="175" y="96" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700" letter-spacing="2" fill="#dceee5">SNN COMMUNITY</text>
+<text x="74" y="274" font-family="Arial,Helvetica,sans-serif" font-size="78" font-weight="700" letter-spacing="-3" fill="#ffffff">From spikes</text>
+<text x="74" y="366" font-family="Georgia,Times New Roman,serif" font-size="91" font-style="italic" letter-spacing="-4" fill="#b8edce">to systems.</text>
+<text x="79" y="435" font-family="Arial,Helvetica,sans-serif" font-size="21" fill="#bbd1cb">Spiking neural networks · Open research · Reproducible experiments</text>
+<g stroke="#547f74" stroke-width="1.5" opacity=".45">
+<path d="M730 153H1126 M730 210H1126 M730 267H1126 M730 324H1126 M730 381H1126 M730 438H1126"/>
+</g>
+<g stroke="url(#spike)" stroke-width="6" stroke-linecap="round">
+<path d="M767 142V165 M845 142V165 M927 142V165 M1075 142V165"/>
+<path d="M793 199V222 M904 199V222 M1010 199V222 M1100 199V222"/>
+<path d="M743 256V279 M858 256V279 M985 256V279 M1122 256V279"/>
+<path d="M785 313V336 M890 313V336 M946 313V336 M1063 313V336"/>
+<path d="M742 370V393 M828 370V393 M962 370V393 M1091 370V393"/>
+<path d="M779 427V450 M877 427V450 M1013 427V450 M1120 427V450"/>
+</g>
+<rect x="74" y="531" width="1046" height="1" fill="#58897a" opacity=".75"/>
+<text x="76" y="578" font-family="Arial,Helvetica,sans-serif" letter-spacing="3" font-weight="700" font-size="17" fill="#9fd7bc">LEARN  /  EXPERIMENT  /  REPRODUCE  /  COLLABORATE</text>
+</svg>
