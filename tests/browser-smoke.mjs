@@ -93,6 +93,29 @@ try {
  assert.ok(await njs.locator('.noscript-resources').isVisible());
  assert.ok(await njs.locator('.noscript-resources a').count()>=4);
  await njs.close();
+ // Visual typography regression, measured from actual Chromium computed styles.
+ const sizes=await page.evaluate(()=>{
+  const selectors={
+    "body":"body",
+    "resource description":".resource-card p",
+    "resource heading":".resource-card h3",
+    "model note":".model-note",
+    "parameter label":".control-field label",
+    "lab action":".lab-actions .button",
+    "resource metadata":".resource-metadata",
+    "navigation":".nav-links > a",
+    "footer text":".footer-main p"
+  };
+  return Object.fromEntries(Object.entries(selectors).map(([name,sel])=>[
+    name,Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize)]));
+ });
+ for(const [name,min] of Object.entries({
+   "body":16,"resource description":15,"resource heading":21,
+   "model note":13,"parameter label":14,"lab action":14,
+   "resource metadata":13,"navigation":14,"footer text":15
+ }))assert.ok(sizes[name]>=min,name+" too small: "+sizes[name]+"px");
+ const mobileTexts=await page.locator(".resource-card p").count();
+ assert.equal(mobileTexts,12);
  await page.screenshot({path:resolve(out,'desktop.png'),fullPage:true});
  console.log('PASS desktop models, chart, downloads, resource provenance, URL safety and no-JS navigation');
 
@@ -100,6 +123,17 @@ try {
   await page.setViewportSize({width,height:840});
   await page.reload();
   await page.locator('.resource-card').first().waitFor();
+  const fit=await page.evaluate(()=>{
+    const sels=[".menu-toggle",".preset-button",".filter-chip",".lab-actions .button"];
+    return sels.map(sel=>{
+      const r=document.querySelector(sel).getBoundingClientRect();
+      return {sel,width:r.width,height:r.height};
+    });
+  });
+  for(const el of fit)assert.ok(el.width>=24&&el.height>=44,
+    "target too small at "+width+": "+JSON.stringify(el));
+  const mobileBody=await page.locator(".resource-card p").first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+  assert.ok(mobileBody>=15,"resource descriptions too small at "+width+": "+mobileBody);
   const over=await page.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
   assert.ok(over.scroll<=over.inner+1,'horizontal overflow at '+width+': '+JSON.stringify(over));
   if(width===390){
