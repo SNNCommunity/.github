@@ -1,58 +1,39 @@
-# SNNCommunity roadmap
+# SNN Community roadmap
 
-**Last updated: October 2026.** This is a planning document, not a promise of completed features, guaranteed activity, or fixed delivery dates.
+**Last updated: October 2026.** This roadmap records current public deliverables and verifiable next steps. It is not a promise of membership, partnerships or completed research results.
 
-## Phase 0 — Foundation
+## Released foundation
 
-- [x] Establish SNNCommunity as a GitHub Organization.
-- [x] Create the public `.github` community-health repository.
-- [x] Publish the organization profile, contribution guidance, Code of Conduct, security and support policies.
-- [x] Add proposal and documentation issue templates.
-- [x] Publish initial governance, resource standards, and roadmap.
-- [ ] Configure the organization's public display name, bio, optional website, and avatar in GitHub Settings.
-- [ ] Verify organization security settings, owner roles, base permissions, and private vulnerability reporting where available.
-- [ ] Check that the organization homepage and reusable issue templates render correctly.
+- [x] Set up the independent GitHub Organization and the public `.github` community-health repository.
+- [x] Publish the organization profile, contribution guidance, Code of Conduct, support and security policies.
+- [x] Publish provisional governance and research/reproducibility standards.
+- [x] Build an interactive community website with a deterministic LIF neuron lab and curated external resource index.
+- [x] Add automated Node.js checks and Chromium desktop/mobile browser smoke tests.
+- [x] Observe a successful GitHub Pages deployment workflow at https://snncommunity.github.io/.github/.
+- [x] Consolidate the site as one canonical `docs/` implementation and remove legacy visual design files.
+- [ ] Perform a human visual review of the deployed website across screen sizes and themes.
+- [ ] Confirm the Organization public website field and avatar match the released site and icon.
 
-## Phase 0.5 — Interactive portal release
+## Next: Community collaboration
 
-- [x] Design and merge responsive scientific community portal ([PR #6](https://github.com/SNNCommunity/.github/pull/6)).
-- [x] Create deterministic LIF neuron experiment with adjustable current, threshold, and time constant.
-- [x] Add a searchable resource index with independently maintained source attribution.
-- [x] Run Node source tests and Chromium browser smoke checks (desktop/mobile).
-- [ ] Activate GitHub Pages from `main /docs` in the repository Settings — see [Issue #7](https://github.com/SNNCommunity/.github/issues/7).
-- [ ] Verify the public website URL and link it from the organization profile and Organization Website setting.
+- [ ] Create a public `community` repository and designate it as the source of organization-wide Discussions.
+- [ ] Publish a welcome message, question guidelines, and initial good-first-issue tasks.
+- [ ] Set a sustainable triage routine and recruit at least one independent technical reviewer.
 
-## Phase 1 — Community collaboration hub
+## Next: Research resources
 
-- [ ] Create a public `SNNCommunity/community` repository with an initial README.
-- [ ] Add the repository to the existing GitHub connector authorization if needed.
-- [ ] Enable organization-wide GitHub Discussions using `community` as its source repository (GitHub UI).
-- [ ] Publish a welcome discussion, question guidelines, and three well-scoped starter tasks.
-- [ ] Document the ongoing triage and contributor-response process.
+- [ ] Create a dedicated `snn-resources` repository once there is a maintainable, reviewed collection.
+- [ ] Structure official papers, implementations, tutorials, datasets, hardware and SNN embodied-intelligence work.
+- [ ] Add license metadata, accurate provenance and an explicit distinction between links and reproduced evidence.
 
-## Phase 2 — Curated learning and research resources
+## Next: Transparent experiments
 
-- [ ] Create public `SNNCommunity/snn-resources` repository.
-- [ ] Structure entries for neuron models, learning methods, software frameworks, datasets, benchmarks, hardware, and embodied SNN work.
-- [ ] Add a sourced initial collection and invite corrections.
-- [ ] Review citations, link integrity, duplication, and software licensing.
+- [ ] Select an openly shareable baseline and publish the precise dataset protocol, dependencies, seed controls, commands, results, and limitations.
+- [ ] Validate the experiment with independent review when possible.
+- [ ] Expand to numerical neuron tests, cross-framework checks and efficient execution only when maintenance capacity exists.
 
-## Phase 3 — Research reproducibility
+## How to participate
 
-- [ ] Select one reproducible, publicly distributable reference experiment.
-- [ ] Publish pinned dependencies, data protocol, configuration, launch command, hardware description, seeds, metrics, and run logs.
-- [ ] Distinguish successful execution from faithful reproduction and independent replication.
-- [ ] Assess whether a separate `snn-reproductions` repository is warranted by contributor activity.
+Open a [community proposal issue](https://github.com/SNNCommunity/.github/issues/new/choose), review [existing tasks](https://github.com/SNNCommunity/.github/issues), or submit a pull request following [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Long-term
-
-- Develop interoperable numerical and performance-testing tools.
-- Encourage sustained technical review across frameworks and hardware platforms.
-- Grow SNN-related event perception and embodied intelligence as evidence-backed, maintainable initiatives.
-- Revisit governance once there are independent, regular contributors.
-
-## How to propose a change
-
-Open a [community proposal issue](https://github.com/SNNCommunity/.github/issues/new/choose), describe a measurable user or research need, scope a small initial version, and identify supporting references. Changes to this roadmap should be reviewed in pull requests.
-
-[Governance](GOVERNANCE.md) · [Contribution guide](CONTRIBUTING.md)
+[Website](https://snncommunity.github.io/.github/) · [Repository guide](README.md)
