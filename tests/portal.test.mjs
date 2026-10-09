@@ -48,3 +48,14 @@ test('progressive enhancement and WCAG-oriented interaction styles',()=>{
  assert.match(js,/function shareURL\(\)/);
  assert.match(js,/function toCSV\(main,other\)/);
 });
+
+test('share preview and avatar are real PNG binaries with specified dimensions',()=>{
+ for(const [path,width,height] of [['docs/social-card.png',1200,630],['docs/avatar.png',512,512]]){
+   const data=readFileSync(new URL('../'+path,import.meta.url));
+   assert.equal(data.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+   assert.equal(data.readUInt32BE(16),width);
+   assert.equal(data.readUInt32BE(20),height);
+ }
+ assert.match(html,/og:image" content="https:\/\/snncommunity\.github\.io\/\.github\/social-card\.png"/);
+ assert.match(html,/twitter:card" content="summary_large_image"/);
+});
