@@ -208,11 +208,24 @@
       reset:"hard_to_zero",initial_voltage:0,tau_ms:state.tau,threshold:state.threshold,
       amplitude:state.current,input_pattern:state.mode};
   }
+  // Share links contain only the four public experiment parameters.
+  // Never forward arbitrary incoming query keys (which could carry tokens).
   function shareURL() {
-    const url=new URL(window.location.protocol==="file:"?"https://snncommunity.github.io/.github/":window.location.href);
+    const url=new URL("https://snncommunity.github.io/.github/");
     for(const key of ["tau","threshold","current","mode"])url.searchParams.set(key,String(state[key]));
     url.hash="lab";
     return url.href;
+  }
+  // Once an imported setup is edited, remove the old parameters from the
+  // browser URL so reloading cannot silently restore the superseded state.
+  function clearImportedParameters() {
+    if(window.location.protocol==="file:" || !window.history?.replaceState) return;
+    const url=new URL(window.location.href);
+    let changed=false;
+    for(const key of ["tau","threshold","current","mode"]) {
+      if(url.searchParams.has(key)){url.searchParams.delete(key);changed=true;}
+    }
+    if(changed)window.history.replaceState(window.history.state,"",url.pathname+url.search+url.hash);
   }
   function download(blob,filename) {
     const objectURL=URL.createObjectURL(blob);
@@ -231,20 +244,20 @@
   for(const [key,el] of Object.entries(configEls)){
     el?.addEventListener("input",()=>{
       state[key]=Number(el.value);
-      syncInputs();clearShareFallback();paint();
+      clearImportedParameters();syncInputs();clearShareFallback();paint();
     });
   }
   document.querySelectorAll('input[name="input-mode"]').forEach(el=>el.addEventListener("change",()=>{
-    if(el.checked){state.mode=el.value;syncInputs();clearShareFallback();paint();}
+    if(el.checked){state.mode=el.value;clearImportedParameters();syncInputs();clearShareFallback();paint();}
   }));
   document.querySelectorAll(".preset-button").forEach(button=>button.addEventListener("click",()=>{
     Object.assign(state,presetConfigs[button.dataset.preset]);
-    syncInputs();clearShareFallback();paint();
+    clearImportedParameters();syncInputs();clearShareFallback();paint();
     feedback(button.textContent+" example loaded.");
   }));
   $("reset-lab")?.addEventListener("click",()=>{
     Object.assign(state,initial);
-    syncInputs();clearShareFallback();paint();
+    clearImportedParameters();syncInputs();clearShareFallback();paint();
     feedback("Default experiment restored.");
   });
   $("copy-config")?.addEventListener("click",async()=>{
@@ -282,10 +295,16 @@
       else feedback("Unable to export this plot.");
     },"image/png");
   });
-  let observer;
+  // Observe the containing panel, not the canvas whose backing dimensions
+  // are modified by paint(). Coalesce multiple resize notifications.
+  let observer, pendingFrame=0;
+  const schedulePaint=()=>{
+    if(pendingFrame)return;
+    pendingFrame=window.requestAnimationFrame(()=>{pendingFrame=0;paint();});
+  };
   if(typeof ResizeObserver!=="undefined") {
-    observer=new ResizeObserver(()=>{window.requestAnimationFrame(paint);});
-    if(canvas)observer.observe(canvas);
-  } else window.addEventListener("resize",paint);
+    observer=new ResizeObserver(schedulePaint);
+    if(canvas?.parentElement)observer.observe(canvas.parentElement);
+  } else window.addEventListener("resize",schedulePaint);
   paint();
 })();
