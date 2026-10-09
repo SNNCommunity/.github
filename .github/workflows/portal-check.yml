@@ -31,7 +31,7 @@ jobs:
           node --check docs/app.js
           node --check docs/neuron-core.js
       - name: Run portal source checks
-        run: node --test tests/portal.test.mjs tests/neuron-core.test.mjs
+        run: node --test tests/portal.test.mjs tests/neuron-core.test.mjs tests/typography.test.mjs
   browser-smoke:
     runs-on: ubuntu-latest
     steps:

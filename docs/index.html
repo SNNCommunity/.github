@@ -161,6 +161,9 @@
         <div class="library-toolbar"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search resources</label><input id="resource-search" type="search" placeholder="Search frameworks, papers, tools…" autocomplete="off"></div><div class="filter-chips" role="group" aria-label="Filter by topic"><button class="filter-chip active" data-filter="all" aria-pressed="true">All</button><button class="filter-chip" data-filter="learn" aria-pressed="false">Learn</button><button class="filter-chip" data-filter="frameworks" aria-pressed="false">Frameworks</button><button class="filter-chip" data-filter="evaluation" aria-pressed="false">Evaluation</button><button class="filter-chip" data-filter="events" aria-pressed="false">Events</button></div></div>
         <div class="resource-provenance"><strong>Index status ≠ reproduced.</strong> Entries include original source, publication DOI where available, code links and upstream licensing references. SNNCommunity has not independently certified any listed implementation or paper.</div>
         <div id="resource-grid" class="resource-grid"></div>
+        <div class="resource-expand" hidden>
+          <button id="resource-more" type="button" class="resource-more" aria-controls="resource-grid" aria-expanded="false" hidden>View all resources <span aria-hidden="true">↓</span></button>
+        </div>
         <noscript>
           <div class="noscript-resources">
             <p>The searchable directory requires JavaScript. You can still open the original projects directly:</p>
