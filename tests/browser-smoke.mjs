@@ -15,7 +15,7 @@ const servedFiles=new Map([['index.html','text/html'],['styles.css','text/css'],
   ['app.js','text/javascript'],['favicon.svg','image/svg+xml'],['404.html','text/html']]);
 const server=createServer((req,res)=>{
   const pathname=new URL(req.url,'http://localhost').pathname;
-  const name=pathname.startsWith('/.github/')?pathname.slice('/.github/'.length):'';
+  const name=(pathname.startsWith('/.github/')?pathname.slice('/.github/'.length):'')||'index.html';
   if(!servedFiles.has(name)){res.writeHead(404);res.end('Not found');return;}
   res.writeHead(200,{'Content-Type':servedFiles.get(name)+'; charset=utf-8'});
   res.end(readFileSync(resolve('docs',name)));
