@@ -56,6 +56,23 @@ node --test tests/portal.test.mjs tests/neuron-core.test.mjs
 
 The browser smoke suite is executed through GitHub Actions with Playwright/Chromium and screenshots attached to the run. It is not a complete WCAG 2.2 audit.
 
+## Typography and resource browse behavior
+
+The publishing design uses a readable 16 px baseline, 14–17 px action text and
+scientific descriptions, and 12–13 px metadata. Interactive controls target at
+least 44 px vertical touch height; `prefers-reduced-motion` and visible keyboard
+focus remain supported. These design targets are not an independent WCAG
+certification. Browser checks validate computed font sizes and minimum control
+bounds across 1440, 768, 390 and 320 CSS pixel viewports.
+
+The resource index initially renders **six** cards to reduce page length on
+small displays. The `View all resources` control reveals all indexed cards;
+active search or category filters display **all** matching entries without
+pagination or silent omission. Every index entry retains its source provenance
+and `indexed_not_reproduced` disclosure. The show-all section is hidden when
+unneeded, including its spacing. Original resource URLs remain accessible
+without JavaScript.
+
 ## Research resource governance
 
 `docs/resources.json` is the sole source of the 12 current curated records. Every entry has a stable ID, original source URL, resource category/type, publisher, DOI and original code when available, upstream license reference when known, and `verification: indexed_not_reproduced`. Null license means **not validated**, not public domain.
