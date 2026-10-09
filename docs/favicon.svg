@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SNN Community spike mark">
+<rect width="64" height="64" rx="15" fill="#101d23"/>
+<path d="M10 47H54" stroke="#8bafa4" stroke-width="1.5"/>
+<path d="M14 44V29M23 44V14M32 44V35M41 44V20M50 44V27" stroke="#b8edce" stroke-width="4" stroke-linecap="round"/>
+<circle cx="23" cy="14" r="3" fill="#eeb185"/><circle cx="41" cy="20" r="3" fill="#eeb185"/>
+</svg>
