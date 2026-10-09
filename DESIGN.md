@@ -1,6 +1,6 @@
-# SNNCommunity visual identity (draft)
+# SNNCommunity visual identity
 
-> This guide accompanies the unmerged visual redesign proposal. It is not an official design standard until the PR is reviewed and merged.
+> This guide describes the visual identity published in the organization's GitHub profile. Browser-based visual accessibility and responsive checks remain part of ongoing quality assurance.
 
 ## Design thesis
 
@@ -44,10 +44,10 @@ All source assets are editable SVG files without scripts, external images, remot
 - Confirm alt text communicates the words *SNN Community* and the scientific meaning of the graphic.
 - Ensure important meaning is in HTML/Markdown text, not only embedded in an image.
 - Confirm relative image paths from `profile/README.md` resolve in the **organization Overview**, not merely in the source file preview.
-- Do not auto-merge this draft until checks pass.
+- Require the same review checklist for future visual identity changes.
 
 ## Longer-term site
 
 The GitHub profile is a **gateway**, not the whole community website. When real resources exist, a distinct `SNNCommunity.github.io` GitHub Pages repository can host search, structured learning paths, research-topic navigation and updates. Do not publish an empty portal that looks larger than the actual project.
 
-[Preview changes](https://github.com/SNNCommunity/.github/pull/5)
+[V3 design change history](https://github.com/SNNCommunity/.github/pull/5)
