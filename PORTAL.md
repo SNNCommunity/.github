@@ -1,49 +1,70 @@
-# SNNCommunity Next-Generation Portal
+# SNN Community — Website and engineering guide
 
-This repository now contains a complete static portal in [`docs/`](docs/) that can be published using GitHub Pages directly, with **no package installation or build step**.
+**Canonical public website:** https://snncommunity.github.io/.github/
 
-## Why a static release rather than an Astro-first build?
+**Status:** GitHub's Pages deployment workflow reported a successful deployment to this URL on October 9, 2026. Public browsing should still be rechecked when verifying later changes. The published site is the `docs/` folder on `main`; no build step is required.
 
-The first release prioritizes a working interactive experiment and a robust deployment path that is compatible with the GitHub connector's current constraints. GitHub Pages can publish directly from a repository's `main/docs` directory without a CI toolchain, dependency lock, external build platform or Node runtime. The code remains portable to a future dedicated `SNNCommunity.github.io` repository or an Astro site.
+## Single source of truth
 
-The **GitHub organization owner must activate Pages**; the current GitHub connector cannot change Pages settings or create new repositories:
+```text
+docs/
+├── index.html       # The website structure, semantics and content
+├── styles.css       # Responsive, light editorial visual language
+├── app.js           # LIF simulation, resource filters and navigation
+├── favicon.svg      # Canonical compact community icon
+├── 404.html         # Pages fallback
+└── .nojekyll        # Prevent Jekyll processing
+```
 
-1. Go to [SNNCommunity/.github Settings → Pages](https://github.com/SNNCommunity/.github/settings/pages).
-2. Select **Deploy from a branch**.
-3. Select **main** and **/docs**, and save.
-4. Wait for GitHub Pages to finish deployment and use the exact URL shown in Settings → Pages.
+There are **no other website themes, legacy assets, generators, frameworks, or runtime dependencies** in the published release. The GitHub organization profile uses `docs/favicon.svg` so the mark has only one source.
 
-For this project repository the conventional URL is `https://snncommunity.github.io/.github/`. **Do not announce it as live until GitHub reports a successful deployment.**
+## Local preview
 
-After confirmation, the organization Profile README can link directly to the live site. Organization website and custom avatar must also be changed in GitHub Settings by an owner.
+From the repository root:
 
-## What's in the first release?
+```bash
+python3 -m http.server 8000 --directory docs
+```
 
-- An editorial-style responsive website with entirely self-hosted CSS, JS, SVG and system-font assets.
-- An honest founding-stage community overview and actionable links to existing GitHub Issues.
-- An interactive **LIF neuron lab** with adjustable membrane time constant, threshold, input amplitude and step/pulse stimulus; canvas trace and spike raster are calculated locally.
-- A searchable and filterable directory of curated original SNN resources with external attribution.
-- Direct access to contribution, governance, security and community planning.
+Open `http://localhost:8000/`. There are no Node or Python runtime requirements for visitors. Node is used only for development tests.
 
-## Scientific model notes
+## Mathematical definition
 
-The lab uses a dimensionless scalar LIF model, with a 1 ms forward-Euler update:
+The interactive lab demonstrates a **dimensionless discrete-time Leaky Integrate-and-Fire neuron** using forward Euler, a fixed 1 ms step, zero initial state, and hard reset:
 
-`V[t+1] = V[t] + (dt/tau) * (-V[t] + I[t])`
+```text
+V[t+1] = V[t] + (1 ms / tau) * ( -V[t] + I[t] )
+if V[t+1] >= threshold: emit a spike at t+1 ms; reset V[t+1] to 0
+```
 
-If `V[t+1] >= threshold`, an event is recorded and `V[t+1]` is reset to zero. The model uses `V[0] = 0`, `dt = 1 ms`, `T = 200 ms`. The step pattern is on for `12 <= t < 188`; the pulse pattern presents a stronger duty-cycled stimulus during the same interval. It is an educational, dimensionless illustration, not biologically calibrated or a performance benchmark.
+The simulation covers **200 update steps**, producing **201 membrane samples** from `t = 0` through `t = 200 ms`. Two input patterns are available:
 
-## Editing and review
+- **Step**: amplitude `A` for `12 <= t < 188`, otherwise 0.
+- **Pulses**: amplitude `1.75 * A` for the first 22 ms of each 40 ms cycle starting at t=12, restricted to `12 <= t < 188`.
 
-- `docs/index.html` — page structure and accessible navigation.
-- `docs/styles.css` — responsive and visual design system.
-- `docs/app.js` — local deterministic simulation and resource filtering.
-- `docs/favicon.svg` — brand symbol.
-- `docs/404.html` — fallback page.
-- `docs/.nojekyll` — disable Jekyll processing in branch deployment.
+Spike counts and the last interspike interval are derived from recorded event times. Charted spike peaks illustrate the crossing before reset; the stored membrane sample following firing is zero. Input amplitudes and voltages are **normalized, not biologically calibrated**. This site does not make a research-performance or energy-efficiency claim.
 
-Check desktop/mobile, keyboard navigation, reduced-motion preferences, low-width layout, script availability, resource filtering, clipboard failure, mathematical interpretation and GitHub links. For research content, comply with [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md).
+## Curated sources
 
-## Important boundaries
+The introductory collection links to independently maintained documentation, frameworks, benchmarks and original research. Indexing a resource **does not validate or certify a paper**, nor does it imply partnership. The resource schema is currently a local static array in `docs/app.js`; move it to separately validated structured content only when the library grows enough to warrant a dedicated data pipeline.
 
-This portal is **independent**, not university-affiliated or officially endorsed by third-party frameworks. The directory is a curated set of *externally maintained* resources, not a claim of original project authorship or completed reproducibility checks. User data is not collected or sent to the site server; there are no analytics, cookies, fonts loaded from a CDN or external runtime dependencies.
+## Release quality gates
+
+The `portal-check.yml` GitHub Actions workflow runs:
+
+- Node.js syntax and source-contract checks.
+- Headless Chromium tests for default spike output, subthreshold conditions, parameter reset, resource filtering, mobile navigation and horizontal overflow.
+- Accessibility-conscious element and keyboard-navigation smoke checks.
+- Test screenshots uploaded as CI artifacts.
+
+This is a smoke-testing baseline, not a replacement for human visual review or a formal accessibility audit.
+
+## Deployment
+
+The current branch-based GitHub Pages source is expected to be **`main /docs`**. An organization owner may review this in [repository Pages settings](https://github.com/SNNCommunity/.github/settings/pages). GitHub publishes changes to the selected source folder after merges to `main`; verify the Pages deployment and actual live page after each release.
+
+The owner controls Organization **avatar, display name, URL and pinned repositories** in GitHub's organization settings; those properties are not set by code in this repository.
+
+## Scientific and community integrity
+
+Contributions should follow [CONTRIBUTING.md](CONTRIBUTING.md), [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md), and [GOVERNANCE.md](GOVERNANCE.md). Avoid invented affiliation, artificial community metrics, unsafe credential exposure, or unpublished data. Other GitHub project history and merged PRs remain part of normal Git history even when obsolete files are removed from the working tree.
