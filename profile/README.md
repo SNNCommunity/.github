@@ -1,66 +1,48 @@
-# SNN Community
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../assets/hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="../assets/hero-light.svg">
+    <img src="../assets/hero-light.svg" width="1200" alt="SNN Community. Spiking Neural Networks, discrete spike raster across time, and neuron membrane dynamics.">
+  </picture>
+</div>
 
-**Spiking Neural Networks Community**
-
-*Advancing Spiking Intelligence, Together.*
-
-Welcome to **SNNCommunity**, an independent, open community for people learning, researching, building, and evaluating **spiking neural networks (SNNs)**.
-
-We aim to make SNN knowledge easier to discover, experiments easier to reproduce, and open-source collaboration easier to join. Researchers, students, software engineers, neuromorphic hardware developers, and curious newcomers are welcome.
-
-## What belongs here?
-
-| Area | Topics |
-| --- | --- |
-| **Learn SNNs** | Neuron models, spike encoding, surrogate-gradient learning, tutorials |
-| **Research & papers** | Methods, paper discussions, scientific questions, literature |
-| **Open-source tools** | Frameworks, testing, numerical correctness, performance |
-| **Reproducibility** | Experimental protocols, datasets, baselines, transparent results |
-| **Neuromorphic systems** | Efficient execution, event-driven computing, hardware |
-| **Embodied intelligence** | Event-based perception, robotics, temporal decision-making |
-
-Our focus is **spiking neural networks**; related areas are welcome when there is a clear connection to SNN research or practice.
-
-## Get started
-
-- **New to SNNs?** Start with established learning resources such as [snnTorch tutorials](https://snntorch.readthedocs.io/) and [SpikingJelly documentation](https://spikingjelly.readthedocs.io/).
-- **Have a question or a resource?** Read our [support guide](https://github.com/SNNCommunity/.github/blob/main/SUPPORT.md) and [contribution guide](https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md).
-- **Want to contribute?** Propose a well-scoped issue or pull request in an appropriate community repository; see [open issues](https://github.com/SNNCommunity/.github/issues) for improvements to community documentation.
-- **Encountered a security concern?** Follow the [security policy](https://github.com/SNNCommunity/.github/blob/main/SECURITY.md) rather than publishing sensitive details.
-
-We follow a [Code of Conduct](https://github.com/SNNCommunity/.github/blob/main/CODE_OF_CONDUCT.md) in all community spaces.
-
-## How this community is run
-
-We keep decisions, contributions, and scientific evidence transparent. See the [community governance policy](https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md), [research and reproduction standards](https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md), and [current roadmap](https://github.com/SNNCommunity/.github/blob/main/ROADMAP.md).
-
-**Please note:** new collaboration repositories and organization-wide Discussions are still in preparation. The [community documentation issue tracker](https://github.com/SNNCommunity/.github/issues) is currently the available place to suggest improvements or corrections to this homepage.
-
-## Community roadmap
-
-**Current phase: initial setup.** The community website, central discussion space, curated resource collection, and reproducibility initiatives are being developed incrementally. Repositories or events not yet linked here should not be assumed to exist.
-
-Our priorities are:
-
-1. Establish a clear, welcoming contribution process.
-2. Publish curated, properly attributed SNN learning and research resources.
-3. Develop transparent, reproducible examples and evaluation protocols.
-4. Invite contributors to help maintain specialized research and engineering projects.
-
-## Principles
-
-- **Open science:** cite original authors, preserve licenses, and distinguish reproduced evidence from unverified claims.
-- **Reproducibility:** report software versions, configurations, datasets, seeds, and relevant hardware.
-- **Interoperability:** complement existing SNN frameworks rather than duplicate them unnecessarily.
-- **Responsible collaboration:** respect contributor credit, safety, privacy, and publication restrictions.
-- **Accessible participation:** welcome both first-time learners and experienced researchers.
-
-### Related open-source ecosystem
-
-We learn from and may link to independent projects such as [SpikingJelly](https://github.com/fangwei123456/spikingjelly), [snnTorch](https://github.com/jeshraghian/snntorch), [Norse](https://github.com/norse/norse), and [NeuroBench](https://github.com/NeuroBench/neurobench). These links **do not imply affiliation or endorsement**.
+<p align="center"><strong>Advancing Spiking Intelligence, Together.</strong></p>
+<p align="center">
+  An open community for learning, building, and reproducing work in
+  <strong>spiking neural networks and neuromorphic computing.</strong>
+</p>
+<p align="center">
+  <a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">Contribute</a> ·
+  <a href="https://github.com/SNNCommunity/.github/issues/new/choose">Propose an idea</a> ·
+  <a href="https://github.com/SNNCommunity/.github/blob/main/ROADMAP.md">Roadmap</a>
+</p>
 
 ---
 
-**Community status:** early-stage and community-driven. This is an independent initiative, not an official university, company, or conference organization. Contributions and public experiments will be attributed to their actual authors; repository publication does not certify scientific claims.
+### Find your path
 
-[GitHub organization](https://github.com/SNNCommunity) · [Contributing](https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md) · [Support](https://github.com/SNNCommunity/.github/blob/main/SUPPORT.md)
+**01 / Learn** — Explore spiking neurons, surrogate gradients, neural dynamics, event-based processing, and temporal architectures. Get started with [snnTorch tutorials](https://snntorch.readthedocs.io/), [SpikingJelly documentation](https://spikingjelly.readthedocs.io/), or [Norse](https://github.com/norse/norse).
+
+**02 / Reproduce** — Make model implementations, training configurations, experimental comparisons, and their limitations easier to inspect. Read the [community reproducibility standards](https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md).
+
+**03 / Build together** — Propose a resource, report a documentation issue, review changes, or help shape open projects. Visit our [contribution guide](https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md) and [open tasks](https://github.com/SNNCommunity/.github/issues).
+
+### What's taking shape
+
+We are an **early-stage community**. These are public initiatives in preparation, **not completed or launched projects**.
+
+- **Community hub** — [Discussions, collaboration and governance](https://github.com/SNNCommunity/.github/issues/2).
+- **Research library** — [Curated SNN papers, frameworks, tutorials and datasets](https://github.com/SNNCommunity/.github/issues/3).
+- **Reproducible experiments** — [A documented reference experiment and evaluation protocol](https://github.com/SNNCommunity/.github/issues/4).
+
+### From neurons to intelligent systems
+
+SNNCommunity welcomes work across **neuron dynamics · learning algorithms · deep SNNs · event-based vision · efficient execution · neuromorphic hardware · SNN-enabled robotics and embodied intelligence**.
+
+Our aim is to complement existing projects, credit original creators, and cultivate reproducible, open research—without claiming official affiliation or endorsement.
+
+---
+
+<p align="center">
+  <sub><a href="https://github.com/SNNCommunity/.github/blob/main/GOVERNANCE.md">Governance</a> · <a href="https://github.com/SNNCommunity/.github/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a> · <a href="https://github.com/SNNCommunity/.github/blob/main/SUPPORT.md">Support</a> · <a href="https://github.com/SNNCommunity/.github/blob/main/SECURITY.md">Security</a></sub>
+</p>
