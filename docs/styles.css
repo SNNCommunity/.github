@@ -168,7 +168,6 @@ input[type=range] { width:100%; height:32px; accent-color:#247962; cursor:pointe
 .resource-card:hover { border-color:#6caa92; box-shadow:0 15px 28px #14321c0e; transform:translateY(-2px); }
 .resource-card-head { display:flex; justify-content:space-between; gap:12px; align-items:start; }
 .resource-label { text-transform:uppercase; color:#458070; letter-spacing:.12em; font-size:12px; font-weight:850; }
-.resource-arrow { color:#3a7667; font-size:20px; }
 .resource-card h3 { font-size:21px; letter-spacing:-.028em; line-height:1.32; margin:20px 0 12px; }
 .resource-card p { font-size:15px; line-height:1.7; color:#62736b; margin:0; flex:1; }
 .resource-card-bottom { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8e1; padding-top:14px; margin-top:23px; gap:15px; }
@@ -375,4 +374,15 @@ input[type=range] { width:100%; height:32px; accent-color:#247962; cursor:pointe
   .visual-heading,.visual-footer {font-size:10px;letter-spacing:.06em}
   .community-list small {font-size:13px}
   .lab-status small {font-size:10px}
+}
+
+/* Research index: show fewer cards by default without hiding search results. */
+.resource-expand { display:flex;justify-content:center;margin:25px 0 4px; }
+.resource-more { min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:17px;min-width:228px;padding:13px 22px;border:1px solid #557a68;background:transparent;color:#1c5a49;font-size:14px;font-weight:800;border-radius:3px; }
+.resource-more:hover { background:#e5f2e9; }
+.resource-more[hidden] { display:none; }
+.resource-more:focus-visible { outline:3px solid #d17a48;outline-offset:4px; }
+@media (max-width:560px) {
+  .resource-expand { margin:19px 0 0; }
+  .resource-more { width:100%; min-height:48px; }
 }
