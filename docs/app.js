@@ -187,18 +187,23 @@
   });
 
   // Static source index. Never infer project authorship, license or reproduction.
-  const cards=$("resource-grid"),count=$("resource-count"),search=$("resource-search"),empty=$("resource-empty");
-  let all=[],category="all";
+  const cards=$("resource-grid"),count=$("resource-count"),search=$("resource-search"),empty=$("resource-empty"),more=$("resource-more");
+  const initialResourceLimit=6;
+  let all=[],category="all",expanded=false;
   function node(tag,className,textContent){const el=document.createElement(tag);if(className)el.className=className;if(textContent!==undefined)el.textContent=String(textContent);return el;}
   function renderResources() {
     const q=(search?.value||"").toLowerCase().trim();
     const filtered=all.filter(x=>(category==="all"||x.category===category)&&
       [x.title,x.description,x.publisher,x.type,x.doi||""].join(" ").toLowerCase().includes(q));
+    // Show a readable sample first; filtered/search results always show every match.
+    const focused=Boolean(q)||category!=="all";
+    const visible=focused||expanded?filtered:filtered.slice(0,initialResourceLimit);
     const fragment=document.createDocumentFragment();
-    for(const x of filtered){
+    for(const x of visible){
       const card=node("article","resource-card");
       const top=node("div","resource-card-head");
-      top.append(node("span","resource-label",x.category+" · "+x.type),node("span","resource-arrow","↗"));
+      // No decorative link arrow on a non-clickable card container.
+      top.append(node("span","resource-label",x.category+" · "+x.type));
       card.append(top,node("h3","",x.title),node("p","",x.description));
       const meta=node("div","resource-metadata");
       meta.append(node("span","",x.publisher+(x.year?" · "+x.year:"")));
@@ -213,10 +218,20 @@
       card.append(meta,open);fragment.append(card);
     }
     cards.replaceChildren(fragment);empty.hidden=filtered.length!==0;
-    count.textContent=filtered.length+" of "+all.length+" indexed sources";
+    if(more){
+      more.hidden=focused||filtered.length<=initialResourceLimit;
+      more.setAttribute("aria-expanded",String(expanded));
+      more.firstChild.textContent=expanded?"Show fewer resources ":"View all "+filtered.length+" resources ";
+    }
+    count.textContent="Showing "+visible.length+" of "+filtered.length+" matches · "+all.length+" indexed sources";
   }
+  more?.addEventListener("click",()=>{
+    expanded=!expanded;
+    renderResources();
+  });
   document.querySelectorAll(".filter-chip").forEach(button=>button.addEventListener("click",()=>{
     category=button.dataset.filter||"all";
+    expanded=false;
     for(const other of document.querySelectorAll(".filter-chip")){
       const enabled=button===other;other.classList.toggle("active",enabled);other.setAttribute("aria-pressed",String(enabled));
     }
