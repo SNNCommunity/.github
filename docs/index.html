@@ -103,7 +103,7 @@
             <div class="control-field"><label for="current">Input amplitude <strong id="current-value">1.55</strong></label><input id="current" type="range" min="0.50" max="2.30" step="0.05" value="1.55"><div class="range-label"><span>0.50</span><span>2.30</span></div></div>
             <fieldset class="input-mode"><legend>Input pattern</legend><label><input type="radio" name="input-mode" value="step" checked><span>Step current</span></label><label><input type="radio" name="input-mode" value="pulses"><span>Pulse train</span></label></fieldset>
             <div class="lab-actions"><button class="button button-dark" id="reset-lab" type="button">Reset experiment <span aria-hidden="true">↻</span></button><button class="button button-outline" id="copy-config" type="button">Copy config <span aria-hidden="true">↗</span></button></div>
-            <p class="model-note" id="model-summary">Normalized LIF model · 1 ms Euler steps · hard reset after threshold crossing. A teaching example, not experimental or energy-efficiency evidence.</p>
+            <p class="model-note" id="model-summary">Normalized LIF model · forward Euler (1 ms steps) · hard reset at threshold crossing. Educational visualization, not benchmark evidence.</p>
           </div>
         </div>
       </div>
