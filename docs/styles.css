@@ -290,3 +290,18 @@ input[type=range] { width:100%; accent-color:#247962; cursor:pointer; }
   html { scroll-behavior:auto; }
   *,*::before,*::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
 }
+
+/* Reproducible lab utilities: compact responsive controls, native focus and feedback. */
+.lab-presets { margin: 0 0 22px; padding: 16px 0 19px; border-top: 1px solid #d6dfd7; border-bottom: 1px solid #d6dfd7; }
+.preset-heading { display: block; margin-bottom: 11px; font-size: 10px; font-weight: 800; letter-spacing: .11em; color: #477563; }
+.preset-buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+.preset-button { background: #fff; border: 1px solid #c7d9cd; padding: 9px 10px; color: #345a4b; font-weight: 700; font-size: 11px; border-radius: 3px; }
+.preset-button[aria-pressed="true"],.preset-button:hover { background: #245f4d; color: #fff; border-color: #245f4d; }
+.lab-actions { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+.lab-actions .button { width:100%; min-width:0; font-size:11px; white-space:normal; line-height:1.25; }
+.lab-actions .button:first-child { grid-column: 1/-1; }
+.lab-feedback { min-height: 1.6em; margin: 14px 0 0; font-size:11px; line-height:1.55; color:#266d58; font-weight: 700; overflow-wrap:anywhere; }
+.share-fallback { background:#fff; border:1px solid #c9dbce; padding:12px; margin-top:9px; }
+.share-fallback[hidden] { display:none; }
+.share-fallback label { display:block; color:#517366; font-weight:700; font-size:11px; margin-bottom:7px; }
+.share-fallback input { display:block; width:100%; padding:9px; border:1px solid #a7c4b4; border-radius:2px; color:#15392b; font-size:11px; }
