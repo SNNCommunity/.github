@@ -25,7 +25,14 @@ try {
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base,{waitUntil:'load'});
  await page.locator('.resource-card').first().waitFor();
- assert.equal(await page.locator('.resource-card').count(),12);
+ assert.equal(await page.locator('.resource-card').count(),6,'initially show six curated resources');
+ assert.equal(await page.locator('#resource-more').isVisible(),true,'view all button is visible');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),12,'view all reveals all twelve resources');
+ assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'true');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),6,'show fewer restores concise index');
+ assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'false');
  assert.ok(Number(await page.locator('#spike-count').innerText())>0,'default LIF fires');
  assert.ok(Number(await page.locator('#if-count').innerText())>0,'matched IF fires');
  assert.match(await page.locator('#experiment-summary').innerText(),/IF without leak/);
@@ -72,7 +79,7 @@ try {
  assert.equal(await page.locator('#resource-empty').isVisible(),true);
  await page.locator('#resource-search').fill('');
  await page.locator('.filter-chip[data-filter="all"]').click();
- assert.equal(await page.locator('.resource-card').count(),12);
+ assert.equal(await page.locator('.resource-card').count(),6,'all category restores the compact index');
 
  await page.goto(base+'?tau=12&threshold=0.75&current=1.60&mode=pulses&compare=0&token=keep-private#lab');
  assert.equal(await page.locator('#tau').inputValue(),'12');
