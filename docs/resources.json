@@ -1158,7 +1158,6 @@
       "aliases": [
         "neurons",
         "LIF",
-        "PLIF",
         "神经元动力学",
         "膜电位"
       ]
