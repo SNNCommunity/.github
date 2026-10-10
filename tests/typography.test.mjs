@@ -15,7 +15,8 @@ test("operational text color pairs exceed WCAG AA normal text contrast",()=>{
 });
 test("type tokens and readability sizing are present",()=>{
  assert.match(css,/--type-body:\s*1rem/);
- assert.match(css,/--type-ui:\s*\.9375rem/);\n assert.match(css,/--type-support:\s*\.875rem/);
+ assert.match(css,/--type-ui:\s*\.9375rem/);
+ assert.match(css,/--type-support:\s*\.875rem/);
  assert.match(css,/--reading-measure:\s*68ch/);
  assert.match(css,/--type-reading:1rem/);
  assert.match(css,/\.atlas-card>p\{font-size:var\(--type-reading\)/);
