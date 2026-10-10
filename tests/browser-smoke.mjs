@@ -8,12 +8,13 @@ const server=createServer((req,res)=>{
  const u=new URL(req.url,'http://localhost');
  const path=u.pathname.startsWith('/.github/')?u.pathname.slice(9):'';
  const name=path||'index.html';
- if(!['index.html','styles.css','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)){
+ const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
+ if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper){
   res.writeHead(404);res.end('Not found');return;
  }
- const file=resolve('docs',name);
+ const file=resolve('docs',name.endsWith('/')?name+'index.html':name);
  if(!existsSync(file)){res.writeHead(404);res.end('Not found');return;}
- res.writeHead(200,{'Content-Type':mime[name.split('.').pop()]||'text/plain'});
+ res.writeHead(200,{'Content-Type':mime[file.split('.').pop()]||'text/plain'});
  res.end(readFileSync(file));
 });
 await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
@@ -71,11 +72,21 @@ try {
  assert.equal(og.headers()['content-type'],'image/png');
  assert.ok((await og.body()).length>5000);
 
+ const record=await page.request.get(base+'papers/sew-resnet-2021/');
+ assert.equal(record.status(),200,'source-linked paper route works');
+ const body=await record.text();
+ assert.match(body,/Peng Cheng Laboratory/);
+ assert.match(body,/Not independently reproduced/);
+ assert.match(body,/canonical.*papers\/sew-resnet-2021/);
+ const siteMap=await page.request.get(base+'sitemap.xml');
+ assert.match(await siteMap.text(),/papers\/plif-2021/);
  await page.locator('#atlas-format').selectOption('paper');
  assert.equal(await page.locator('.resource-card').count(),6,'filtered results are paginated');
+ assert.equal(await page.locator('.atlas-record-link').count(),6,'visible papers have internal record links');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),13,'all paper results available');
  await page.locator('#atlas-year').selectOption('2026');
+ assert.ok(new URL(page.url()).searchParams.has('atlas.year'));
  await page.locator('#atlas-venue-type').selectOption('Conference');
  await page.locator('#atlas-venue').selectOption('ICML');
  assert.equal(await page.locator('.resource-card').count(),2,'ICML 2026 intersection');
@@ -99,8 +110,14 @@ try {
  assert.ok(await page.locator('.resource-card').count()>0,'unverified affiliation papers explicitly discoverable');
  await page.locator('#atlas-reset').click();
  await page.locator('.atlas-topic[data-topic="robotics-embodied"]').click();
+ await page.locator('.atlas-topic[data-topic="deep-architectures"]').click();
+ assert.equal(await page.locator('.atlas-topic[aria-pressed="true"]').count(),2);
+ await page.locator('#atlas-topic-mode').selectOption('all');
+ assert.match(page.url(),/atlas.mode=all/);
+ await page.locator('#atlas-topic-mode').selectOption('any');
  assert.ok(await page.locator('.resource-card').count()>=2,'multi-topic discoverable');
  await page.locator('#resource-search').fill('SpikeVLA');
+ assert.ok(await page.locator('.atlas-active-chip').count()>0);
  assert.equal(await page.locator('.resource-card').count(),1);
  await page.locator('#resource-search').fill('impossible missing');
  assert.equal(await page.locator('.resource-card').count(),0);
@@ -109,6 +126,15 @@ try {
  await page.locator('#atlas-reset').click();
  assert.equal(await page.locator('.resource-card').count(),6,'clear filters restores untruncated preview');
 
+ await page.goto(base+'?token=private-value&atlas.topic=neuron-dynamics#library');
+ await page.locator('.resource-card').first().waitFor();
+ await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
+ await page.locator('#atlas-copy').click();
+ const clean=await page.locator('#atlas-copy-input').inputValue();
+ assert.ok(clean.includes('atlas.topic=neuron-dynamics'));
+ assert.ok(!clean.includes('token='));
+ assert.ok(clean.endsWith('#library'));
+ await page.locator('#atlas-reset').click();
  await page.goto(base+'?tau=12&threshold=0.75&current=1.60&mode=pulses&compare=0&token=keep-private#lab');
  assert.equal(await page.locator('#tau').inputValue(),'12');
  assert.equal(await page.locator('#if-count').innerText(),'Off');
