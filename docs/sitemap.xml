@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://snncommunity.github.io/.github/</loc>
-    <lastmod>2026-10-09</lastmod>
-    <changefreq>monthly</changefreq>
-  </url>
+  <url><loc>https://snncommunity.github.io/.github/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/eshraghian-2023/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/neftci-2019/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/gallego-2022/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/sew-resnet-2021/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/plif-2021/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/spikformer-2023/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/spikingjelly-paper-2023/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/spikellm-2025/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/spikachu-2025/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/spike-htr-2026/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/spike-vla-2026/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/dgn-2026/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/papers/normalization-free-2026/</loc></url>
 </urlset>
