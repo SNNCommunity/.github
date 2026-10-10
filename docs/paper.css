@@ -118,3 +118,41 @@
  .paper-content{padding:23px 0 55px}
  .paper-footer .container{display:flex;flex-direction:column;align-items:flex-start;gap:7px}
 }
+
+
+/* V11 / Paper reading hierarchy. Accessible 16px technical prose, 14-15px metadata. */
+.paper-view{font-size:1rem;line-height:1.65}
+.paper-nav nav a{font-size:.9375rem;line-height:1.5}
+.paper-brand{font-size:1.25rem}
+.paper-eyebrow,.paper-venue,.paper-side .paper-aside-label{font-size:.875rem;letter-spacing:.075em}
+.paper-view .paper-venue{font-size:.9375rem}
+.paper-view .paper-deck{font-size:1.0625rem;line-height:1.65}
+.paper-hero .paper-authors{font-size:1rem;line-height:1.65}
+.paper-authors .paper-button{font-size:.875rem;min-height:42px}
+.paper-view .paper-tags a{font-size:.875rem;min-height:42px;line-height:1.4}
+.paper-hero .paper-actions .paper-button,
+.paper-button,.paper-panel .paper-source-links .paper-button{font-size:.9375rem;line-height:1.45;min-height:46px}
+.paper-jump-nav a{font-size:.9375rem;min-height:50px;line-height:1.4}
+.paper-panel h2{font-size:clamp(1.5rem,2.3vw,1.875rem)}
+.paper-panel h3,.research-notes h3{font-size:1.125rem;line-height:1.45}
+.paper-panel>p:not(.paper-eyebrow),.research-notes p,
+.paper-evidence-list strong{font-size:1rem;line-height:1.7}
+.paper-panel .paper-muted,.paper-editorial,.paper-panel .paper-source-note{font-size:.9375rem!important;line-height:1.7!important}
+.paper-evidence-list span,.paper-evidence-list a,.paper-status,
+.paper-related-link span{font-size:.9375rem;line-height:1.6}
+.paper-status strong{font-size:.9375rem}
+.paper-related-link strong{font-size:1rem;line-height:1.5}
+.paper-back,.paper-small p{font-size:.9375rem;line-height:1.6}
+.paper-footer,.paper-footer .container span{font-size:.9375rem;line-height:1.65}
+@media(max-width:540px){
+  .paper-nav nav a{font-size:.9375rem}
+  .paper-view .paper-venue{font-size:.875rem}
+  .paper-hero .paper-authors{font-size:.9375rem}
+  .paper-authors .paper-button{font-size:.875rem;min-height:42px}
+  .paper-view .paper-deck{font-size:1rem;line-height:1.65}
+  .paper-view .paper-tags a{font-size:.875rem;min-height:42px}
+  .paper-hero .paper-actions .paper-button{font-size:.875rem;min-height:46px}
+  .paper-jump-nav a{font-size:.875rem;min-height:48px}
+  .research-notes p,.paper-panel>p:not(.paper-eyebrow){font-size:1rem;line-height:1.7}
+  .paper-footer .container span{font-size:.9375rem}
+}
