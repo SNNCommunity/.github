@@ -19,8 +19,11 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/id="atlas-advanced"/);
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);
- assert.match(record,/not the original paper abstract/);
+ assert.match(record,/not the verbatim abstract/);
  assert.match(record,/Not independently reproduced/);
+ assert.match(record,/Wei Fang/);
+ assert.match(record,/Parametric leaky integrate-and-fire/);
+ assert.match(record,/Research question and method/);
 });
 test('open source provenance entries use unique structured records',()=>{
  assert.equal(catalog.schemaVersion,2);

@@ -3,6 +3,9 @@ import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import { readFileSync, mkdirSync, statSync, existsSync } from 'node:fs';
 import assert from 'node:assert/strict';
+const catalog=JSON.parse(readFileSync('docs/resources.json','utf8'));
+const paperTotal=catalog.items.filter(x=>x.type==='paper').length;
+const recordTotal=catalog.items.length;
 const mime={html:'text/html',css:'text/css',js:'text/javascript',json:'application/json',svg:'image/svg+xml',png:'image/png'};
 const server=createServer((req,res)=>{
  const u=new URL(req.url,'http://localhost');
@@ -29,9 +32,9 @@ try {
  assert.equal(await page.locator('.resource-card').count(),6,'initially show six curated resources');
  assert.equal(await page.locator('#resource-more').isVisible(),true,'view all button is visible');
  await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),18,'first load more reveals 18 records');
+ assert.equal(await page.locator('.resource-card').count(),Math.min(recordTotal,18),'first load more reveals next records');
  await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),22,'second load more reveals all 22 indexed records');
+ assert.equal(await page.locator('.resource-card').count(),recordTotal,'second load more reveals indexed records');
  assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'true');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),6,'show fewer restores concise index');
@@ -78,13 +81,15 @@ try {
  assert.match(body,/Peng Cheng Laboratory/);
  assert.match(body,/Not independently reproduced/);
  assert.match(body,/canonical.*papers\/sew-resnet-2021/);
+ assert.match(body,/Wei Fang/);
+ assert.match(body,/Research question and method/);
  const siteMap=await page.request.get(base+'sitemap.xml');
  assert.match(await siteMap.text(),/papers\/plif-2021/);
  await page.locator('#atlas-format').selectOption('paper');
  assert.equal(await page.locator('.resource-card').count(),6,'filtered results are paginated');
  assert.equal(await page.locator('.atlas-record-link').count(),6,'visible papers have internal record links');
  await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),13,'all paper results available');
+ assert.equal(await page.locator('.resource-card').count(),paperTotal,'all paper results available');
  await page.locator('#atlas-year').selectOption('2026');
  assert.ok(new URL(page.url()).searchParams.has('atlas.year'));
  await page.locator('#atlas-venue-type').selectOption('Conference');
@@ -99,6 +104,15 @@ try {
  assert.match(await page.locator('.resource-card').first().innerText(),/SpikeLLM/);
  await page.locator('.resource-evidence summary').first().click();
  assert.match(await page.locator('.resource-aff-list').first().innerText(),/University of Oxford/);
+ // Multi-level browser history must restore dependent country/university controls.
+ await page.locator('#atlas-year').selectOption('2025');
+ assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
+ await page.goBack();
+ assert.equal(await page.locator('#atlas-country').inputValue(),'United Kingdom');
+ assert.equal(await page.locator('#atlas-university').inputValue(),'University of Oxford');
+ assert.equal(await page.locator('#atlas-year').inputValue(),'all');
+ await page.goForward();
+ assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
  await page.locator('#atlas-reset').click();
  await page.locator('#atlas-country').selectOption('Germany');
  await page.locator('#atlas-university').selectOption('Technische Universität Berlin');
@@ -119,6 +133,15 @@ try {
  await page.locator('#resource-search').fill('SpikeVLA');
  assert.ok(await page.locator('.atlas-active-chip').count()>0);
  assert.equal(await page.locator('.resource-card').count(),1);
+ await page.locator('#atlas-reset').click();
+ await page.locator('#resource-search').fill('Neuron dynamics');
+ assert.ok(await page.locator('.resource-card').count()>0,'topic display label is searchable');
+ await page.locator('#resource-search').fill('PLIF');
+ assert.equal(await page.locator('.resource-card').count(),1,'PLIF acronym is searchable');
+ await page.locator('#resource-search').fill('北京大学');
+ assert.ok(await page.locator('.resource-card').count()>0,'Chinese institution aliases are searchable');
+ await page.locator('#resource-search').fill('2026 ICML');
+ assert.equal(await page.locator('.resource-card').count(),2,'year and venue token query');
  await page.locator('#resource-search').fill('impossible missing');
  assert.equal(await page.locator('.resource-card').count(),0);
  assert.equal(await page.locator('#resource-empty').isVisible(),true);
@@ -126,6 +149,22 @@ try {
  await page.locator('#atlas-reset').click();
  assert.equal(await page.locator('.resource-card').count(),6,'clear filters restores untruncated preview');
 
+ // Real research-page layout, keyboard focus and links (not just GET response).
+ for(const width of [1440,768,390,320]){
+   await page.setViewportSize({width,height:900});
+   await page.goto(base+'papers/plif-2021/',{waitUntil:'load'});
+   const h=await page.locator('h1').textContent();
+   assert.match(h,/Learnable Membrane Time Constant/);
+   assert.match(await page.locator('.paper-authors').innerText(),/Wei Fang/);
+   assert.match(await page.locator('.research-notes').innerText(),/PLIF/);
+   const over=await page.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
+   assert.ok(over.scroll<=over.inner+1,'paper horizontal overflow '+width+': '+JSON.stringify(over));
+   await page.locator('.paper-actions a').first().focus();
+   assert.equal(await page.evaluate(()=>document.activeElement?.tagName),'A');
+   if(width===390)await page.screenshot({path:resolve(out,'paper-mobile.png'),fullPage:true});
+   if(width===1440)await page.screenshot({path:resolve(out,'paper-desktop.png'),fullPage:true});
+ }
+ await page.setViewportSize({width:1440,height:900});
  await page.goto(base+'?token=private-value&atlas.topic=neuron-dynamics#library');
  await page.locator('.resource-card').first().waitFor();
  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
