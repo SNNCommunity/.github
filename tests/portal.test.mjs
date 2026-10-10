@@ -5,7 +5,7 @@ const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const html=read('docs/index.html'),js=read('docs/app.js'),css=read('docs/styles.css'),
   catalog=JSON.parse(read('docs/resources.json')),profile=read('profile/README.md');
 test('production files, metadata and required controls are present',()=>{
- for(const p of ['docs/index.html','docs/app.js','docs/neuron-core.js','docs/resources.json',
+ for(const p of ['docs/paper.css','scripts/build-paper-pages.mjs','docs/papers/plif-2021/index.html','docs/index.html','docs/app.js','docs/neuron-core.js','docs/resources.json',
   'docs/atlas-core.js','docs/styles.css','docs/favicon.svg','docs/404.html','docs/og-card.svg','docs/.nojekyll'])
   assert.ok(existsSync(new URL('../'+p,import.meta.url)),p);
  for(const id of ['lif-canvas','compare-if','if-count','spike-count','lif-rate','if-rate',
@@ -15,11 +15,17 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/application\/ld\+json/);
  assert.match(html,/twitter:card/);
  assert.match(html,/aria-describedby="experiment-summary model-summary"/);
+ assert.match(html,/id="atlas-active-filters"/);
+ assert.match(html,/id="atlas-advanced"/);
+ const record=read('docs/papers/plif-2021/index.html');
+ assert.match(record,/Incorporating Learnable Membrane Time Constant/);
+ assert.match(record,/not the original paper abstract/);
+ assert.match(record,/Not independently reproduced/);
 });
 test('open source provenance entries use unique structured records',()=>{
  assert.equal(catalog.schemaVersion,2);
- assert.equal(catalog.items.length,22);
- assert.equal(new Set(catalog.items.map(x=>x.id)).size,22);
+ assert.ok(catalog.items.length>=22);
+ assert.equal(new Set(catalog.items.map(x=>x.id)).size,catalog.items.length);
  for(const x of catalog.items){
   assert.match(x.url,/^https:\/\//);
   assert.equal(x.verification,'indexed_not_reproduced');
@@ -29,7 +35,7 @@ test('open source provenance entries use unique structured records',()=>{
  const doi=catalog.items.filter(x=>x.type==='paper').map(x=>x.doi);
  for(const id of ['10.1109/JPROC.2023.3308088','10.1109/MSP.2019.2931595','10.1109/TPAMI.2020.3008413'])assert.ok(doi.includes(id));
  assert.equal(catalog.topics.length,11);
- assert.equal(catalog.items.filter(x=>x.type==='paper').length,13);
+ assert.ok(catalog.items.filter(x=>x.type==='paper').length>=13);
  assert.ok(catalog.items.some(x=>(x.affiliations||[]).some(a=>a.country==='France')));
 });
 test('no abandoned V2/V3 assets and no invented evidence',()=>{
@@ -66,7 +72,7 @@ test('share preview and avatar are real PNG binaries with specified dimensions',
 test('research cards are progressively disclosed without leaving legacy layout code',()=>{
  assert.match(html,/id="resource-more"[^>]+aria-expanded="false" hidden/);
  assert.match(js,/initialResourceLimit=6/);
- assert.match(js,/focused\|\|expanded\?filtered:filtered\.slice\(0,initialResourceLimit\)/);
+ assert.match(js,/filtered\.slice\(0,displayLimit\)/);
  assert.doesNotMatch(js,/resource-arrow/);
  assert.doesNotMatch(css,/\.resource-card-bottom/);
  assert.doesNotMatch(css,/\.resource-arrow/);

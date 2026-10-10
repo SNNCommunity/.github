@@ -196,7 +196,40 @@
     venue:"atlas-venue",country:"atlas-country",university:"atlas-university",sort:"atlas-sort"};
   const facetEls=Object.fromEntries(Object.entries(facetIds).map(([k,id])=>[k,$(id)]));
   const initialResourceLimit=6;
-  let all=[],topics=[],topic="all",expanded=false;
+  let all=[],topics=[],topic="all",displayLimit=6;
+  let selectedTopics=new Set(),topicMode="any";
+  const atlasURLKeys=["topic","mode","format","year","venueType","venue","country","university","sort","query"];
+  function restoreAtlasURL(){
+    const q=new URLSearchParams(location.search);
+    selectedTopics=new Set((q.get("atlas.topic")||"").split(",").filter(id=>topics.some(t=>t.id===id)));
+    topicMode=q.get("atlas.mode")==="all"?"all":"any";
+    for(const [key,el] of Object.entries(facetEls)){
+      const value=q.get("atlas."+key);
+      if(value && [...el.options].some(o=>o.value===value))el.value=value;
+    }
+    search.value=q.get("atlas.query")||"";
+    $("atlas-topic-mode").value=topicMode;
+  }
+  function writeAtlasURL(method="push"){
+    if(location.protocol==="file:" || !history.replaceState)return;
+    const u=new URL(location.href);
+    for(const key of atlasURLKeys)u.searchParams.delete("atlas."+key);
+    if(selectedTopics.size)u.searchParams.set("atlas.topic",[...selectedTopics].sort().join(","));
+    if(topicMode==="all")u.searchParams.set("atlas.mode","all");
+    if(search.value.trim())u.searchParams.set("atlas.query",search.value.trim());
+    for(const [key,el] of Object.entries(facetEls)){
+      if(el.value!=="all" && !(key==="sort"&&el.value==="recent"))u.searchParams.set("atlas."+key,el.value);
+    }
+    if(u.href!==location.href)history[method==="replace"?"replaceState":"pushState"](history.state,"",u.pathname+u.search+u.hash);
+  }
+  function atlasShareURL(){
+    const src=new URL(location.href),u=new URL(src.pathname,src.origin);
+    for(const key of atlasURLKeys){
+      const value=src.searchParams.get("atlas."+key);
+      if(value!==null)u.searchParams.set("atlas."+key,value);
+    }
+    u.hash="library";return u.href;
+  }
   const topicName=id=>topics.find(t=>t.id===id)?.label||id;
   function node(tag,className,value){
     const el=document.createElement(tag);
@@ -214,7 +247,10 @@
     if(!el)return;
     const selected=el.value,first=el.options[0].cloneNode(true);
     const preserved=[first];
-    if(el.id==="atlas-country")preserved.push(new Option("Not verified / not applicable","unknown"));
+    if(el.id==="atlas-country"){
+      preserved.push(new Option("Not verified · paper","unknown"));
+      preserved.push(new Option("Not applicable · resource","not_applicable"));
+    }
     el.replaceChildren(...preserved,...values.map(v=>new Option(String(v),String(v))));
     el.value=[...el.options].some(o=>o.value===selected)?selected:"all";
   }
@@ -226,7 +262,7 @@
     fillOptions(facetEls.university,f.universities(facetEls.country.value));
   }
   const selections=()=>({
-    query:search?.value||"",topic,
+    query:search?.value||"",topic,topics:[...selectedTopics],topicMode,
     ...Object.fromEntries(Object.entries(facetEls).map(([k,el])=>[k,el.value]))
   });
   function renderTopics() {
@@ -235,12 +271,17 @@
     for(const t of items){
       const button=node("button","atlas-topic",t.label);
       button.type="button";button.dataset.topic=t.id;
-      const active=t.id===topic;
+      const active=t.id==="all"?!selectedTopics.size:selectedTopics.has(t.id);
       button.classList.toggle("is-selected",active);
       button.setAttribute("aria-pressed",String(active));
       const n=t.id==="all"?all.length:all.filter(x=>x.topics.includes(t.id)).length;
       button.append(node("span","atlas-topic-count",n));
-      button.addEventListener("click",()=>{topic=t.id;expanded=false;renderTopics();renderResources();});
+      button.addEventListener("click",()=>{
+        if(t.id==="all")selectedTopics.clear();
+        else if(selectedTopics.has(t.id))selectedTopics.delete(t.id);
+        else selectedTopics.add(t.id);
+        displayLimit=initialResourceLimit;renderTopics();renderResources();writeAtlasURL("push");
+      });
       fragment.append(button);
     }
     topicBar.replaceChildren(fragment);
@@ -254,7 +295,10 @@
     const top=node("div","resource-card-head");
     top.append(node("span","resource-label",paper?"RESEARCH PAPER":"OPEN RESOURCE"));
     if(pub)top.append(node("span","atlas-venue-label",pub.venue+" · "+pub.year));
-    card.append(top,node("h3","",x.title));
+    const heading=node("h3");
+    if(paper){const a=node("a","atlas-title-link",x.title);a.href="./papers/"+encodeURIComponent(x.id)+"/";heading.append(a);}
+    else heading.textContent=x.title;
+    card.append(top,heading);
     const tags=node("div","atlas-card-topics");
     for(const id of x.topics.slice(0,3))tags.append(node("span","atlas-tag",topicName(id)));
     card.append(tags,node("p","",x.description));
@@ -263,7 +307,7 @@
     if(paper){
       const countries=[...new Set(affs.map(a=>a.country))];
       summary.append(node("span","atlas-affiliation-hint",countries.length?
-        "Author affiliations · "+countries.join(" · "):"Author affiliations · Not verified"));
+        "Selected author affiliations (partial) · "+countries.join(" · "):"Author affiliations · Not verified"));
     }else summary.append(node("span","atlas-affiliation-hint","Academic affiliation · Not applicable"));
     card.append(summary);
     const details=node("details","resource-evidence");
@@ -271,7 +315,7 @@
     const inner=node("div","resource-evidence-body");
     if(pub)inner.append(node("div","resource-evidence-line",pub.kind+" · "+pub.venue+" · "+pub.year));
     if(paper){
-      inner.append(node("strong","resource-aff-heading","Author-affiliated universities"));
+      inner.append(node("strong","resource-aff-heading","Author-affiliated institutions (partial record)"));
       if(affs.length){
         const list=node("ul","resource-aff-list");
         for(const a of affs){
@@ -291,57 +335,107 @@
     inner.append(links,node("p","resource-review","Indexed · Not independently reproduced"));
     inner.append(node("p","resource-license",x.license||x.licenseNote));
     details.append(inner);
-    card.append(details,link(x.url,paper?"Read original paper ↗":"Visit original source ↗",
+    card.append(details);
+    if(paper){const a=node("a","atlas-record-link","Explore research record →");a.href="./papers/"+encodeURIComponent(x.id)+"/";card.append(a);}
+    card.append(link(x.url,paper?"Read original paper ↗":"Visit original source ↗",
       "resource-main-link","Visit original source: "+x.title));
     return card;
   }
   function renderResources() {
     const selected=selections();
-    const filtered=atlas.filter(all,selected),focused=Boolean(selected.query.trim())||
-      selected.topic!=="all"||Object.entries(selected).some(([key,value])=>
-        !["query","topic","sort"].includes(key)&&value!=="all");
-    const visible=focused||expanded?filtered:filtered.slice(0,initialResourceLimit);
+    const filtered=atlas.filter(all,selected);
+    const visible=filtered.slice(0,displayLimit);
     const fragment=document.createDocumentFragment();
     for(const x of visible)fragment.append(renderCard(x));
     cards.replaceChildren(fragment);
     empty.hidden=filtered.length!==0;
     if(more){
-      more.hidden=focused||filtered.length<=initialResourceLimit;
+      more.hidden=filtered.length<=initialResourceLimit;
       more.parentElement.hidden=more.hidden;
-      more.setAttribute("aria-expanded",String(expanded));
-      more.firstChild.textContent=expanded?"Show fewer resources ":"View all "+filtered.length+" records ";
-      more.lastElementChild.textContent=expanded?"↑":"↓";
+      more.setAttribute("aria-expanded",String(displayLimit>=filtered.length));
+      more.firstChild.textContent=displayLimit>=filtered.length?"Show fewer resources ":"Load more resources ";
+      more.lastElementChild.textContent=displayLimit>=filtered.length?"↑":"↓";
     }
     count.textContent="Showing "+visible.length+" of "+filtered.length+" matches · "+all.length+
       " indexed records ("+all.filter(x=>x.type==="paper").length+" papers)";
+    renderFilterChips(selected);
   }
-  more?.addEventListener("click",()=>{expanded=!expanded;renderResources();});
-  search?.addEventListener("input",()=>{expanded=false;renderResources();});
+  function renderFilterChips(selected){
+    const wrap=$("atlas-active-filters");if(!wrap)return;
+    const fragment=document.createDocumentFragment();
+    const chip=(label,fn)=>{
+      const button=node("button","atlas-active-chip",label+" ×");button.type="button";
+      button.setAttribute("aria-label","Remove "+label+" filter");
+      button.addEventListener("click",()=>{
+        fn();displayLimit=initialResourceLimit;renderTopics();renderResources();writeAtlasURL("push");
+      });fragment.append(button);
+    };
+    if(selected.query.trim())chip("Search: "+selected.query,()=>search.value="");
+    for(const id of selectedTopics)chip(topicName(id),()=>selectedTopics.delete(id));
+    for(const [key,el] of Object.entries(facetEls)){
+      if(el.value!=="all"&&!(key==="sort"&&el.value==="recent"))
+        chip(el.selectedOptions[0]?.textContent||el.value,()=>{
+          el.value=key==="sort"?"recent":"all";
+          if(key==="country")fillOptions(facetEls.university,atlas.facets(all).universities("all"));
+        });
+    }
+    if(!fragment.childNodes.length)fragment.append(node("span","atlas-active-idle","Showing the complete curated index."));
+    wrap.replaceChildren(fragment);
+  }
+  $("atlas-topic-mode")?.addEventListener("change",e=>{topicMode=e.target.value;displayLimit=initialResourceLimit;renderResources();writeAtlasURL();});
+  $("atlas-copy")?.addEventListener("click",async()=>{
+    const link=atlasShareURL();
+    try{
+      if(!navigator.clipboard?.writeText)throw Error("No clipboard");
+      await navigator.clipboard.writeText(link);
+      $("atlas-copy-status").textContent="Search link copied.";
+    }catch{
+      $("atlas-copy-fallback").hidden=false;$("atlas-copy-input").value=link;
+      $("atlas-copy-input").focus();$("atlas-copy-input").select();
+      $("atlas-copy-status").textContent="Select the link below to copy it.";
+    }
+  });
+  window.addEventListener("popstate",()=>{
+    if(!all.length)return;
+    options();selectedTopics.clear();restoreAtlasURL();displayLimit=initialResourceLimit;renderTopics();renderResources();
+  });
+  more?.addEventListener("click",()=>{
+    const length=atlas.filter(all,selections()).length;
+    displayLimit=displayLimit>=length?initialResourceLimit:Math.min(length,displayLimit+12);
+    renderResources();
+  });
+  search?.addEventListener("input",()=>{displayLimit=initialResourceLimit;renderResources();writeAtlasURL("replace");});
   for(const [key,el] of Object.entries(facetEls))el?.addEventListener("change",()=>{
-    expanded=false;
+    displayLimit=initialResourceLimit;
     if(key==="country") {
       const next=atlas.facets(all).universities(facetEls.country.value);
       fillOptions(facetEls.university,next);
-      if(facetEls.country.value==="unknown")facetEls.university.value="all";
+      if(["unknown","not_applicable"].includes(facetEls.country.value))facetEls.university.value="all";
     }
     if(key==="venueType"){
       const matched=all.filter(x=>x.publication&&
         (el.value==="all"||x.publication.kind===el.value));
       fillOptions(facetEls.venue,atlas.facets(matched).venues);
     }
-    renderResources();
+    renderResources();writeAtlasURL("push");
   });
   $("atlas-reset")?.addEventListener("click",()=>{
-    search.value="";topic="all";expanded=false;
+    search.value="";topic="all";selectedTopics.clear();topicMode="any";$("atlas-topic-mode").value="any";displayLimit=initialResourceLimit;
     for(const [key,el] of Object.entries(facetEls))el.value=key==="sort"?"recent":"all";
-    options();renderTopics();renderResources();
+    options();renderTopics();renderResources();writeAtlasURL();
     search.focus();
   });
   fetch("./resources.json").then(async res=>{
     if(!res.ok)throw Error("Research catalog unavailable");
     const result=atlas.validate(await res.json());
     all=result.items;topics=result.topics;
-    options();renderTopics();renderResources();
+    options();restoreAtlasURL();
+    if(facetEls.country.value!=="all"){
+      fillOptions(facetEls.university,atlas.facets(all).universities(facetEls.country.value));
+      const q=new URLSearchParams(location.search).get("atlas.university");
+      if(q&&[...facetEls.university.options].some(o=>o.value===q))facetEls.university.value=q;
+    }
+    renderTopics();renderResources();
   }).catch(error=>{
     if(count)count.textContent="Research catalog unavailable. Please use the original links below.";
     if($("resource-fallback"))$("resource-fallback").hidden=false;

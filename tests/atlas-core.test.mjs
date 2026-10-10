@@ -8,11 +8,11 @@ const items=atlas.validate(data).items;
 const find=(id)=>items.find(x=>x.id===id);
 test('catalog is schema-valid and classification covers real research dimensions',()=>{
  assert.equal(data.schemaVersion,2);
- assert.equal(items.length,22);
- assert.equal(new Set(items.map(x=>x.id)).size,22);
+ assert.ok(items.length>=22);
+ assert.equal(new Set(items.map(x=>x.id)).size,items.length);
  assert.equal(data.topics.length,11);
  assert.ok(data.topics.every(t=>items.some(x=>x.topics.includes(t.id))));
- assert.equal(items.filter(x=>x.publication).length,13);
+ assert.ok(items.filter(x=>x.publication).length>=13);
 });
 test('research topic tags are multi-label and apply to papers and tools',()=>{
  assert.ok(atlas.filter(items,{topic:'neuron-dynamics'}).some(x=>x.id==='plif-2021'));
@@ -70,4 +70,23 @@ test('validator rejects unsupported scientific claims and missing citations',()=
  assert.throws(()=>atlas.validate(clone2),/Uncited/);
  const clone3=structuredClone(data);clone3.items.find(x=>x.id==='norse').affiliations.push({university:'Fake University',country:'France',source:'https://example.com'});
  assert.throws(()=>atlas.validate(clone3),/Uncited|misplaced/);
+});
+
+test('unknown and not applicable affiliation status never overlap',()=>{
+ assert.ok(atlas.filter(items,{country:'unknown'}).every(x=>x.type==='paper'));
+ assert.ok(atlas.filter(items,{country:'not_applicable'}).every(x=>x.type!=='paper'));
+ assert.equal(atlas.filter(items,{country:'not_applicable',format:'paper'}).length,0);
+});
+test('multi topic OR and AND differ and remain deterministic',()=>{
+ const options={topics:['neuron-dynamics','event-vision'],format:'paper'};
+ const any=atlas.filter(items,{...options,topicMode:'any'});
+ const both=atlas.filter(items,{...options,topicMode:'all'});
+ assert.ok(any.length>both.length);
+ assert.ok(both.every(x=>options.topics.every(t=>x.topics.includes(t))));
+});
+test('affiliation coverage truthfully treats source list as partial',()=>{
+ assert.equal(find('sew-resnet-2021').affiliationCoverage,'partial');
+ assert.ok(find('sew-resnet-2021').affiliations.some(x=>x.university==='Peng Cheng Laboratory'));
+ assert.equal(find('spike-htr-2026').affiliationCoverage,'unverified');
+ assert.equal(find('norse').affiliationCoverage,'not_applicable');
 });

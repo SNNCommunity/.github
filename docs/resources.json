@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "updated": "2026-10-09",
-  "reviewNotice": "Country and university refer to verified author affiliations on the paper, NOT researcher nationality. Non-paper resources have no academic affiliation; unknown metadata stays unassigned. Conference/journal and year refer to formal publication. Indexed does not imply reproduced.",
+  "reviewNotice": "Country and university refer to verified author affiliations on the paper, NOT researcher nationality. Non-paper resources have no academic affiliation; unknown metadata stays unassigned. Conference/journal and year refer to formal publication. Indexed does not imply reproduced. Affiliation coverage is partial unless the full authorship-to-institution mapping has been reviewed.",
   "items": [
     {
       "id": "snntorch-tutorials",
@@ -25,7 +25,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "spikingjelly",
@@ -49,7 +50,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "norse",
@@ -72,7 +74,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "neurobench",
@@ -95,7 +98,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "tonic",
@@ -118,7 +122,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "nir",
@@ -141,7 +146,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "eshraghian-2023",
@@ -168,7 +174,14 @@
         "year": 2023
       },
       "affiliations": [],
-      "bibliographySource": "https://doi.org/10.1109/JPROC.2023.3308088"
+      "bibliographySource": "https://doi.org/10.1109/JPROC.2023.3308088",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "neftci-2019",
@@ -195,7 +208,14 @@
         "year": 2019
       },
       "affiliations": [],
-      "bibliographySource": "https://doi.org/10.1109/MSP.2019.2931595"
+      "bibliographySource": "https://doi.org/10.1109/MSP.2019.2931595",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "gallego-2022",
@@ -253,7 +273,14 @@
           "source": "https://arxiv.org/pdf/1904.08405"
         }
       ],
-      "bibliographySource": "https://doi.org/10.1109/TPAMI.2020.3008413"
+      "bibliographySource": "https://doi.org/10.1109/TPAMI.2020.3008413",
+      "affiliationCoverage": "partial",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "partial",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "snntorch-code",
@@ -276,7 +303,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "open-neuromorphic",
@@ -299,7 +327,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "neurobench-docs",
@@ -321,7 +350,8 @@
       ],
       "publication": null,
       "affiliations": [],
-      "bibliographySource": null
+      "bibliographySource": null,
+      "affiliationCoverage": "not_applicable"
     },
     {
       "id": "sew-resnet-2021",
@@ -354,13 +384,25 @@
           "source": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf"
         },
         {
+          "university": "Peng Cheng Laboratory",
+          "country": "China",
+          "source": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf"
+        },
+        {
           "university": "Université Toulouse III – Paul Sabatier",
           "country": "France",
           "source": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf"
         }
       ],
       "bibliographySource": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "partial",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "partial",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "plif-2021",
@@ -399,7 +441,14 @@
         }
       ],
       "bibliographySource": "https://openaccess.thecvf.com/content/ICCV2021/papers/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.pdf",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "partial",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "partial",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "spikformer-2023",
@@ -427,7 +476,14 @@
       },
       "affiliations": [],
       "bibliographySource": "https://openreview.net/forum?id=frE4fUwz_h",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "spikingjelly-paper-2023",
@@ -477,7 +533,14 @@
         }
       ],
       "bibliographySource": "https://pubmed.ncbi.nlm.nih.gov/37801497/",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "partial",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "partial",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "spikellm-2025",
@@ -522,7 +585,14 @@
         }
       ],
       "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "partial",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "partial",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "spikachu-2025",
@@ -556,7 +626,14 @@
         }
       ],
       "bibliographySource": "https://neurips.cc/media/neurips-2025/Slides/116071.pdf",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "partial",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "partial",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "spike-htr-2026",
@@ -585,7 +662,14 @@
       },
       "affiliations": [],
       "bibliographySource": "https://proceedings.mlr.press/v306/liang26j.html",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "spike-vla-2026",
@@ -614,7 +698,14 @@
       },
       "affiliations": [],
       "bibliographySource": "https://proceedings.mlr.press/v306/song26r.html",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "dgn-2026",
@@ -642,7 +733,14 @@
       },
       "affiliations": [],
       "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/fc92064236f06645e0b5ec5a8a16565d-Abstract-Conference.html",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     },
     {
       "id": "normalization-free-2026",
@@ -671,7 +769,14 @@
       },
       "affiliations": [],
       "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html",
-      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks"
+      "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
+      "affiliationCoverage": "unverified",
+      "authorships": [],
+      "evidence": {
+        "bibliographicStatus": "source_checked",
+        "affiliationStatus": "unverified",
+        "reproductionStatus": "not_reproduced"
+      }
     }
   ],
   "topics": [

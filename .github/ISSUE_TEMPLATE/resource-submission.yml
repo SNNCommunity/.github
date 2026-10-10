@@ -25,6 +25,33 @@ body:
     id: doi
     attributes:
       label: DOI or persistent identifier (if applicable)
+  - type: dropdown
+    id: record-type
+    attributes:
+      label: Resource type
+      options:
+        - Research paper
+        - Framework / software
+        - Dataset / benchmark
+        - Tutorial / documentation
+        - Community
+    validations:
+      required: true
+  - type: input
+    id: publication
+    attributes:
+      label: Venue and final publication year (papers only)
+      placeholder: ICLR 2026 / IEEE TPAMI 2022 / Preprint only
+  - type: textarea
+    id: research-topics
+    attributes:
+      label: SNN research topics and justification
+      description: State which research areas apply and why.
+  - type: textarea
+    id: affiliations
+    attributes:
+      label: Authorship and affiliation evidence (papers only)
+      description: Include original publication URL and precise location. If unverified, write unknown. Do not infer author nationality.
   - type: input
     id: code
     attributes:
