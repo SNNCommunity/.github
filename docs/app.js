@@ -362,15 +362,26 @@
     inner.append(links,node("p","resource-review","Indexed; no independent paper reproduction recorded"));
     inner.append(node("p","resource-license",x.license||x.licenseNote));
     details.append(inner);card.append(details);
+    const actions=node("div","atlas-card-actions");
     if(paper){
       const a=node("a","atlas-record-link","Explore research record →");
-      a.href="./papers/"+encodeURIComponent(x.id)+"/";card.append(a);
+      a.href="./papers/"+encodeURIComponent(x.id)+"/";actions.append(a);
     }
-    card.append(link(x.url,paper?"Read original paper ↗":"Visit original source ↗",
+    actions.append(link(x.url,paper?"Original paper ↗":"Original source ↗",
       "resource-main-link","Original source: "+x.title));
+    card.append(actions);
     return card;
   }
+  const formatButtons=[...document.querySelectorAll(".atlas-kind")];
+  function syncFormatButtons(){
+    for(const button of formatButtons){
+      const selected=button.dataset.format===facetEls.format.value;
+      button.classList.toggle("is-selected",selected);
+      button.setAttribute("aria-pressed",String(selected));
+    }
+  }
   function renderResources(){
+    syncFormatButtons();
     const selected=selections(),filtered=atlas.filter(all,selected,topics);
     const visible=filtered.slice(0,displayLimit);
     const fragment=document.createDocumentFragment();
@@ -421,6 +432,12 @@
     displayLimit=initialResourceLimit;
     renderTopics();renderResources();writeAtlasURL(method);
   }
+  for(const button of formatButtons){
+    button.addEventListener("click",()=>{
+      facetEls.format.value=button.dataset.format;
+      updateFilters();
+    });
+  }
   $("atlas-topic-mode")?.addEventListener("change",e=>{
     topicMode=e.target.value;updateFilters();
   });
@@ -460,6 +477,9 @@
     refreshDependentOptions("all","all");
     updateFilters();search.focus();
   });
+  // Mobile browsing prioritizes actual research records over seven detailed facets.
+  const advanced=$("atlas-advanced");
+  if(advanced&&window.matchMedia("(max-width:680px)").matches)advanced.open=false;
   fetch("./resources.json").then(async res=>{
     if(!res.ok)throw Error("Research catalog unavailable");
     const result=atlas.validate(await res.json());
