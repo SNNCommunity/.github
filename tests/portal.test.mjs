@@ -5,7 +5,7 @@ const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const html=read('docs/index.html'),js=read('docs/app.js'),css=read('docs/styles.css'),
   catalog=JSON.parse(read('docs/resources.json')),profile=read('profile/README.md');
 test('production files, metadata and required controls are present',()=>{
- for(const p of ['docs/index.html','docs/app.js','docs/neuron-core.js','docs/resources.json',
+ for(const p of ['docs/paper.css','scripts/build-paper-pages.mjs','docs/papers/plif-2021/index.html','docs/index.html','docs/app.js','docs/neuron-core.js','docs/resources.json',
   'docs/atlas-core.js','docs/styles.css','docs/favicon.svg','docs/404.html','docs/og-card.svg','docs/.nojekyll'])
   assert.ok(existsSync(new URL('../'+p,import.meta.url)),p);
  for(const id of ['lif-canvas','compare-if','if-count','spike-count','lif-rate','if-rate',
@@ -15,6 +15,12 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/application\/ld\+json/);
  assert.match(html,/twitter:card/);
  assert.match(html,/aria-describedby="experiment-summary model-summary"/);
+ assert.match(html,/id="atlas-active-filters"/);
+ assert.match(html,/id="atlas-advanced"/);
+ const record=read('docs/papers/plif-2021/index.html');
+ assert.match(record,/Incorporating Learnable Membrane Time Constant/);
+ assert.match(record,/not the original paper abstract/);
+ assert.match(record,/Not independently reproduced/);
 });
 test('open source provenance entries use unique structured records',()=>{
  assert.equal(catalog.schemaVersion,2);
