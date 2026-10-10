@@ -45,7 +45,7 @@ const render=function render(p,papers,topics){
 <h1>${esc(p.title)}</h1>
 <p class="paper-authors">${authors.length?authors.map(esc).join(", ")+" "+action(p.authorshipSource,"Author source"):"Author list pending source verification."}</p>
 <p class="paper-deck">${esc(p.description)}</p>
-<div class="paper-tags">${p.topics.map(t=>`<span>${esc(label(t))}</span>`).join("")}</div>
+<div class="paper-tags">${p.topics.map(t=>`<a href="../../?atlas.topic=${encodeURIComponent(t)}#library">${esc(label(t))}</a>`).join("")}</div>
 <div class="paper-actions">${action(p.url,"Original paper","primary")}${action(p.code,"Linked code")}${p.doi?action("https://doi.org/"+p.doi,"DOI"):""}</div></div>
 <aside class="paper-side"><p class="paper-aside-label">SOURCE COVERAGE</p>
 <p><strong>Publication</strong><span>Primary reference linked</span></p>
