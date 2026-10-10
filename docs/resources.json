@@ -26,7 +26,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "spikingjelly",
@@ -51,7 +52,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "norse",
@@ -75,7 +77,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "neurobench",
@@ -99,7 +102,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "tonic",
@@ -123,7 +127,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "nir",
@@ -147,7 +152,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "eshraghian-2023",
@@ -178,10 +184,21 @@
       "affiliationCoverage": "unverified",
       "authorships": [],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "snnTorch",
+        "backpropagation",
+        "surrogate gradient"
+      ],
+      "authorshipSource": null,
+      "authorshipStatus": "unverified",
+      "researchQuestion": null,
+      "researchMethod": null,
+      "evaluationScope": null,
+      "researchContentSource": null
     },
     {
       "id": "neftci-2019",
@@ -210,12 +227,33 @@
       "affiliations": [],
       "bibliographySource": "https://doi.org/10.1109/MSP.2019.2931595",
       "affiliationCoverage": "unverified",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Emre O. Neftci"
+        },
+        {
+          "name": "Hesham Mostafa"
+        },
+        {
+          "name": "Friedemann Zenke"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "surrogate gradients",
+        "SG",
+        "替代梯度"
+      ],
+      "authorshipSource": "https://doi.org/10.1109/MSP.2019.2931595",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": null,
+      "researchMethod": null,
+      "evaluationScope": null,
+      "researchContentSource": null
     },
     {
       "id": "gallego-2022",
@@ -277,10 +315,22 @@
       "affiliationCoverage": "partial",
       "authorships": [],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "partial",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "event camera",
+        "events",
+        "事件相机",
+        "event based vision"
+      ],
+      "authorshipSource": null,
+      "authorshipStatus": "unverified",
+      "researchQuestion": null,
+      "researchMethod": null,
+      "evaluationScope": null,
+      "researchContentSource": null
     },
     {
       "id": "snntorch-code",
@@ -304,7 +354,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "open-neuromorphic",
@@ -328,7 +379,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "neurobench-docs",
@@ -351,7 +403,8 @@
       "publication": null,
       "affiliations": [],
       "bibliographySource": null,
-      "affiliationCoverage": "not_applicable"
+      "affiliationCoverage": "not_applicable",
+      "searchAliases": []
     },
     {
       "id": "sew-resnet-2021",
@@ -397,12 +450,43 @@
       "bibliographySource": "https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "partial",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Wei Fang"
+        },
+        {
+          "name": "Zhaofei Yu"
+        },
+        {
+          "name": "Yanqi Chen"
+        },
+        {
+          "name": "Tiejun Huang"
+        },
+        {
+          "name": "Timothée Masquelier"
+        },
+        {
+          "name": "Yonghong Tian"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "partial",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "SEW ResNet",
+        "SEW-ResNet",
+        "spike element wise",
+        "残差脉冲网络"
+      ],
+      "authorshipSource": "https://proceedings.neurips.cc/paper/2021/hash/afe434653a898da20044041262b3ac74-Abstract.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "How can deep spiking residual networks preserve identity mappings?",
+      "researchMethod": "Spike-element-wise (SEW) residual connections are designed to preserve spike-compatible identity paths.",
+      "evaluationScope": "The authors evaluate ImageNet, DVS Gesture and CIFAR10-DVS; reported comparisons belong to the original paper, not this catalog.",
+      "researchContentSource": "https://proceedings.neurips.cc/paper/2021/hash/afe434653a898da20044041262b3ac74-Abstract.html"
     },
     {
       "id": "plif-2021",
@@ -443,12 +527,44 @@
       "bibliographySource": "https://openaccess.thecvf.com/content/ICCV2021/papers/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.pdf",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "partial",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Wei Fang"
+        },
+        {
+          "name": "Zhaofei Yu"
+        },
+        {
+          "name": "Yanqi Chen"
+        },
+        {
+          "name": "Timothée Masquelier"
+        },
+        {
+          "name": "Tiejun Huang"
+        },
+        {
+          "name": "Yonghong Tian"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "partial",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "PLIF",
+        "parametric LIF",
+        "learnable time constant",
+        "膜时间常数",
+        "参数化脉冲神经元"
+      ],
+      "authorshipSource": "https://openaccess.thecvf.com/content/ICCV2021/html/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "Can a membrane time constant be learned jointly with synaptic weights?",
+      "researchMethod": "Parametric leaky integrate-and-fire (PLIF) units make neuronal time constants learnable during gradient-based training.",
+      "evaluationScope": "Static MNIST, Fashion-MNIST, CIFAR-10 and event datasets N-MNIST, CIFAR10-DVS, and DVS128 Gesture are evaluated in the authors' paper.",
+      "researchContentSource": "https://openaccess.thecvf.com/content/ICCV2021/html/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.html"
     },
     {
       "id": "spikformer-2023",
@@ -478,12 +594,45 @@
       "bibliographySource": "https://openreview.net/forum?id=frE4fUwz_h",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "unverified",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Zhaokun Zhou"
+        },
+        {
+          "name": "Yuesheng Zhu"
+        },
+        {
+          "name": "Chao He"
+        },
+        {
+          "name": "Yaowei Wang"
+        },
+        {
+          "name": "Shuicheng Yan"
+        },
+        {
+          "name": "Yonghong Tian"
+        },
+        {
+          "name": "Li Yuan"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "spiking transformer",
+        "self attention",
+        "Spikformer"
+      ],
+      "authorshipSource": "https://openreview.net/forum?id=frE4fUwz_h",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": null,
+      "researchMethod": null,
+      "evaluationScope": null,
+      "researchContentSource": null
     },
     {
       "id": "spikingjelly-paper-2023",
@@ -535,12 +684,53 @@
       "bibliographySource": "https://pubmed.ncbi.nlm.nih.gov/37801497/",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "partial",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Wei Fang"
+        },
+        {
+          "name": "Yanqi Chen"
+        },
+        {
+          "name": "Jianhao Ding"
+        },
+        {
+          "name": "Zhaofei Yu"
+        },
+        {
+          "name": "Timothée Masquelier"
+        },
+        {
+          "name": "Ding Chen"
+        },
+        {
+          "name": "Liwei Huang"
+        },
+        {
+          "name": "Huihui Zhou"
+        },
+        {
+          "name": "Guoqi Li"
+        },
+        {
+          "name": "Yonghong Tian"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "partial",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "SpikingJelly",
+        "neuromorphic platform"
+      ],
+      "authorshipSource": "https://pubmed.ncbi.nlm.nih.gov/37801497/",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "What full-stack tooling is needed for reproducible spike-based machine learning?",
+      "researchMethod": "SpikingJelly covers neuromorphic preprocessing, SNN construction, training and deployment.",
+      "evaluationScope": "The authors compare training-runtime characteristics and illustrate framework applications in the original paper.",
+      "researchContentSource": "https://pubmed.ncbi.nlm.nih.gov/37801497/"
     },
     {
       "id": "spikellm-2025",
@@ -587,12 +777,55 @@
       "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "partial",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Xingrun Xing"
+        },
+        {
+          "name": "Boyan Gao"
+        },
+        {
+          "name": "Zheng Liu"
+        },
+        {
+          "name": "David Clifton"
+        },
+        {
+          "name": "Shitao Xiao"
+        },
+        {
+          "name": "Wanpeng Zhang"
+        },
+        {
+          "name": "Li Du"
+        },
+        {
+          "name": "Zheng Zhang"
+        },
+        {
+          "name": "Guoqi Li"
+        },
+        {
+          "name": "Jiajun Zhang"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "partial",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "SpikeLLM",
+        "GIF",
+        "OBSpiking",
+        "spiking LLM"
+      ],
+      "authorshipSource": "https://proceedings.iclr.cc/paper_files/paper/2025/hash/510e7d39fce008a3e31de54b8f5be9ac-Abstract-Conference.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "How can spike encoding scale to large language models?",
+      "researchMethod": "Generalized integrate-and-fire encoding and a saliency-driven Optimal Brain Spiking framework allocate temporal resources.",
+      "evaluationScope": "The authors discuss 7–70B-scale language models and WikiText2 / reasoning evaluation in the accepted ICLR paper.",
+      "researchContentSource": "https://proceedings.iclr.cc/paper_files/paper/2025/hash/510e7d39fce008a3e31de54b8f5be9ac-Abstract-Conference.html"
     },
     {
       "id": "spikachu-2025",
@@ -628,12 +861,43 @@
       "bibliographySource": "https://neurips.cc/media/neurips-2025/Slides/116071.pdf",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "partial",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Georgios Mentzelopoulos"
+        },
+        {
+          "name": "Ioannis Asmanis"
+        },
+        {
+          "name": "Konrad Kording"
+        },
+        {
+          "name": "Eva L Dyer"
+        },
+        {
+          "name": "Kostas Daniilidis"
+        },
+        {
+          "name": "Flavia Vitale"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "partial",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "Spikachu",
+        "BCI",
+        "neural decoding",
+        "脑机接口"
+      ],
+      "authorshipSource": "https://papers.neurips.cc/paper_files/paper/2025/hash/47387bb0aeb97785f608c11f2f4bb091-Abstract-Conference.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "Can causal spiking networks support scalable real-time neural decoding?",
+      "researchMethod": "The study combines latent projections with temporal spiking modules for neural-signal decoding.",
+      "evaluationScope": "The official paper reports 113 recording sessions from six non-human primates; these remain author-reported measurements.",
+      "researchContentSource": "https://papers.neurips.cc/paper_files/paper/2025/hash/47387bb0aeb97785f608c11f2f4bb091-Abstract-Conference.html"
     },
     {
       "id": "spike-htr-2026",
@@ -664,12 +928,44 @@
       "bibliographySource": "https://proceedings.mlr.press/v306/liang26j.html",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "unverified",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Xiubo Liang"
+        },
+        {
+          "name": "Jinxing Han"
+        },
+        {
+          "name": "Yuke Li"
+        },
+        {
+          "name": "Haoqi Zhu"
+        },
+        {
+          "name": "Yu Zhao"
+        },
+        {
+          "name": "Hongzhi Wang"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "SpikeHTR",
+        "HTR",
+        "handwriting recognition",
+        "InkCoder",
+        "CTC"
+      ],
+      "authorshipSource": "https://proceedings.mlr.press/v306/liang26j.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "How can spiking text recognition shorten both its time horizon and spatial sequence?",
+      "researchMethod": "InkCoder supplies coarse-to-detail spike inputs, while a CTC-guided reducer compresses blank-dominated width positions.",
+      "evaluationScope": "The official ICML record reports IAM, LAM and READ2016 results with T=2, without a language model or lexicon.",
+      "researchContentSource": "https://proceedings.mlr.press/v306/liang26j.html"
     },
     {
       "id": "spike-vla-2026",
@@ -700,12 +996,55 @@
       "bibliographySource": "https://proceedings.mlr.press/v306/song26r.html",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "unverified",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Ruiqi Song"
+        },
+        {
+          "name": "Dujun Nie"
+        },
+        {
+          "name": "Siyu Teng"
+        },
+        {
+          "name": "Baiyong Ding"
+        },
+        {
+          "name": "Xiaotong Zhang"
+        },
+        {
+          "name": "Dong Li"
+        },
+        {
+          "name": "Chenming Zhang"
+        },
+        {
+          "name": "Yuchen Li"
+        },
+        {
+          "name": "Hangbin Wu"
+        },
+        {
+          "name": "Long Chen"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "SpikeVLA",
+        "VLA",
+        "embodied intelligence",
+        "具身智能"
+      ],
+      "authorshipSource": "https://proceedings.mlr.press/v306/song26r.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "How can visual, linguistic and action processing use a spiking computation pathway?",
+      "researchMethod": "Spike-V vision encoding, Spike-L multimodal reasoning, and Spike-A continuous-action policy form an end-to-end architecture.",
+      "evaluationScope": "The paper evaluates multimodal interaction and robotic control; energy and performance claims are author-reported.",
+      "researchContentSource": "https://proceedings.mlr.press/v306/song26r.html"
     },
     {
       "id": "dgn-2026",
@@ -737,10 +1076,21 @@
       "affiliationCoverage": "unverified",
       "authorships": [],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "DGN",
+        "dynamic gated neuron",
+        "adaptive membrane conductance"
+      ],
+      "authorshipSource": null,
+      "authorshipStatus": "unverified",
+      "researchQuestion": null,
+      "researchMethod": null,
+      "evaluationScope": null,
+      "researchContentSource": null
     },
     {
       "id": "normalization-free-2026",
@@ -771,58 +1121,137 @@
       "bibliographySource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html",
       "curationSource": "https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks",
       "affiliationCoverage": "unverified",
-      "authorships": [],
+      "authorships": [
+        {
+          "name": "Peiyu Liu"
+        },
+        {
+          "name": "Jianhao Ding"
+        },
+        {
+          "name": "Zhaofei Yu"
+        }
+      ],
       "evidence": {
-        "bibliographicStatus": "source_checked",
+        "bibliographicStatus": "source_linked",
         "affiliationStatus": "unverified",
         "reproductionStatus": "not_reproduced"
-      }
+      },
+      "searchAliases": [
+        "E-I",
+        "E-I Init",
+        "E-I Prop",
+        "lateral inhibition"
+      ],
+      "authorshipSource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html",
+      "authorshipStatus": "publisher_listed",
+      "researchQuestion": "How can deep SNN training be stabilized without conventional normalization layers?",
+      "researchMethod": "An excitatory–inhibitory (E–I) interaction circuit combines subtractive/divisive inhibition with E-I Init and E-I Prop.",
+      "evaluationScope": "The paper evaluates multiple datasets and architectures; no result has been independently reproduced here.",
+      "researchContentSource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html"
     }
   ],
   "topics": [
     {
       "id": "neuron-dynamics",
-      "label": "Neuron dynamics"
+      "label": "Neuron dynamics",
+      "aliases": [
+        "neurons",
+        "LIF",
+        "PLIF",
+        "神经元动力学",
+        "膜电位"
+      ]
     },
     {
       "id": "learning-plasticity",
-      "label": "Learning & plasticity"
+      "label": "Learning & plasticity",
+      "aliases": [
+        "surrogate gradient",
+        "STDP",
+        "脉冲学习",
+        "替代梯度"
+      ]
     },
     {
       "id": "deep-architectures",
-      "label": "Deep architectures"
+      "label": "Deep architectures",
+      "aliases": [
+        "residual SNN",
+        "SNN Transformer",
+        "深度架构"
+      ]
     },
     {
       "id": "coding-conversion",
-      "label": "Coding & conversion"
+      "label": "Coding & conversion",
+      "aliases": [
+        "ANN SNN conversion",
+        "编码转换"
+      ]
     },
     {
       "id": "efficiency-hardware",
-      "label": "Efficiency & hardware"
+      "label": "Efficiency & hardware",
+      "aliases": [
+        "neuromorphic hardware",
+        "low power",
+        "低功耗"
+      ]
     },
     {
       "id": "event-vision",
-      "label": "Event-based vision"
+      "label": "Event-based vision",
+      "aliases": [
+        "event camera",
+        "事件视觉",
+        "事件相机"
+      ]
     },
     {
       "id": "robotics-embodied",
-      "label": "Robotics & embodied AI"
+      "label": "Robotics & embodied AI",
+      "aliases": [
+        "embodied AI",
+        "VLA",
+        "类脑具身智能",
+        "具身智能"
+      ]
     },
     {
       "id": "sequence-language",
-      "label": "Sequence & language"
+      "label": "Sequence & language",
+      "aliases": [
+        "temporal sequence",
+        "sequence modeling",
+        "时序建模"
+      ]
     },
     {
       "id": "neuroscience-bci",
-      "label": "Neuroscience & BCI"
+      "label": "Neuroscience & BCI",
+      "aliases": [
+        "brain computer interface",
+        "脑机接口"
+      ]
     },
     {
       "id": "benchmarks-tools",
-      "label": "Benchmarks & tools"
+      "label": "Benchmarks & tools",
+      "aliases": [
+        "benchmark",
+        "framework",
+        "实验工具"
+      ]
     },
     {
       "id": "theory-robustness",
-      "label": "Theory & robustness"
+      "label": "Theory & robustness",
+      "aliases": [
+        "robustness",
+        "stability",
+        "鲁棒性"
+      ]
     }
   ]
 }
