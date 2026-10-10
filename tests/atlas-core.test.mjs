@@ -90,3 +90,30 @@ test('affiliation coverage truthfully treats source list as partial',()=>{
  assert.equal(find('spike-htr-2026').affiliationCoverage,'unverified');
  assert.equal(find('norse').affiliationCoverage,'not_applicable');
 });
+
+test('topic display labels, aliases and cross-field search use the same index as the UI',()=>{
+ for(const t of data.topics){
+  const found=atlas.filter(items,{query:t.label},data.topics);
+  assert.ok(found.length>0,'unsearchable displayed topic: '+t.label);
+  assert.ok(found.some(x=>x.topics.includes(t.id)),t.id);
+ }
+ assert.deepEqual(atlas.filter(items,{query:'PLIF'},data.topics).map(x=>x.id),['plif-2021']);
+ assert.ok(atlas.filter(items,{query:'北京大学'},data.topics).some(x=>x.id==='plif-2021'));
+ assert.deepEqual(atlas.filter(items,{query:'2026 ICML'},data.topics).map(x=>x.id).sort(),['spike-htr-2026','spike-vla-2026'].sort());
+});
+test('facet-aware topic counts respect all non-topic constraints',()=>{
+ const counts=atlas.topicCounts(items,{year:'2026',format:'paper'},data.topics);
+ const candidates=atlas.filter(items,{year:'2026',format:'paper'},data.topics);
+ for(const t of data.topics)assert.equal(counts.get(t.id)||0,candidates.filter(x=>x.topics.includes(t.id)).length);
+});
+test('metadata evidence and author lists are consistent',()=>{
+ const verified=items.filter(x=>x.type==='paper'&&x.authorships.length);
+ assert.ok(verified.length>=8);
+ assert.ok(verified.every(x=>x.authorshipSource.startsWith('https://')));
+ const spoof=structuredClone(data);
+ spoof.items.find(x=>x.id==='plif-2021').authorshipSource=null;
+ assert.throws(()=>atlas.validate(spoof),/Authorship evidence/);
+ const fake=structuredClone(data);
+ fake.items.find(x=>x.id==='plif-2021').evidence.reproductionStatus='reproduced';
+ assert.throws(()=>atlas.validate(fake),/Inconsistent evidence/);
+});

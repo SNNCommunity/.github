@@ -67,9 +67,7 @@ bounds across 1440, 768, 390 and 320 CSS pixel viewports.
 
 The Research Atlas initially renders **six** cards to reduce page length on
 small displays. All seven metadata/search dimensions can be intersected, including
-multiple topic memberships and evidence-linked author institutions. The `View all resources` control reveals all indexed cards;
-active search or category filters display **all** matching entries without
-pagination or silent omission. Every index entry retains its source provenance
+multiple topic memberships and evidence-linked author institutions. The “Load more resources” reveals up to 12 additional cards per activation; filtered results use the same incremental disclosure without losing matches. Active-filter chips offer direct removal and multi-topic Any/All search is indexed by human-readable topic labels. Every index entry retains its source provenance
 and `indexed_not_reproduced` disclosure. The show-all section is hidden when
 unneeded, including its spacing. Original resource URLs remain accessible
 without JavaScript.

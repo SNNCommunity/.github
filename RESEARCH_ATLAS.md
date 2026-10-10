@@ -86,3 +86,12 @@ GitHub Actions also checks real Chromium behavior, including topic/year/venue co
 ## Research record pages (V8)
 
 Each indexed research paper is served at `/.github/papers/<id>/` with a stable canonical URL, original publication links, editorial topic associations, separately sourced affiliation evidence and explicit reproduction limitations. These pages do not assert a full authorship mapping or independent model reproduction. Run `node scripts/build-paper-pages.mjs` after changing the catalog to regenerate static pages and the sitemap. Source-linked indexing remains distinct from endorsement.
+
+## V9 correctness and evidence revisions
+
+- Search indexes displayed topic names, their curated multilingual aliases, existing scientific descriptions, verified author names, and publication/institution fields. Multiple search words can match different fields.
+- Facet topic counts are conditional on the other active search and metadata selections; they are not whole-corpus counts during a refined search.
+- Atlas state is parsed and rendered consistently on entry and browser Back/Forward; dependent country–institution and publication kind–venue fields are restored together.
+- Source-linked author lists have an explicit source and may remain `unverified` if an adequate source is not available. These names do not establish a complete author–affiliation mapping.
+- Research questions, method notes and evaluation descriptions on paper pages are editorial paraphrases linked to primary publication evidence, not verbatim abstracts and not independently reproduced results.
+- `node scripts/build-paper-pages.mjs` first clears the generated paper output directory to prevent obsolete research pages from surviving removed catalog records. CI compares regenerated pages against tracked files.
