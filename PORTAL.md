@@ -111,3 +111,7 @@ No analytics, cookies, external fonts, CDN JavaScript or user-account services a
 6. Verify real browser navigation and visuals separately from automation.
 
 See [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md) for wider scientific contribution policy, and [GOVERNANCE.md](GOVERNANCE.md) for the provisional maintenance model.
+
+## V10 research-first web interface
+
+The public home page leads with the Research Atlas before the full LIF/IF Lab and educational paths. A compact editorial list replaces three-column research cards; content-type quick switches mirror the advanced format selector. Topic links in dedicated research records return to a shareable filtered Atlas view. On narrow viewports the hero illustration is omitted, advanced facets start collapsed, and papers introduce research methods before institutional evidence. These are presentation changes only; numerical model definitions and verification boundaries remain unchanged. Browser checks assert the research-first section order, mobile discovery distance, responsive paper layout and separated footer text.

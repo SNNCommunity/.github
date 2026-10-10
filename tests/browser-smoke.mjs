@@ -30,6 +30,16 @@ try {
  await page.goto(base,{waitUntil:'load'});
  await page.locator('.resource-card').first().waitFor();
  assert.equal(await page.locator('.resource-card').count(),6,'initially show six curated resources');
+ assert.ok(await page.locator('#library').evaluate(el=>el.compareDocumentPosition(document.querySelector('#lab'))&Node.DOCUMENT_POSITION_FOLLOWING),'Research Atlas precedes Lab');
+ await page.locator('.atlas-kind[data-format="paper"]').click();
+ assert.equal(await page.locator('#atlas-format').inputValue(),'paper');
+ assert.equal(await page.locator('.atlas-kind[aria-pressed="true"]').count(),1);
+ assert.equal(await page.locator('.atlas-record-link').count(),6);
+ await page.locator('.atlas-kind[data-format="resource"]').click();
+ assert.equal(await page.locator('#atlas-format').inputValue(),'resource');
+ assert.equal(await page.locator('.atlas-record-link').count(),0);
+ await page.locator('.atlas-kind[data-format="all"]').click();
+ assert.equal(await page.locator('#atlas-format').inputValue(),'all');
  assert.equal(await page.locator('#resource-more').isVisible(),true,'view all button is visible');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),Math.min(recordTotal,18),'first load more reveals next records');
@@ -157,6 +167,15 @@ try {
    assert.match(h,/Learnable Membrane Time Constant/);
    assert.match(await page.locator('.paper-authors').innerText(),/Wei Fang/);
    assert.match(await page.locator('.research-notes').innerText(),/PLIF/);
+   assert.equal(await page.locator('.paper-side').count(),0,'duplicate hero evidence removed');
+   assert.ok(await page.locator('.paper-jump-nav a').count()>=4,'anchored record navigation');
+   assert.ok(await page.locator('.paper-tags a[href*="atlas.topic="]').count()>0);
+   if(width<=390){
+     const methodTop=await page.locator('#research').evaluate(el=>el.getBoundingClientRect().top+window.scrollY);
+     assert.ok(methodTop<1800,'scientific content within two mobile viewports: '+methodTop);
+     const footer=await page.locator('.paper-footer .container span').evaluateAll(xs=>xs.map(x=>{const r=x.getBoundingClientRect();return {top:r.top,bottom:r.bottom};}));
+     assert.ok(footer[1].top>=footer[0].bottom-1,'footer labels must not collide');
+   }
    const over=await page.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert.ok(over.scroll<=over.inner+1,'paper horizontal overflow '+width+': '+JSON.stringify(over));
    await page.locator('.paper-actions a').first().focus();
@@ -224,6 +243,12 @@ try {
   await page.setViewportSize({width,height:840});
   await page.reload();
   await page.locator('.resource-card').first().waitFor();
+  if(width<=390){
+    assert.equal(await page.locator('#atlas-advanced').getAttribute('open'),null,'mobile advanced filters initially closed');
+    const firstRecordTop=await page.locator('.resource-card').first().evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    assert.ok(firstRecordTop<1680,'first research record should appear within two phone viewports: '+firstRecordTop);
+  }
+  await page.locator('#atlas-advanced').evaluate(el=>{el.open=true;});
   const fit=await page.evaluate(()=>{
     const sels=[".menu-toggle",".preset-button",".atlas-topic",".atlas-field select",".lab-actions .button"];
     return sels.map(sel=>{
@@ -238,6 +263,7 @@ try {
   const over=await page.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
   assert.ok(over.scroll<=over.inner+1,'horizontal overflow at '+width+': '+JSON.stringify(over));
   if(width===390){
+   await page.locator('#atlas-advanced').evaluate(el=>{el.open=false;});
    await page.locator('#menu-toggle').click();
    assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');
    await page.locator('#site-menu a[href="#library"]').click();
