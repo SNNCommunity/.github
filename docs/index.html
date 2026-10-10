@@ -43,9 +43,9 @@
         <span></span><span></span><span></span>
       </button>
       <div class="nav-links" id="site-menu">
-        <a href="#lab">The Lab</a>
+        <a href="#library">Research</a>
+        <a href="#lab">Neuron Lab</a>
         <a href="#learn">Learn</a>
-        <a href="#library">Library</a>
         <a href="#community">Community</a>
         <a class="nav-cta" href="https://github.com/SNNCommunity" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       </div>
@@ -62,8 +62,8 @@
             <h1 id="hero-title">Intelligence,<br>in <em>spikes.</em></h1>
             <p class="hero-description">A place to understand spiking neural networks, test the dynamics behind them, and build the next generation of efficient intelligent systems.</p>
             <div class="hero-actions">
-              <a class="button button-accent" href="#lab">Explore the live lab <span aria-hidden="true">↗</span></a>
-              <a class="button button-quiet" href="#library">Browse resources <span aria-hidden="true">→</span></a>
+              <a class="button button-accent" href="#library">Explore SNN research <span aria-hidden="true">↗</span></a>
+              <a class="button button-quiet" href="#lab">Try the neuron lab <span aria-hidden="true">→</span></a>
             </div>
           </div>
           <div class="hero-visual" aria-label="Illustration of discrete neural spike events over time">
@@ -97,10 +97,63 @@
 
     <div class="ticker" aria-label="Research areas"><div class="container ticker-inner"><span>NEURON DYNAMICS</span><i></i><span>LEARNING ALGORITHMS</span><i></i><span>EVENT VISION</span><i></i><span>NEUROMORPHIC SYSTEMS</span><i></i><span>EMBODIED AI</span></div></div>
 
+    <section class="section section-library" id="library" aria-labelledby="library-title">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">01 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Discover research.<br><em>Understand the method.</em></h2></div><p>Find SNN papers, neural mechanisms and original implementations. Explore research areas, trace sources and open an individual record to understand the method.</p></div>
+        <div class="atlas-kind-switch" role="group" aria-label="Research content type">
+          <button class="atlas-kind is-selected" type="button" data-format="all" aria-pressed="true">All resources</button>
+          <button class="atlas-kind" type="button" data-format="paper" aria-pressed="false">Research papers</button>
+          <button class="atlas-kind" type="button" data-format="resource" aria-pressed="false">Software &amp; guides</button>
+        </div>
+        <div class="atlas-controls" aria-label="Research atlas search and filters">
+          <div class="atlas-search-row">
+            <div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search SNN papers and resources</label><input id="resource-search" type="search" placeholder="Search paper titles, universities, topics…" autocomplete="off"></div>
+            <button class="atlas-reset" id="atlas-reset" type="button">Clear filters <span aria-hidden="true">↻</span></button>
+          </div>
+          <div class="atlas-topic-heading"><span>EXPLORE BY RESEARCH AREA</span><span>Multi-label classification</span></div>
+          <div class="atlas-topics" id="atlas-topics" role="group" aria-label="Research area" aria-describedby="atlas-topic-help">
+            <button class="atlas-topic is-selected" type="button" data-topic="all" aria-pressed="true">All research</button>
+          </div>
+          <p class="atlas-hint" id="atlas-topic-help">Select multiple research areas, then refine the results using the filters.</p>
+          <div class="atlas-actions"><label for="atlas-topic-mode">Topic matching</label><select id="atlas-topic-mode"><option value="any">Any selected topic</option><option value="all">All selected topics</option></select><button id="atlas-copy" type="button">Copy search link</button></div>
+          <details class="atlas-advanced" id="atlas-advanced" open><summary>Advanced filters <span>Year · Venue · Affiliation · Sort</span></summary><div class="atlas-filters">
+            <div class="atlas-field"><label for="atlas-format">Content type</label><select id="atlas-format"><option value="all">Papers &amp; resources</option><option value="paper">Research papers</option><option value="resource">Tools &amp; other resources</option></select></div>
+            <div class="atlas-field"><label for="atlas-year">Publication year</label><select id="atlas-year"><option value="all">Any year</option></select></div>
+            <div class="atlas-field"><label for="atlas-venue-type">Publication type</label><select id="atlas-venue-type"><option value="all">Any publication type</option><option value="Conference">Conference</option><option value="Journal">Journal</option></select></div>
+            <div class="atlas-field"><label for="atlas-venue">Conference / journal</label><select id="atlas-venue"><option value="all">All venues</option></select></div>
+            <div class="atlas-field"><label for="atlas-country">Author affiliation · country</label><select id="atlas-country"><option value="all">All countries</option><option value="unknown">Not verified · paper</option><option value="not_applicable">Not applicable · resource</option></select></div>
+            <div class="atlas-field"><label for="atlas-university">Author affiliation · university</label><select id="atlas-university"><option value="all">All institutions</option></select></div>
+            <div class="atlas-field atlas-sort-field"><label for="atlas-sort">Sort by</label><select id="atlas-sort"><option value="recent">Publication year · newest</option><option value="oldest">Publication year · oldest</option><option value="title">Title · A to Z</option></select></div>
+          </div></details>
+        </div>
+        <div id="atlas-active-filters" class="atlas-active-filters" aria-label="Active Atlas search filters"></div>
+        <p id="atlas-copy-status" class="atlas-copy-status" role="status" aria-live="polite"></p>
+        <div id="atlas-copy-fallback" class="atlas-copy-fallback" hidden><label for="atlas-copy-input">Copy Atlas search link</label><input id="atlas-copy-input" type="text" readonly></div>
+        <details class="resource-provenance atlas-provenance-details"><summary>About evidence, authorship and curation</summary><p><strong>Research Atlas · Curated, not exhaustive.</strong> Country and institution refer to indexed affiliations at publication, not nationality. Papers may have institutions in multiple countries. Unknown remains unknown; indexing does not imply independent reproduction. Inspired by <a href="https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks" target="_blank" rel="noopener noreferrer">Awesome Spiking Neural Networks ↗</a>.</p></details>
+        <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
+        <div id="resource-grid" class="resource-grid" aria-label="Curated scientific records"></div>
+        <div class="resource-expand" hidden>
+          <button id="resource-more" type="button" class="resource-more" aria-controls="resource-grid" aria-expanded="false" hidden>View all resources <span aria-hidden="true">↓</span></button>
+        </div>
+        <noscript>
+          <div class="noscript-resources">
+            <p>The searchable directory requires JavaScript. You can still open the original projects directly:</p>
+            <a href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html">snnTorch tutorials</a> ·
+            <a href="https://spikingjelly.readthedocs.io/">SpikingJelly documentation</a> ·
+            <a href="https://github.com/norse/norse">Norse</a> ·
+            <a href="https://github.com/NeuroBench/neurobench">NeuroBench</a>
+          </div>
+        </noscript>
+        <p id="resource-fallback" class="resource-empty" hidden>Directory unavailable. <a href="https://github.com/SNNCommunity/.github/blob/main/docs/resources.json">Browse the source catalog on GitHub ↗</a></p>
+        <p id="resource-empty" class="resource-empty" hidden>No records match these filters. Remove a condition or clear filters to explore related research.</p>
+        
+      </div>
+    </section>
+
     <section class="section section-lab" id="lab" aria-labelledby="lab-title">
       <div class="container">
         <div class="section-heading">
-          <div><p class="eyebrow"><span class="section-index">01 /</span> INTERACTIVE RESEARCH</p><h2 id="lab-title">See a neuron<br><em>come to life.</em></h2></div>
+          <div><p class="eyebrow"><span class="section-index">02 /</span> INTERACTIVE RESEARCH</p><h2 id="lab-title">See a neuron<br><em>come to life.</em></h2></div>
           <p>Change the input, membrane dynamics and threshold. Compare a leaky neuron with its matched-gain nonleaky reference, then download the trace.</p>
         </div>
         <div class="lab-layout">
@@ -138,7 +191,7 @@
             </div>
             <p class="lab-feedback" id="lab-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
             <div class="share-fallback" id="share-fallback" hidden><label for="share-url">Your experiment URL</label><input type="text" id="share-url" readonly aria-label="Select and copy this experiment URL"></div>
-            <p class="model-note" id="model-summary">LIF: V(t+1) = V(t) + [I(t) − V(t)] / τ. IF: V(t+1) = V(t) + I(t) / τ. Both use 1 ms steps and a hard zero-reset after crossing Vth. IF uses τ as an integration scale, not a decay time constant. All voltages and inputs are normalized; this is not benchmark or biological evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#mathematical-definition" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
+            <p class="model-note" id="model-summary">LIF: V(t+1) = V(t) + [I(t) − V(t)] / τ. IF: V(t+1) = V(t) + I(t) / τ. Both use 1 ms steps and a hard zero-reset after crossing Vth. IF uses τ as an integration scale, not a decay time constant. All voltages and inputs are normalized; this is not benchmark or biological evidence. <a href="https://github.com/SNNCommunity/.github/blob/main/PORTAL.md#numerical-definition-and-comparison" target="_blank" rel="noopener noreferrer">Model specification ↗</a></p>
           </div>
         </div>
       </div>
@@ -146,60 +199,13 @@
 
     <section class="section section-paths" id="learn" aria-labelledby="learn-title">
       <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">02 /</span> START LEARNING</p><h2 id="learn-title">A field to explore.<br><em>A path to follow.</em></h2></div><p>Whether you're discovering spikes for the first time or moving into research, build an understanding from the neuron outward.</p></div>
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> START LEARNING</p><h2 id="learn-title">A field to explore.<br><em>A path to follow.</em></h2></div><p>Whether you're discovering spikes for the first time or moving into research, build an understanding from the neuron outward.</p></div>
         <div class="path-grid">
           <a class="path-card" href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html" target="_blank" rel="noopener noreferrer"><div class="path-nr">01 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-a" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div><p class="path-type">START HERE · FOUNDATIONS</p><h3>Understand<br>the spike.</h3><p>Encoding, neuron models, gradients and the basic SNN training loop.</p></div><span class="path-source">snnTorch tutorials <span aria-hidden="true">↗</span></span></a>
           <a class="path-card" href="https://spikingjelly.readthedocs.io/" target="_blank" rel="noopener noreferrer"><div class="path-nr">02 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-b" aria-hidden="true"><span></span><span></span><span></span></div><div><p class="path-type">GO DEEPER · ENGINEERING</p><h3>Build with<br>spikes.</h3><p>Develop networks with reusable components, training methods and real datasets.</p></div><span class="path-source">SpikingJelly docs <span aria-hidden="true">↗</span></span></a>
           <a class="path-card" href="https://github.com/NeuroBench/neurobench" target="_blank" rel="noopener noreferrer"><div class="path-nr">03 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-c" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div><p class="path-type">GO FURTHER · EVALUATION</p><h3>Measure<br>what matters.</h3><p>Learn how to assess neuromorphic algorithms and systems with clear protocols.</p></div><span class="path-source">NeuroBench <span aria-hidden="true">↗</span></span></a>
         </div>
         <p class="attribution-note">These are independently maintained projects. SNNCommunity links to their official resources; no affiliation or endorsement is implied.</p>
-      </div>
-    </section>
-
-    <section class="section section-library" id="library" aria-labelledby="library-title">
-      <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> CURATED OPEN RESOURCES</p><h2 id="library-title">Good work deserves<br><em>to be found.</em></h2></div><p>Explore SNN papers, official implementations and learning resources by scientific topic, publication year, venue, country and author-affiliated university. Metadata is evidence-linked; inclusion is not independent reproduction.</p></div>
-        <div class="atlas-controls" aria-label="Research atlas search and filters">
-          <div class="atlas-search-row">
-            <div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search SNN papers and resources</label><input id="resource-search" type="search" placeholder="Search paper titles, universities, topics…" autocomplete="off"></div>
-            <button class="atlas-reset" id="atlas-reset" type="button">Clear filters <span aria-hidden="true">↻</span></button>
-          </div>
-          <div class="atlas-topic-heading"><span>EXPLORE BY RESEARCH AREA</span><span>Multi-label classification</span></div>
-          <div class="atlas-topics" id="atlas-topics" role="group" aria-label="Research area" aria-describedby="atlas-topic-help">
-            <button class="atlas-topic is-selected" type="button" data-topic="all" aria-pressed="true">All research</button>
-          </div>
-          <p class="atlas-hint" id="atlas-topic-help">Select multiple research areas, then refine the results using the filters.</p>
-          <div class="atlas-actions"><label for="atlas-topic-mode">Topic matching</label><select id="atlas-topic-mode"><option value="any">Any selected topic</option><option value="all">All selected topics</option></select><button id="atlas-copy" type="button">Copy search link</button></div>
-          <details class="atlas-advanced" id="atlas-advanced" open><summary>Advanced filters <span>Year · Venue · Affiliation · Sort</span></summary><div class="atlas-filters">
-            <div class="atlas-field"><label for="atlas-format">Content type</label><select id="atlas-format"><option value="all">Papers &amp; resources</option><option value="paper">Research papers</option><option value="resource">Tools &amp; other resources</option></select></div>
-            <div class="atlas-field"><label for="atlas-year">Publication year</label><select id="atlas-year"><option value="all">Any year</option></select></div>
-            <div class="atlas-field"><label for="atlas-venue-type">Publication type</label><select id="atlas-venue-type"><option value="all">Any publication type</option><option value="Conference">Conference</option><option value="Journal">Journal</option></select></div>
-            <div class="atlas-field"><label for="atlas-venue">Conference / journal</label><select id="atlas-venue"><option value="all">All venues</option></select></div>
-            <div class="atlas-field"><label for="atlas-country">Author affiliation · country</label><select id="atlas-country"><option value="all">All countries</option><option value="unknown">Not verified · paper</option><option value="not_applicable">Not applicable · resource</option></select></div>
-            <div class="atlas-field"><label for="atlas-university">Author affiliation · university</label><select id="atlas-university"><option value="all">All institutions</option></select></div>
-            <div class="atlas-field atlas-sort-field"><label for="atlas-sort">Sort by</label><select id="atlas-sort"><option value="recent">Publication year · newest</option><option value="oldest">Publication year · oldest</option><option value="title">Title · A to Z</option></select></div>
-          </div></details>
-        </div>
-        <div id="atlas-active-filters" class="atlas-active-filters" aria-label="Active Atlas search filters"></div>
-        <p id="atlas-copy-status" class="atlas-copy-status" role="status" aria-live="polite"></p>
-        <div id="atlas-copy-fallback" class="atlas-copy-fallback" hidden><label for="atlas-copy-input">Copy Atlas search link</label><input id="atlas-copy-input" type="text" readonly></div>
-        <div class="resource-provenance"><strong>Research Atlas · Curated, not exhaustive.</strong> Countries and universities refer to cited <em>authors’ affiliations at publication</em>, not nationality or GitHub maintainers. Multi-institution papers appear in multiple countries. Unknown metadata remains unassigned. <a href="https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks" target="_blank" rel="noopener noreferrer">Research inspiration: Awesome Spiking Neural Networks ↗</a></div>
-        <div id="resource-grid" class="resource-grid"></div>
-        <div class="resource-expand" hidden>
-          <button id="resource-more" type="button" class="resource-more" aria-controls="resource-grid" aria-expanded="false" hidden>View all resources <span aria-hidden="true">↓</span></button>
-        </div>
-        <noscript>
-          <div class="noscript-resources">
-            <p>The searchable directory requires JavaScript. You can still open the original projects directly:</p>
-            <a href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html">snnTorch tutorials</a> ·
-            <a href="https://spikingjelly.readthedocs.io/">SpikingJelly documentation</a> ·
-            <a href="https://github.com/norse/norse">Norse</a> ·
-            <a href="https://github.com/NeuroBench/neurobench">NeuroBench</a>
-          </div>
-        </noscript>
-        <p id="resource-fallback" class="resource-empty" hidden>Directory unavailable. <a href="https://github.com/SNNCommunity/.github/blob/main/docs/resources.json">Browse the source catalog on GitHub ↗</a></p>
-        <p id="resource-empty" class="resource-empty" hidden>No records match these filters. Remove a condition or clear filters to explore related research.</p>
-        <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 

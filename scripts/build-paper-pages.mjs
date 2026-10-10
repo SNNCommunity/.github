@@ -45,7 +45,7 @@ const render=function render(p,papers,topics){
 <h1>${esc(p.title)}</h1>
 <p class="paper-authors">${authors.length?authors.map(esc).join(", ")+" "+action(p.authorshipSource,"Author source"):"Author list pending source verification."}</p>
 <p class="paper-deck">${esc(p.description)}</p>
-<div class="paper-tags">${p.topics.map(t=>`<span>${esc(label(t))}</span>`).join("")}</div>
+<div class="paper-tags">${p.topics.map(t=>`<a href="../../?atlas.topic=${encodeURIComponent(t)}#library">${esc(label(t))}</a>`).join("")}</div>
 <div class="paper-actions">${action(p.url,"Original paper","primary")}${action(p.code,"Linked code")}${p.doi?action("https://doi.org/"+p.doi,"DOI"):""}</div></div>
 <aside class="paper-side"><p class="paper-aside-label">SOURCE COVERAGE</p>
 <p><strong>Publication</strong><span>Primary reference linked</span></p>
@@ -73,6 +73,12 @@ ${action(p.bibliographySource,"Bibliography")}${action(p.url,"Original paper")}$
 </main><footer class="paper-footer"><div class="container"><span>SNNCommunity · Research Atlas</span><span>Curated, non-exhaustive, independent</span></div></footer>
 </body></html>\n`;
 };
+function polishRecord(html){
+ return html.replace(/<aside class="paper-side">[\s\S]*?<\/aside>/,"")
+ .replace('<section class="paper-content">',`<nav class="paper-jump-nav" aria-label="Research record sections"><div class="container">
+<a href="#research">Method &amp; evaluation</a><a href="#sources">Original sources</a><a href="#affiliations">Institutions</a><a href="#evidence">Evidence status</a></div></nav>
+<section class="paper-content">`);
+}
 const xmlEsc=s=>String(s).replace(/[<>&"']/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;","'":"&apos;"}[c]));
 const root=process.cwd(),data=JSON.parse(readFileSync(resolve(root,"docs/resources.json"),"utf8"));
 const papers=data.items.filter(x=>x.type==="paper");
@@ -80,7 +86,7 @@ const out=resolve(root,"docs/papers");rmSync(out,{recursive:true,force:true});mk
 for(const item of papers){
  if(!/^[a-z0-9-]+$/.test(item.id))throw Error("Unsafe publication id");
  const folder=resolve(out,item.id);mkdirSync(folder,{recursive:true});
- writeFileSync(resolve(folder,"index.html"),render(item,papers,data.topics));
+ writeFileSync(resolve(folder,"index.html"),polishRecord(render(item,papers,data.topics)));
 }
 const urls=["https://snncommunity.github.io/.github/",...papers.map(p=>"https://snncommunity.github.io/.github/papers/"+p.id+"/")];
 writeFileSync(resolve(root,"docs/sitemap.xml"),'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"  <url><loc>"+xmlEsc(u)+"</loc></url>").join("\n")+'\n</urlset>\n');

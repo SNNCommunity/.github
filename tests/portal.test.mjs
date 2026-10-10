@@ -17,10 +17,17 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/aria-describedby="experiment-summary model-summary"/);
  assert.match(html,/id="atlas-active-filters"/);
  assert.match(html,/id="atlas-advanced"/);
+ assert.ok(html.indexOf('id="library"')<html.indexOf('id="lab"'),'research first');
+ assert.match(html,/class="atlas-kind-switch"/);
+ assert.match(html,/class="resource-provenance atlas-provenance-details"/);
+ assert.match(js,/function syncFormatButtons/);
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);
  assert.match(record,/not the verbatim abstract/);
  assert.match(record,/Not independently reproduced/);
+ assert.match(record,/class="paper-jump-nav"/);
+ assert.doesNotMatch(record,/class="paper-side"/);
+ assert.match(record,/atlas.topic=/);
  assert.match(record,/Wei Fang/);
  assert.match(record,/Parametric leaky integrate-and-fire/);
  assert.match(record,/Research question and method/);
@@ -97,5 +104,5 @@ test('atlas metadata separates university affiliations from software ownership',
     assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
   }
  }
- assert.match(html,/authors’ affiliations at publication/);
+ assert.match(html,/affiliations at publication/);
 });
