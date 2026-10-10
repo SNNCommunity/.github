@@ -174,7 +174,7 @@ try {
      const get=sel=>Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize);
      return {venue:get(".paper-venue"),authors:get(".paper-authors"),
        deck:get(".paper-deck"),topic:get(".paper-tags a"),
-       method:get(".research-notes p"),subtle:get(".research-notes .paper-muted"),
+       method:get(".research-notes h3 + p"),subtle:get(".research-notes .paper-muted"),
        navigation:get(".paper-jump-nav a"),link:get(".paper-actions .paper-button"),
        footer:get(".paper-footer .container span")};
    });
