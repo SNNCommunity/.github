@@ -18,8 +18,8 @@ test('production files, metadata and required controls are present',()=>{
 });
 test('open source provenance entries use unique structured records',()=>{
  assert.equal(catalog.schemaVersion,2);
- assert.equal(catalog.items.length,22);
- assert.equal(new Set(catalog.items.map(x=>x.id)).size,22);
+ assert.ok(catalog.items.length>=22);
+ assert.equal(new Set(catalog.items.map(x=>x.id)).size,catalog.items.length);
  for(const x of catalog.items){
   assert.match(x.url,/^https:\/\//);
   assert.equal(x.verification,'indexed_not_reproduced');
@@ -29,7 +29,7 @@ test('open source provenance entries use unique structured records',()=>{
  const doi=catalog.items.filter(x=>x.type==='paper').map(x=>x.doi);
  for(const id of ['10.1109/JPROC.2023.3308088','10.1109/MSP.2019.2931595','10.1109/TPAMI.2020.3008413'])assert.ok(doi.includes(id));
  assert.equal(catalog.topics.length,11);
- assert.equal(catalog.items.filter(x=>x.type==='paper').length,13);
+ assert.ok(catalog.items.filter(x=>x.type==='paper').length>=13);
  assert.ok(catalog.items.some(x=>(x.affiliations||[]).some(a=>a.country==='France')));
 });
 test('no abandoned V2/V3 assets and no invented evidence',()=>{

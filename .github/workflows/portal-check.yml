@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "docs/**"
-      - "tests/**"
+      - "tests/**"\n      - "RESEARCH_ATLAS.md"\n      - "RESEARCH_STANDARDS.md"\n      - ".github/ISSUE_TEMPLATE/**"
       - ".github/workflows/portal-check.yml"
   pull_request:
     paths:

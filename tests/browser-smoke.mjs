@@ -28,7 +28,9 @@ try {
  assert.equal(await page.locator('.resource-card').count(),6,'initially show six curated resources');
  assert.equal(await page.locator('#resource-more').isVisible(),true,'view all button is visible');
  await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),22,'view all reveals all 22 indexed records');
+ assert.equal(await page.locator('.resource-card').count(),18,'first load more reveals 18 records');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),22,'second load more reveals all 22 indexed records');
  assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'true');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),6,'show fewer restores concise index');
@@ -71,7 +73,9 @@ try {
 
  await page.locator('#atlas-format').selectOption('paper');
  assert.equal(await page.locator('.resource-card').count(),13,'13 peer-reviewed records');
- assert.equal(await page.locator('#resource-more').isVisible(),false,'filtered results are never truncated');
+ assert.equal(await page.locator('.resource-card').count(),6,'filtered results are paginated');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),13,'all paper results available');
  await page.locator('#atlas-year').selectOption('2026');
  await page.locator('#atlas-venue-type').selectOption('Conference');
  await page.locator('#atlas-venue').selectOption('ICML');
