@@ -170,7 +170,7 @@
           </div>
           <p class="atlas-hint" id="atlas-topic-help">Select multiple research areas, then refine the results using the filters.</p>
           <div class="atlas-actions"><label for="atlas-topic-mode">Topic matching</label><select id="atlas-topic-mode"><option value="any">Any selected topic</option><option value="all">All selected topics</option></select><button id="atlas-copy" type="button">Copy search link</button></div>
-          <div class="atlas-filters">
+          <details class="atlas-advanced" id="atlas-advanced" open><summary>Advanced filters <span>Year · Venue · Affiliation · Sort</span></summary><div class="atlas-filters">
             <div class="atlas-field"><label for="atlas-format">Content type</label><select id="atlas-format"><option value="all">Papers &amp; resources</option><option value="paper">Research papers</option><option value="resource">Tools &amp; other resources</option></select></div>
             <div class="atlas-field"><label for="atlas-year">Publication year</label><select id="atlas-year"><option value="all">Any year</option></select></div>
             <div class="atlas-field"><label for="atlas-venue-type">Publication type</label><select id="atlas-venue-type"><option value="all">Any publication type</option><option value="Conference">Conference</option><option value="Journal">Journal</option></select></div>
@@ -178,8 +178,11 @@
             <div class="atlas-field"><label for="atlas-country">Author affiliation · country</label><select id="atlas-country"><option value="all">All countries</option><option value="unknown">Not verified · paper</option><option value="not_applicable">Not applicable · resource</option></select></div>
             <div class="atlas-field"><label for="atlas-university">Author affiliation · university</label><select id="atlas-university"><option value="all">All institutions</option></select></div>
             <div class="atlas-field atlas-sort-field"><label for="atlas-sort">Sort by</label><select id="atlas-sort"><option value="recent">Publication year · newest</option><option value="oldest">Publication year · oldest</option><option value="title">Title · A to Z</option></select></div>
-          </div>
+          </div></details>
         </div>
+        <div id="atlas-active-filters" class="atlas-active-filters" aria-label="Active Atlas search filters"></div>
+        <p id="atlas-copy-status" class="atlas-copy-status" role="status" aria-live="polite"></p>
+        <div id="atlas-copy-fallback" class="atlas-copy-fallback" hidden><label for="atlas-copy-input">Copy Atlas search link</label><input id="atlas-copy-input" type="text" readonly></div>
         <div class="resource-provenance"><strong>Research Atlas · Curated, not exhaustive.</strong> Countries and universities refer to cited <em>authors’ affiliations at publication</em>, not nationality or GitHub maintainers. Multi-institution papers appear in multiple countries. Unknown metadata remains unassigned. <a href="https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks" target="_blank" rel="noopener noreferrer">Research inspiration: Awesome Spiking Neural Networks ↗</a></div>
         <div id="resource-grid" class="resource-grid"></div>
         <div class="resource-expand" hidden>
@@ -195,7 +198,7 @@
           </div>
         </noscript>
         <p id="resource-fallback" class="resource-empty" hidden>Directory unavailable. <a href="https://github.com/SNNCommunity/.github/blob/main/docs/resources.json">Browse the source catalog on GitHub ↗</a></p>
-        <p id="resource-empty" class="resource-empty" hidden>No matching resources. Try another keyword or category.</p>
+        <p id="resource-empty" class="resource-empty" hidden>No records match these filters. Remove a condition or clear filters to explore related research.</p>
         <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading curated resources…</span><a href="https://github.com/SNNCommunity/.github/issues/3" target="_blank" rel="noopener noreferrer">Suggest a resource <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
