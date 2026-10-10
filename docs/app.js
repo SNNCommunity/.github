@@ -222,11 +222,14 @@
     el.replaceChildren(...preserved,...values.map(v=>new Option(String(v),String(v))));
   }
   function refreshDependentOptions(country,venueType){
+    const priorUniversity=facetEls.university.value,priorVenue=facetEls.venue.value;
     const f=atlas.facets(all);
     fillOptions(facetEls.university,
       country==="unknown"||country==="not_applicable"?[]:f.universities(country));
     const pool=all.filter(x=>x.publication&&(venueType==="all"||x.publication.kind===venueType));
     fillOptions(facetEls.venue,atlas.facets(pool).venues);
+    setOption(facetEls.university,priorUniversity);
+    setOption(facetEls.venue,priorVenue);
   }
   const selections=()=>({
     query:search?.value||"",topics:[...selectedTopics],topicMode,
