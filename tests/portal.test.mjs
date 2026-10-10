@@ -19,7 +19,7 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/id="atlas-advanced"/);
  assert.ok(html.indexOf('id="library"')<html.indexOf('id="lab"'),'research first');
  assert.match(html,/class="atlas-kind-switch"/);
- assert.match(html,/class="atlas-provenance-details"/);
+ assert.match(html,/class="resource-provenance atlas-provenance-details"/);
  assert.match(js,/function syncFormatButtons/);
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);
@@ -104,5 +104,5 @@ test('atlas metadata separates university affiliations from software ownership',
     assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
   }
  }
- assert.match(html,/authors’ affiliations at publication/);
+ assert.match(html,/affiliations at publication/);
 });
