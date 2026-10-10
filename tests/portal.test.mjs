@@ -106,3 +106,14 @@ test('atlas metadata separates university affiliations from software ownership',
  }
  assert.match(html,/affiliations at publication/);
 });
+
+test('reader typography overrides cover research lists, scientific lab and paper pages',()=>{
+ const css=read('docs/styles.css'),paper=read('docs/paper.css'),app=read('docs/app.js');
+ assert.match(css,/V11 \/ Readability system/);
+ assert.match(css,/--type-reading:1rem/);
+ assert.match(css,/\.atlas-card>p\{font-size:var\(--type-reading\)/);
+ assert.match(css,/\.atlas-field select\{font-size:var\(--type-ui\)/);
+ assert.match(paper,/V11 \/ Paper reading hierarchy/);
+ assert.match(paper,/\.research-notes p,/);
+ assert.match(app,/w<420\?"13px":"14px"/);
+});

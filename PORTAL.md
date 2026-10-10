@@ -115,3 +115,7 @@ See [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md) for wider scientific contribu
 ## V10 research-first web interface
 
 The public home page leads with the Research Atlas before the full LIF/IF Lab and educational paths. A compact editorial list replaces three-column research cards; content-type quick switches mirror the advanced format selector. Topic links in dedicated research records return to a shareable filtered Atlas view. On narrow viewports the hero illustration is omitted, advanced facets start collapsed, and papers introduce research methods before institutional evidence. These are presentation changes only; numerical model definitions and verification boundaries remain unchanged. Browser checks assert the research-first section order, mobile discovery distance, responsive paper layout and separated footer text.
+
+## V11 scientific typography and accessible reading
+
+The portal uses a 16px body baseline. Research descriptions and scientific method explanations are at least 16px. Primary controls target 15px, and visible supporting metadata has a 14px minimum. Paper pages follow the same reader type scale in `docs/paper.css`. The interactive neuron Canvas label text grows from 11/12px to 13/14px. Most added type rules use rem units so users can enlarge the root font without breaking the hierarchy. Chromium tests evaluate computed sizes at desktop and mobile widths, check 125% root font scaling and reject unwanted horizontal overflow. Smaller schematic annotations never replace textual scientific definitions.

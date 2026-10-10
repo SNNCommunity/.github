@@ -15,12 +15,14 @@ test("operational text color pairs exceed WCAG AA normal text contrast",()=>{
 });
 test("type tokens and readability sizing are present",()=>{
  assert.match(css,/--type-body:\s*1rem/);
- assert.match(css,/--type-ui:\s*\.875rem/);
+ assert.match(css,/--type-ui:\s*\.9375rem/);
+ assert.match(css,/--type-support:\s*\.875rem/);
  assert.match(css,/--reading-measure:\s*68ch/);
- assert.match(css,/\.resource-card p \{[^}]*font-size:\s*15px/);
- assert.match(css,/\.control-field label \{[^}]*font-size:\s*14px/);
- assert.match(css,/\.model-note \{[^}]*font-size:\s*13px/);
- assert.match(css,/\.lab-actions \.button \{[^}]*font-size:\s*14px/);
+ assert.match(css,/--type-reading:1rem/);
+ assert.match(css,/\.atlas-card>p\{font-size:var\(--type-reading\)/);
+ assert.match(css,/\.control-explainer,\.model-note/);
+ assert.match(css,/\.lab-actions \.button[^{}]*\{[^{}]*font-size:var\(--type-ui\)/);
+ assert.match(css,/\.atlas-card \.atlas-record-link,\.atlas-card \.resource-main-link/);
  assert.match(css,/:focus-visible/);
  assert.match(css,/@media \(prefers-reduced-motion: reduce\)/);
 });

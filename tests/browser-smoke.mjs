@@ -170,6 +170,18 @@ try {
    assert.equal(await page.locator('.paper-side').count(),0,'duplicate hero evidence removed');
    assert.ok(await page.locator('.paper-jump-nav a').count()>=4,'anchored record navigation');
    assert.ok(await page.locator('.paper-tags a[href*="atlas.topic="]').count()>0);
+   const paperSize=await page.evaluate(()=>{
+     const get=sel=>Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize);
+     return {venue:get(".paper-venue"),authors:get(".paper-authors"),
+       deck:get(".paper-deck"),topic:get(".paper-tags a"),
+       method:get(".research-notes h3 + p"),subtle:get(".research-notes .paper-muted"),
+       navigation:get(".paper-jump-nav a"),link:get(".paper-actions .paper-button"),
+       footer:get(".paper-footer .container span")};
+   });
+   for(const [key,min] of Object.entries({
+     venue:14,authors:width<=390?15:16,deck:16,topic:14,method:16,
+     subtle:15,navigation:14,link:14,footer:15
+   }))assert.ok(paperSize[key]>=min,'paper typography '+key+' at '+width+': '+paperSize[key]);
    if(width<=390){
      const methodTop=await page.locator('#research').evaluate(el=>el.getBoundingClientRect().top+window.scrollY);
      assert.ok(methodTop<1800,'scientific content within two mobile viewports: '+methodTop);
@@ -223,15 +235,32 @@ try {
     "lab action":".lab-actions .button",
     "resource metadata":".atlas-card-summary",
     "navigation":".nav-links > a",
-    "footer text":".footer-main p"
+    "footer text":".footer-main p",
+    "eyebrow":".eyebrow",
+    "hero action":".hero-actions .button",
+    "topic":".atlas-topic",
+    "quick type":".atlas-kind",
+    "research tag":".atlas-tag",
+    "search input":"#resource-search",
+    "facet label":".atlas-field label",
+    "facet select":".atlas-field select",
+    "metadata source":".resource-evidence summary",
+    "method help":".control-explainer",
+    "lab legend":".plot-legend",
+    "lab stats label":".lab-status small",
+    "community note":".community-list small"
   };
   return Object.fromEntries(Object.entries(selectors).map(([name,sel])=>[
     name,Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize)]));
  });
  for(const [name,min] of Object.entries({
-   "body":16,"resource description":15,"resource heading":18,
-   "model note":13,"parameter label":14,"lab action":14,
-   "resource metadata":13,"navigation":14,"footer text":15
+   "body":16,"resource description":16,"resource heading":20,
+   "model note":16,"parameter label":15,"lab action":15,
+   "resource metadata":15,"navigation":16,"footer text":15,
+   "eyebrow":14,"hero action":15,"topic":14,"quick type":15,
+   "research tag":14,"search input":16,"facet label":14,
+   "facet select":15,"metadata source":14,"method help":16,
+   "lab legend":14,"lab stats label":14,"community note":15
  }))assert.ok(sizes[name]>=min,name+" too small: "+sizes[name]+"px");
  const mobileTexts=await page.locator(".resource-card > p").count();
  assert.equal(mobileTexts,6,'default compact index contains six readable resource cards');
@@ -258,8 +287,17 @@ try {
   });
   for(const el of fit)assert.ok(el.width>=24&&el.height>=44,
     "target too small at "+width+": "+JSON.stringify(el));
-  const mobileBody=await page.locator(".resource-card p").first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
-  assert.ok(mobileBody>=15,"resource descriptions too small at "+width+": "+mobileBody);
+  const mobileType=await page.evaluate(()=>{
+    const get=sel=>Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize);
+    return {description:get('.atlas-card > p'),title:get('.atlas-card h3'),
+      topic:get('.atlas-topic'),tag:get('.atlas-tag'),tab:get('.atlas-kind'),
+      select:get('.atlas-field select'),action:get('.atlas-card-actions a'),
+      model:get('.model-note'),lab:get('.lab-status small'),nav:get('.nav-links > a')};
+  });
+  for(const [name,min] of Object.entries({
+    description:16,title:20,topic:14,tag:14,tab:14,
+    select:width<=380?14:15,action:14,model:16,lab:14,nav:16
+  }))assert.ok(mobileType[name]>=min,'mobile typography '+name+' '+width+': '+mobileType[name]);
   const over=await page.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
   assert.ok(over.scroll<=over.inner+1,'horizontal overflow at '+width+': '+JSON.stringify(over));
   if(width===390){
@@ -271,6 +309,16 @@ try {
    await page.screenshot({path:resolve(out,'mobile.png'),fullPage:true});
   }
   if(width===768)await page.screenshot({path:resolve(out,'tablet.png'),fullPage:true});
+  if(width===390){
+    await page.evaluate(()=>{document.documentElement.style.fontSize='20px';});
+    const enlarged=await page.evaluate(()=>({
+      body:Number.parseFloat(getComputedStyle(document.body).fontSize),
+      scroll:document.documentElement.scrollWidth,inner:innerWidth
+    }));
+    assert.ok(enlarged.body>=20,'browser font size should scale rem text');
+    assert.ok(enlarged.scroll<=enlarged.inner+1,'125% root font overflows: '+JSON.stringify(enlarged));
+    await page.evaluate(()=>{document.documentElement.style.fontSize='';});
+  }
  }
  assert.deepEqual(errors,[]);
  console.log('PASS 768/390/320 widths, mobile nav, and browser errors');
