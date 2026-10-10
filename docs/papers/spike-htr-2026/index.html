@@ -1,38 +1,49 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#123c32">
-<title>Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition · SNN Research Atlas</title>
-<meta name="description" content="Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction.">
-<link rel="canonical" href="https://snncommunity.github.io/.github/papers/spike-htr-2026/">
-<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../../styles.css">
-<link rel="stylesheet" href="../../paper.css">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition · SNN Research Atlas">
-<meta property="og:description" content="Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction.">
-<meta property="og:url" content="https://snncommunity.github.io/.github/papers/spike-htr-2026/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition","datePublished":"2026","url":"https://proceedings.mlr.press/v306/liang26j.html","mainEntityOfPage":"https://snncommunity.github.io/.github/papers/spike-htr-2026/","isPartOf":{"@type":"Periodical","name":"ICML"}}</script>
-</head>
-<body class="paper-view">
-<a class="skip-link" href="#main">Skip to paper record</a>
-<header class="paper-nav"><div class="container paper-nav-inner"><a class="paper-brand" href="../../">SNN<span>/</span>COMMUNITY</a><nav aria-label="Research navigation"><a href="../../#library">← Research Atlas</a><a href="../../#lab">Neuron lab</a><a href="https://github.com/SNNCommunity/.github/issues/new/choose" target="_blank" rel="noopener noreferrer">Suggest a correction ↗</a></nav></div></header>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#103a31"><title>Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition · SNN Research Atlas</title>
+<meta name="description" content="Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction."><link rel="canonical" href="https://snncommunity.github.io/.github/papers/spike-htr-2026/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../paper.css">
+<meta property="og:type" content="article"><meta property="og:title" content="Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition · SNN Research Atlas">
+<meta property="og:description" content="Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction."><meta property="og:url" content="https://snncommunity.github.io/.github/papers/spike-htr-2026/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition","url":"https://proceedings.mlr.press/v306/liang26j.html","datePublished":"2026","mainEntityOfPage":"https://snncommunity.github.io/.github/papers/spike-htr-2026/","isPartOf":{"@type":"CreativeWork","name":"ICML"},"author":[{"@type":"Person","name":"Xiubo Liang"},{"@type":"Person","name":"Jinxing Han"},{"@type":"Person","name":"Yuke Li"},{"@type":"Person","name":"Haoqi Zhu"},{"@type":"Person","name":"Yu Zhao"},{"@type":"Person","name":"Hongzhi Wang"}]}</script></head>
+<body class="paper-view"><a class="skip-link" href="#main">Skip to research record</a>
+<header class="paper-nav"><div class="container paper-nav-inner"><a class="paper-brand" href="../../">SNN<span>/</span>COMMUNITY</a>
+<nav aria-label="Research navigation"><a href="../../#library">← Research Atlas</a><a href="../../#lab">Neuron lab</a><a href="https://github.com/SNNCommunity/.github/issues/new?title=%5BAtlas%20metadata%5D%20spike-htr-2026&amp;body=Record%3A%20https%3A%2F%2Fsnncommunity.github.io%2F.github%2Fpapers%2Fspike-htr-2026%2F%0APlease%20include%20official%20supporting%20sources.%0A" target="_blank" rel="noopener noreferrer">Correct this record ↗</a></nav></div></header>
 <main id="main">
-<section class="paper-hero"><div class="container"><p class="paper-eyebrow">RESEARCH ATLAS <span aria-hidden="true">/</span> SCIENTIFIC RECORD</p>
-<div class="paper-hero-main"><div><p class="paper-venue">Conference <span aria-hidden="true">·</span> ICML <span aria-hidden="true">·</span> 2026</p>
+<section class="paper-hero"><div class="container"><p class="paper-eyebrow">RESEARCH ATLAS / SCIENTIFIC RECORD</p>
+<div class="paper-hero-main"><div><p class="paper-venue">Conference · ICML · 2026</p>
 <h1>Spike-HTR: Spiking Neural Transformer for Handwritten Text Recognition</h1>
-<p class="paper-deck">Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction.</p><div class="paper-tags"><span>Sequence &amp; language</span><span>Deep architectures</span><span>Coding &amp; conversion</span></div>
-<div class="paper-actions"><a class="paper-button primary" href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">View official paper <span aria-hidden="true">↗</span></a><a class="paper-button " href="https://github.com/QomolangmaH/SpikeHTR" target="_blank" rel="noopener noreferrer">Visit linked code <span aria-hidden="true">↗</span></a></div></div>
-<aside class="paper-side"><p class="paper-aside-label">INDEX RECORD</p><strong>spike-htr-2026</strong><hr><p>Publication: <b>Source-linked</b></p><p>Affiliation: <b>Not verified</b></p><p>Reproduction: <b>Not independently reproduced</b></p><p class="paper-fine">Indexing a publication does not constitute endorsement or scientific verification.</p></aside></div></div></section>
+<p class="paper-authors">Xiubo Liang, Jinxing Han, Yuke Li, Haoqi Zhu, Yu Zhao, Hongzhi Wang <a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Author source ↗</a></p>
+<p class="paper-deck">Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction.</p>
+<div class="paper-tags"><span>Sequence &amp; language</span><span>Deep architectures</span><span>Coding &amp; conversion</span></div>
+<div class="paper-actions"><a class="paper-button primary" href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Original paper ↗</a><a class="paper-button " href="https://github.com/QomolangmaH/SpikeHTR" target="_blank" rel="noopener noreferrer">Linked code ↗</a></div></div>
+<aside class="paper-side"><p class="paper-aside-label">SOURCE COVERAGE</p>
+<p><strong>Publication</strong><span>Primary reference linked</span></p>
+<p><strong>Authors</strong><span>Names transcribed</span></p>
+<p><strong>Affiliations</strong><span>Unverified</span></p>
+<p><strong>Reproduction</strong><span>Not independently reproduced</span></p>
+<p class="paper-fine">Indexing does not certify scientific results.</p></aside></div></div></section>
 <section class="paper-content"><div class="container paper-content-grid"><article class="paper-main">
-<div class="paper-panel"><p class="paper-eyebrow">01 / RESEARCH SUMMARY</p><h2>What this record covers</h2><p>Short-horizon spiking sequence recognition with stroke-focused coding and CTC reduction.</p><p class="paper-muted">This is an editorial catalog description, not the original paper abstract. Consult the publication for its complete claims, experiments and author list.</p></div>
-<div class="paper-panel"><p class="paper-eyebrow">02 / PUBLISHED AFFILIATIONS</p><h2>Source-linked institutions</h2><p class="paper-muted">Unverified does not mean that the published work has no institutional affiliations.</p><p class="paper-muted">Author affiliations have not yet been independently transcribed and cross-checked for this record. No country is inferred.</p></div>
-<div class="paper-panel"><p class="paper-eyebrow">03 / REPRODUCIBILITY</p><h2>Evidence status</h2><div class="paper-status"><span>Bibliography</span><strong>Publication source linked</strong></div><div class="paper-status"><span>Independent execution</span><strong>Not available in this atlas</strong></div><div class="paper-status"><span>Source-code link</span><strong>Indexed (execution not checked)</strong></div><p class="paper-muted">No benchmark score, accuracy, energy estimate or hardware result has been independently reproduced by SNNCommunity for this record.</p></div>
-<div class="paper-panel"><p class="paper-eyebrow">04 / ORIGINAL SOURCES</p><h2>Traceable references</h2><div class="paper-source-links"><a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Official bibliography source <span aria-hidden="true">↗</span></a><a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Original publication <span aria-hidden="true">↗</span></a><a class="paper-button " href="https://github.com/QomolangmaH/SpikeHTR" target="_blank" rel="noopener noreferrer">Linked implementation <span aria-hidden="true">↗</span></a></div></div>
-</article><aside class="paper-aside"><div class="paper-panel"><p class="paper-eyebrow">DISCOVER MORE</p><h2>Related by research tags</h2><p class="paper-muted">Catalog relationships are based on shared editorial topic labels, not empirical comparisons.</p><div class="paper-related"><a class="paper-related-link" href="../spikellm-2025/"><span>ICLR · 2025</span><strong>SpikeLLM: Scaling up Spiking Neural Network to Large Language Models via Saliency-based Spiking</strong><span>Shared tags: Sequence &amp; language · Coding &amp; conversion</span></a>
-<a class="paper-related-link" href="../sew-resnet-2021/"><span>NeurIPS · 2021</span><strong>Deep Residual Learning in Spiking Neural Networks</strong><span>Shared tags: Deep architectures</span></a>
-<a class="paper-related-link" href="../spike-vla-2026/"><span>ICML · 2026</span><strong>SpikeVLA: Vision-Language-Action Models with Spiking Neural Networks</strong><span>Shared tags: Sequence &amp; language</span></a></div><a class="paper-back" href="../../#library">← Explore all research</a></div><div class="paper-panel paper-small"><p class="paper-eyebrow">IMPROVE THIS RECORD</p><p>Found a missing affiliation, broken link or version mismatch?</p><a class="paper-back" href="https://github.com/SNNCommunity/.github/issues/new/choose" target="_blank" rel="noopener noreferrer">Submit source-backed correction ↗</a></div></aside></div></section>
-</main><footer class="paper-footer"><div class="container"><span>SNNCommunity · Open research directory</span><span>Curated, non-exhaustive, independently maintained</span></div></footer>
+<section class="paper-panel" id="research"><p class="paper-eyebrow">01 / SCIENTIFIC ORIENTATION</p><h2>Research question and method</h2><div class="research-notes">
+   <p class="paper-muted">Editorial synthesis from the original publication. These descriptions are not the verbatim abstract, or independent reproduction.</p>
+   <h3>Question</h3><p>How can spiking text recognition shorten both its time horizon and spatial sequence?</p>
+   <h3>Method</h3><p>InkCoder supplies coarse-to-detail spike inputs, while a CTC-guided reducer compresses blank-dominated width positions.</p>
+   <h3>Evaluation described by the authors</h3><p>The official ICML record reports IAM, LAM and READ2016 results with T=2, without a language model or lexicon.</p>
+   <a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Verify with publication ↗</a></div></section>
+<section class="paper-panel" id="affiliations"><p class="paper-eyebrow">02 / AUTHOR AFFILIATIONS</p><h2>Source-linked institutions</h2>
+<p class="paper-muted">This list is not a complete author-to-institution audit.</p><p class="paper-muted">Institutions have not been independently transcribed for this record. No country is inferred.</p></section>
+<section class="paper-panel" id="evidence"><p class="paper-eyebrow">03 / EVIDENCE STATUS</p><h2>What is documented?</h2>
+<div class="paper-status"><span>Publication</span><strong>Source linked, not full audit</strong></div>
+<div class="paper-status"><span>Authors</span><strong>Names transcribed from linked record</strong></div>
+<div class="paper-status"><span>Institution coverage</span><strong>Unverified</strong></div>
+<div class="paper-status"><span>Independent reproduction</span><strong>Not independently reproduced</strong></div>
+<p class="paper-muted">Any experimental performance statements are author-reported. No SNNCommunity task-level benchmark or energy study is implied.</p></section>
+<section class="paper-panel" id="sources"><p class="paper-eyebrow">04 / ORIGINAL SOURCES</p><h2>Publication &amp; implementation</h2><div class="paper-source-links">
+<a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Bibliography ↗</a><a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Original paper ↗</a><a class="paper-button " href="https://proceedings.mlr.press/v306/liang26j.html" target="_blank" rel="noopener noreferrer">Author listing ↗</a><a class="paper-button " href="https://github.com/QomolangmaH/SpikeHTR" target="_blank" rel="noopener noreferrer">Linked source code ↗</a></div></section></article>
+<aside class="paper-aside"><div class="paper-panel"><p class="paper-eyebrow">RELATED CATALOG WORK</p><h2>Shared research areas</h2>
+<p class="paper-muted">Taxonomy overlap, not a verified method-citation relationship.</p><div class="paper-related"><a class="paper-related-link" href="../spikellm-2025/"><span>ICLR · 2025</span><strong>SpikeLLM: Scaling up Spiking Neural Network to Large Language Models via Saliency-based Spiking</strong><span>Sequence &amp; language · Coding &amp; conversion</span></a><a class="paper-related-link" href="../sew-resnet-2021/"><span>NeurIPS · 2021</span><strong>Deep Residual Learning in Spiking Neural Networks</strong><span>Deep architectures</span></a><a class="paper-related-link" href="../spike-vla-2026/"><span>ICML · 2026</span><strong>SpikeVLA: Vision-Language-Action Models with Spiking Neural Networks</strong><span>Sequence &amp; language</span></a></div>
+<a class="paper-back" href="../../#library">← Browse all research</a></div>
+<div class="paper-panel paper-small"><p class="paper-eyebrow">IMPROVE THIS RECORD</p><p>Correct metadata or propose better scientific notes with a citable source.</p>
+<a class="paper-back" href="https://github.com/SNNCommunity/.github/issues/new?title=%5BAtlas%20metadata%5D%20spike-htr-2026&amp;body=Record%3A%20https%3A%2F%2Fsnncommunity.github.io%2F.github%2Fpapers%2Fspike-htr-2026%2F%0APlease%20include%20official%20supporting%20sources.%0A" target="_blank" rel="noopener noreferrer">Submit correction ↗</a></div></aside></div></section>
+</main><footer class="paper-footer"><div class="container"><span>SNNCommunity · Research Atlas</span><span>Curated, non-exhaustive, independent</span></div></footer>
 </body></html>
