@@ -66,7 +66,7 @@ test('share preview and avatar are real PNG binaries with specified dimensions',
 test('research cards are progressively disclosed without leaving legacy layout code',()=>{
  assert.match(html,/id="resource-more"[^>]+aria-expanded="false" hidden/);
  assert.match(js,/initialResourceLimit=6/);
- assert.match(js,/focused\|\|expanded\?filtered:filtered\.slice\(0,initialResourceLimit\)/);
+ assert.match(js,/filtered\.slice\(0,displayLimit\)/);
  assert.doesNotMatch(js,/resource-arrow/);
  assert.doesNotMatch(css,/\.resource-card-bottom/);
  assert.doesNotMatch(css,/\.resource-arrow/);
