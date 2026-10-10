@@ -72,7 +72,6 @@ try {
  assert.ok((await og.body()).length>5000);
 
  await page.locator('#atlas-format').selectOption('paper');
- assert.equal(await page.locator('.resource-card').count(),13,'13 peer-reviewed records');
  assert.equal(await page.locator('.resource-card').count(),6,'filtered results are paginated');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),13,'all paper results available');
