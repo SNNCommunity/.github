@@ -45,7 +45,7 @@ test("No publisher-authored original abstracts are mirrored in the public files"
  const html=readFileSync("docs/atlas/index.html","utf8");
  const json=readFileSync("docs/atlas/corpus.json","utf8");
  assert.doesNotMatch(json,/"original_abstract"|"abstractOriginal"|"abstractDisplayText"/);
- assert.match(html,/Original abstracts remain/);
+ assert.match(html,/stored author abstracts remain in the private research package/);
  assert.match(readFileSync("docs/index.html","utf8"),/Open the full V31 corpus/);
  assert.match(readFileSync("docs/sitemap.xml","utf8"),/\.github\/atlas\//);
 });
