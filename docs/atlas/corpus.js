@@ -38,9 +38,10 @@ function rowData(row,i,mask,meta){
   const [title,sectionYear,venueText,paper,code]=row;
   const topics=TOPICS.filter((t,j)=>(mask&(1<<j))!==0).map(t=>t[0]);
   const sameWork=i===75?360:i===360?75:-1;
-  return {index:i,title,year:Number(sectionYear)||0,venue:(venueText||"").replace(/\s*20\d{2}\s*$/,"").trim()||"Unspecified",
+  return {index:i,title,year:Object.prototype.hasOwnProperty.call(meta.yearOverrides||{},i)
+      ?Number(meta.yearOverrides[i])||0:Number(sectionYear)||0,venue:(venueText||"").replace(/\s*20\d{2}\s*$/,"").trim()||"Unspecified",
     originalSource:safeLink(paper||meta.sourceFallback?.[i]),code:safeLink(code),topics,
-    firstAuthor:meta.firstAuthors?.[i]||"",
+    firstAuthor:meta.firstAuthors?.[i]||"",doi:meta.doiAsProvided?.[i]||"",
     abstractStatus:meta.editorialOnlyIndices.includes(i)?"editorial":"stored",
     workPartner:sameWork,curated:curated.get(clean(title))||null,search:""};
 }
@@ -57,9 +58,9 @@ function filtered(){
     (!s.topic||x.topics.includes(s.topic))&&(!s.year||String(x.year)===s.year)
     &&(!s.venue||x.venue===s.venue)&&(!s.abstract||x.abstractStatus===s.abstract)
     &&words.every(w=>x.search.includes(w)));
-  if(s.sort==="oldest")matches.sort((a,b)=>a.year-b.year||a.title.localeCompare(b.title));
+  if(s.sort==="oldest")matches.sort((a,b)=>(a.year||9999)-(b.year||9999)||a.title.localeCompare(b.title));
   else if(s.sort==="title")matches.sort((a,b)=>a.title.localeCompare(b.title));
-  else matches.sort((a,b)=>b.year-a.year||a.title.localeCompare(b.title));
+  else matches.sort((a,b)=>(b.year||-1)-(a.year||-1)||a.title.localeCompare(b.title));
   return matches;
 }
 function renderChips(s){
@@ -88,7 +89,8 @@ function render(){
   }
   const f=node("div",(x.firstAuthor?"First author: "+x.firstAuthor+" · ":"")
     +(x.abstractStatus==="editorial"?"Editorial-only synopsis in private V31 · ":"Author original stored in private V31 · ")
-    +(x.code?"Linked code · ":"")+(x.curated?"Curated detail available":"Source-list bibliographic entry"),"fine");
+    +(x.doi?"DOI listed · ":"")+(x.code?"Linked code · ":"")
+    +(x.curated?"Curated detail available":"Source-list bibliographic entry"),"fine");
   left.append(info,h,tags,f);
   const detail=node("button","Explore record →");detail.type="button";
   detail.addEventListener("click",()=>openRecord(x.index));
@@ -115,14 +117,16 @@ function openRecord(index,fromHistory=false){
  const tags=node("div",null,"tags");
  for(const t of x.topics)tags.append(node("span",NAME(t)));section.append(tags);
  const grid=node("div",null,"factgrid");
- for(const [key,value] of [["Research areas",x.topics.length],["Abstract status",x.abstractStatus==="editorial"?"Editorial synopsis only":"Original in private V31"],["Source",x.originalSource?"Listed upstream":"Link missing"],["Code",x.code?"Linked":"Not indexed"]]){
+ for(const [key,value] of [["Research areas",x.topics.length],["Abstract status",x.abstractStatus==="editorial"?"Editorial synopsis only":"Original in private V31"],["Source",x.originalSource?"Listed upstream":"Link missing"],["Code",x.code?"Linked":"Not indexed"],["DOI",x.doi||"Not indexed"]]){
   const box=node("div");box.append(node("span",key),node("strong",value));grid.append(box);
  }
  section.append(grid);
  const caution=node("p","This is a bibliographic source-list entry. Many V31 topics were assigned automatically and have not been independently reviewed. Abstract source coverage describes the user's local V31 archive; no original abstract is mirrored on this public page.","warning");
  section.append(caution);
  const links=node("div",null,"detail-links");
- link(links,x.originalSource,"Read original source ↗");link(links,x.code,"View linked code ↗");
+ link(links,x.originalSource,"Read source-listed publication ↗");
+ if(x.doi&&!/\/full$/i.test(x.doi))link(links,"https://doi.org/"+x.doi,"Resolve source-listed DOI ↗");
+ link(links,x.code,"View linked code ↗");
  if(x.curated)link(links,new URL("../papers/"+x.curated+"/",location.href).href,"Open curated scientific record →");
  section.append(links);
  if(x.workPartner>=0){
@@ -180,7 +184,7 @@ async function load(){
   for(const p of old.items.filter(x=>x.type==="paper"))curated.set(clean(p.title),p.id);
  }
  all=corpus.records.map((row,i)=>rowData(row,i,meta.bitmasks[i],meta));
- for(const x of all)x.search=clean([x.title,x.firstAuthor,x.venue,...x.topics.map(NAME)].join(" "));
+ for(const x of all)x.search=clean([x.title,x.firstAuthor,x.doi,x.venue,...x.topics.map(NAME)].join(" "));
  populate(all);parseURL();initHandlers();render();
  const raw=new URLSearchParams(location.search).get("record");
  if(raw!==null&&Number.isInteger(Number(raw))&&+raw>=0&&+raw<all.length)openRecord(+raw,true);
