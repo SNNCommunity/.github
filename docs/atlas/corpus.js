@@ -21,7 +21,7 @@ function parseURL(){
   for(const k of FIELDS){
     const el=$(k);let v=u.searchParams.get(k)||"";
     if(k==="sort")v=v||"recent";
-    el.value=[...el.options].some(o=>o.value===v)?v:k==="sort"?"recent":"";
+    el.value=k==="q"?v:([...(el.options||[])].some(o=>o.value===v)?v:k==="sort"?"recent":"");
   }
 }
 function writeURL(method="push",record=selected){
@@ -39,7 +39,9 @@ function rowData(row,i,mask,meta){
   const topics=TOPICS.filter((t,j)=>(mask&(1<<j))!==0).map(t=>t[0]);
   const sameWork=i===75?360:i===360?75:-1;
   return {index:i,title,year:Number(sectionYear)||0,venue:(venueText||"").replace(/\s*20\d{2}\s*$/,"").trim()||"Unspecified",
-    originalSource:safeLink(paper),code:safeLink(code),topics,abstractStatus:meta.editorialOnlyIndices.includes(i)?"editorial":"stored",
+    originalSource:safeLink(paper||meta.sourceFallback?.[i]),code:safeLink(code),topics,
+    firstAuthor:meta.firstAuthors?.[i]||"",
+    abstractStatus:meta.editorialOnlyIndices.includes(i)?"editorial":"stored",
     workPartner:sameWork,curated:curated.get(clean(title))||null,search:""};
 }
 function populate(records){
@@ -84,7 +86,8 @@ function render(){
     b.addEventListener("click",()=>{$("topic").value=topic;display=LIMIT;render();writeURL();});
     tags.append(b);
   }
-  const f=node("div",(x.abstractStatus==="editorial"?"Editorial-only synopsis in private V31 · ":"Author original stored in private V31 · ")
+  const f=node("div",(x.firstAuthor?"First author: "+x.firstAuthor+" · ":"")
+    +(x.abstractStatus==="editorial"?"Editorial-only synopsis in private V31 · ":"Author original stored in private V31 · ")
     +(x.code?"Linked code · ":"")+(x.curated?"Curated detail available":"Source-list bibliographic entry"),"fine");
   left.append(info,h,tags,f);
   const detail=node("button","Explore record →");detail.type="button";
@@ -128,6 +131,8 @@ function openRecord(index,fromHistory=false){
   rel.append(node("span","V31 links this bibliographic version with one other record for the same research work. "));
   const b=node("button","Open related version →");b.type="button";b.addEventListener("click",()=>openRecord(x.workPartner));rel.append(b);section.append(rel);
  }
+ section.append(node("h3","Authorship and evidence"));
+ section.append(node("p",x.firstAuthor?"First author indexed by V31: "+x.firstAuthor+". Additional author names and author–affiliation relationships should be checked against the linked publication.":"Author list has not been imported for this public metadata entry."));
  section.append(node("h3","Scope and citation"));
  section.append(node("p","For complete author listings, independently written synopses and any locally stored abstracts, consult the supplied V31 personal research database. For publication details, consult the linked publisher or source. No task-level result has been reproduced by SNNCommunity for this indexed entry."));
  body.append(section);
@@ -169,13 +174,13 @@ async function load(){
  const [ra,rb,rc]=await Promise.all([fetch("./corpus.json"),fetch("./metadata.json"),fetch("../resources.json")]);
  if(!ra.ok||!rb.ok)throw Error("Corpus metadata unavailable");
  const [corpus,meta]=await Promise.all([ra.json(),rb.json()]);
- if(corpus.recordCount!==396||corpus.records.length!==396||meta.bitmasks.length!==396||meta.editorialOnlyIndices.length!==24||meta.distinctWorkCount!==395)throw Error("V31 data integrity mismatch");
+ if(corpus.recordCount!==396||corpus.records.length!==396||meta.bitmasks.length!==396||meta.firstAuthors.length!==396||meta.editorialOnlyIndices.length!==24||meta.distinctWorkCount!==395)throw Error("V31 data integrity mismatch");
  if(rc.ok){
   const old=await rc.json();
   for(const p of old.items.filter(x=>x.type==="paper"))curated.set(clean(p.title),p.id);
  }
  all=corpus.records.map((row,i)=>rowData(row,i,meta.bitmasks[i],meta));
- for(const x of all)x.search=clean([x.title,x.venue,...x.topics.map(NAME)].join(" "));
+ for(const x of all)x.search=clean([x.title,x.firstAuthor,x.venue,...x.topics.map(NAME)].join(" "));
  populate(all);parseURL();initHandlers();render();
  const raw=new URLSearchParams(location.search).get("record");
  if(raw!==null&&Number.isInteger(Number(raw))&&+raw>=0&&+raw<all.length)openRecord(+raw,true);
