@@ -11,8 +11,9 @@ const server=createServer((req,res)=>{
  const u=new URL(req.url,'http://localhost');
  const path=u.pathname.startsWith('/.github/')?u.pathname.slice(9):'';
  const name=path||'index.html';
+ const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|corpus\.json|metadata\.json)$/.test(name);
  const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
- if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper){
+ if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
   res.writeHead(404);res.end('Not found');return;
  }
  const file=resolve('docs',name.endsWith('/')?name+'index.html':name);
@@ -320,6 +321,52 @@ try {
     await page.evaluate(()=>{document.documentElement.style.fontSize='';});
   }
  }
+
+ // V31 research corpus uses a separate metadata-only Explorer and does not disturb the curated Atlas.
+ const corpusPage=await browser.newPage({viewport:{width:1440,height:900}});
+ corpusPage.on('pageerror',e=>errors.push('V31 '+e.message));
+ await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
+ await corpusPage.locator('.item').first().waitFor();
+ assert.match(await corpusPage.locator('#count').innerText(),/396 matching papers/);
+ assert.equal(await corpusPage.locator('.item').count(),24);
+ assert.equal(await corpusPage.locator('.metrics strong').first().innerText(),'396');
+ assert.match(await corpusPage.locator('.item').first().innerText(),/First author: /);
+ await corpusPage.locator('#q').fill('Spike-HTR');
+ assert.equal(await corpusPage.locator('.item').count(),1,'source title search');
+ await corpusPage.locator('#q').fill('Xiubo Liang');
+ assert.ok(await corpusPage.locator('.item').count()>1,'first-author index search');
+ await corpusPage.locator('#q').fill('');
+ await corpusPage.locator('#abstract').selectOption('editorial');
+ assert.match(await corpusPage.locator('#count').innerText(),/24 matching papers/);
+ await corpusPage.locator('#reset').click();
+ await corpusPage.locator('#topic').selectOption('robotics-embodied');
+ assert.ok(await corpusPage.locator('.item').count()>0,'V31 annotated topics');
+ assert.match(corpusPage.url(),/topic=robotics-embodied/);
+ await corpusPage.locator('#reset').click();
+ await corpusPage.goto(base+'atlas/?record=75');
+ await corpusPage.locator('dialog[open]').waitFor();
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Version family/);
+ await corpusPage.locator('.relation button').click();
+ assert.match(corpusPage.url(),/record=360/);
+ await corpusPage.locator('#close').click();
+ assert.ok(!(new URL(corpusPage.url())).searchParams.has('record'));
+ for(const width of [1440,768,390,320]){
+   await corpusPage.setViewportSize({width,height:850});
+   await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
+   await corpusPage.locator('.item').first().waitFor();
+   const fit=await corpusPage.evaluate(()=>({
+     client:document.documentElement.clientWidth,
+     scroll:document.documentElement.scrollWidth,
+     title:getComputedStyle(document.querySelector('.item h3')).fontSize,
+     search:getComputedStyle(document.querySelector('#q')).fontSize
+   }));
+   assert.ok(fit.scroll<=fit.client+1,'V31 horizontal overflow at '+width+': '+JSON.stringify(fit));
+   assert.ok(parseFloat(fit.title)>=19,'V31 title too small at '+width);
+   assert.ok(parseFloat(fit.search)>=14,'V31 search field too small at '+width);
+   if(width===1440)await corpusPage.screenshot({path:resolve(out,'corpus-desktop.png'),fullPage:true});
+   if(width===390)await corpusPage.screenshot({path:resolve(out,'corpus-mobile.png'),fullPage:true});
+ }
+ await corpusPage.close();
  assert.deepEqual(errors,[]);
  console.log('PASS 768/390/320 widths, mobile nav, and browser errors');
 } finally {await browser.close();await new Promise(ok=>server.close(ok));}
