@@ -154,6 +154,30 @@ function openRecord(index,fromHistory=false){
  section.append(grid);
  const caution=node("p","This is a bibliographic source-list entry. Many V31 topics were assigned automatically and have not been independently reviewed. Abstract source coverage describes the user's local V31 archive; no original abstract is mirrored on this public page.","warning");
  section.append(caution);
+ if(x.hasWarnings){
+   section.append(node("p","V31 flags one or more source or identity warnings for this version. Verify publication identity before citing it.","warning"));
+ }
+ const privateRecord=relatedPrivate(x);
+ if(privateRecord){
+   const authorNames=(privateRecord.authors||[]).map(a=>a.displayName).filter(Boolean);
+   if(authorNames.length){
+     section.append(node("h3","Authors · V31 local database"));
+     section.append(node("p",authorNames.join(", ")));
+   }
+   if(privateRecord.abstractDisplayText){
+     const aType=privateRecord.abstractDisplayType==="stored_author_abstract"
+       ?"Author-original abstract · locally stored":"Independent editorial research synopsis · not an author's abstract";
+     section.append(node("h3",aType));
+     const para=node("p",privateRecord.abstractDisplayText,"local-abstract");para.lang="en";section.append(para);
+     section.append(node("p","This text is read from your locally selected JSON only; it is not part of the public website database.","local-disclosure"));
+   }
+   if(privateRecord.abstractSummaryZh){
+     const zh=node("p",privateRecord.abstractSummaryZh,"local-abstract");zh.lang="zh-CN";
+     section.append(node("h3","中文研究要点 · 本地 V31 编辑摘要"));section.append(zh);
+   }
+   const src=privateRecord.abstractDisplaySource||privateRecord.abstractOriginalSource;
+   if(safeLink(src)){const cite=node("div",null,"detail-links");link(cite,src,"Check abstract source ↗");section.append(cite);}
+ }
  const links=node("div",null,"detail-links");
  link(links,x.originalSource,"Read source-listed publication ↗");
  if(x.doi&&!/\/full$/i.test(x.doi))link(links,"https://doi.org/"+x.doi,"Resolve source-listed DOI ↗");
@@ -196,11 +220,37 @@ function initHandlers(){
   });
  }
  $("reset").addEventListener("click",()=>{
-  for(const f of FIELDS)$(f).value=f==="sort"?"recent":"";
+  for(const f of FIELDS)$(f).value=f==="sort"?"recent":f==="unit"?"versions":"";
   display=LIMIT;render();writeURL();$("q").focus();
  });
  $("more").addEventListener("click",()=>{display+=LIMIT;render();});
  $("share").addEventListener("click",copySearch);
+ $("private-file").addEventListener("change",async event=>{
+   const file=event.target.files?.[0];if(!file)return;
+   const status=$("private-status");
+   try{
+     if(file.size>40*1024*1024)throw Error("File is unexpectedly large (over 40 MB).");
+     const content=JSON.parse(await file.text());
+     if(!Array.isArray(content.papers)||content.papers.length!==396)
+       throw Error("Not a complete V31 corpus (396 records expected).");
+     const same=content.papers.reduce((sum,p,i)=>sum+(normTitle(p.title)===normTitle(all[i].title)?1:0),0);
+     if(same<390)throw Error("The selected V31 data do not match the current source snapshot.");
+     privateLibrary={papers:content.papers};
+     $("private-clear").hidden=false;
+     status.textContent="Local V31 loaded: 396 records and "+same+" aligned titles. Full authors and local abstracts are available. No file was uploaded.";
+     render();
+     if(selected>=0)openRecord(selected,true);
+   }catch(e){
+     privateLibrary=null;$("private-clear").hidden=true;
+     status.textContent="Local import failed: "+e.message+" No private data loaded.";
+     render();
+   }
+ });
+ $("private-clear").addEventListener("click",()=>{
+   privateLibrary=null;$("private-file").value="";$("private-clear").hidden=true;
+   $("private-status").textContent="Private V31 unloaded. Public metadata browsing restored.";
+   render();if(selected>=0)openRecord(selected,true);
+ });
  $("close").addEventListener("click",()=>closeRecord());
  $("detail").addEventListener("close",()=>{if(selected>=0)closeRecord();});
  window.addEventListener("popstate",()=>{parseURL();display=LIMIT;render();const id=Number(new URLSearchParams(location.search).get("record"));const raw=new URLSearchParams(location.search).get("record");if(raw!==null&&Number.isInteger(id)&&id>=0&&id<all.length)openRecord(id,true);else if($("detail").open)closeRecord(false);});
@@ -209,7 +259,9 @@ async function load(){
  const [ra,rb,rc]=await Promise.all([fetch("./corpus.json"),fetch("./metadata.json"),fetch("../resources.json")]);
  if(!ra.ok||!rb.ok)throw Error("Corpus metadata unavailable");
  const [corpus,meta]=await Promise.all([ra.json(),rb.json()]);
- if(corpus.recordCount!==396||corpus.records.length!==396||meta.bitmasks.length!==396||meta.firstAuthors.length!==396||meta.editorialOnlyIndices.length!==24||meta.distinctWorkCount!==395)throw Error("V31 data integrity mismatch");
+ if(corpus.recordCount!==396||corpus.records.length!==396||meta.bitmasks.length!==396||
+   meta.firstAuthors.length!==396||meta.authorCountsBase36?.length!==396||meta.sourceSpecificityPacked?.length!==198||
+   meta.editorialOnlyIndices.length!==24||meta.distinctWorkCount!==395)throw Error("V31 data integrity mismatch");
  if(rc.ok){
   const old=await rc.json();
   for(const p of old.items.filter(x=>x.type==="paper"))curated.set(clean(p.title),p.id);
