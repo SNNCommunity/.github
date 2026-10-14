@@ -22,6 +22,14 @@ function sourceKind(packed,i){
 }
 const normTitle=s=>clean(s).replace(/[^a-z0-9]/g,"");
 function relatedPrivate(record){return privateLibrary?.papers?.[record.index]||null}
+function refreshSearchIndex(){
+  for(const x of all){
+    const local=relatedPrivate(x);
+    x.search=clean([x.title,x.firstAuthor,x.doi,x.venue,...x.topics.map(NAME),
+      ...(local?.authors||[]).map(a=>a.displayName),
+      local?.abstractDisplayText,local?.abstractSummaryZh].filter(Boolean).join(" "));
+  }
+}
 function state(){
   return Object.fromEntries(FIELDS.map(k=>[k,($(k==="q"?"q":k)?.value||"")]));
 }
@@ -238,18 +246,18 @@ function initHandlers(){
      privateLibrary={papers:content.papers};
      $("private-clear").hidden=false;
      status.textContent="Local V31 loaded: 396 records and "+same+" aligned titles. Full authors and local abstracts are available. No file was uploaded.";
-     render();
+     refreshSearchIndex();render();
      if(selected>=0)openRecord(selected,true);
    }catch(e){
      privateLibrary=null;$("private-clear").hidden=true;
      status.textContent="Local import failed: "+e.message+" No private data loaded.";
-     render();
+     refreshSearchIndex();render();
    }
  });
  $("private-clear").addEventListener("click",()=>{
    privateLibrary=null;$("private-file").value="";$("private-clear").hidden=true;
    $("private-status").textContent="Private V31 unloaded. Public metadata browsing restored.";
-   render();if(selected>=0)openRecord(selected,true);
+   refreshSearchIndex();render();if(selected>=0)openRecord(selected,true);
  });
  $("close").addEventListener("click",()=>closeRecord());
  $("detail").addEventListener("close",()=>{if(selected>=0)closeRecord();});
@@ -267,7 +275,7 @@ async function load(){
   for(const p of old.items.filter(x=>x.type==="paper"))curated.set(clean(p.title),p.id);
  }
  all=corpus.records.map((row,i)=>rowData(row,i,meta.bitmasks[i],meta));
- for(const x of all)x.search=clean([x.title,x.firstAuthor,x.doi,x.venue,...x.topics.map(NAME)].join(" "));
+ refreshSearchIndex();
  populate(all);parseURL();initHandlers();render();
  const raw=new URLSearchParams(location.search).get("record");
  if(raw!==null&&Number.isInteger(Number(raw))&&+raw>=0&&+raw<all.length)openRecord(+raw,true);
