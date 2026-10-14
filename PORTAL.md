@@ -74,7 +74,7 @@ without JavaScript.
 
 ## Research resource governance
 
-`docs/resources.json` (schema v2) is the canonical source of 22 curated entries (13 papers plus 9 independent resources). It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/atlas-core.js` engine handles deterministic multi-facet filtering. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
+`docs/resources.json` (schema v2) is the source of 19 featured entries (10 papers within the 395-work corpus plus 9 independent resources); the full 395-work canonical catalog is `docs/atlas/works.json`. It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/atlas-core.js` engine handles deterministic multi-facet filtering. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
 
 Paper DOIs are sourced from original publisher or authors' publication records. Resource inclusion is **not a claim of affiliation or of independent technical reproduction**.
 
