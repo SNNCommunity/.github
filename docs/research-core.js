@@ -3,6 +3,11 @@
 (function(root){"use strict";
 const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"")
  .toLocaleLowerCase("en").replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
+const WORK_FIELDS=new Set(["sourceIndex","title","year","venue","authors","authorCount",
+ "doi","topics","paperUrl","codeUrl","sourceStatus","sourceWarnings",
+ "abstractDetailsIncluded","id","versionCount","versions","editorialSourceChecked20261014"]);
+const VERSION_FIELDS=new Set(["sourceIndex","title","year","venue","authors","authorCount",
+ "doi","topics","paperUrl","codeUrl","sourceStatus","sourceWarnings","abstractDetailsIncluded","id"]);
 const TYPES=new Set(["publisher_specific_page_not_independently_rechecked",
  "conference_index_or_aggregate_not_paper_specific","not_identified"]);
 function sourceLabel(s){
@@ -13,9 +18,10 @@ function sourceLabel(s){
 function validate(data){
  if(data?.schemaVersion!=="v13-public-395-works"||data.count!==395||
    !Array.isArray(data.items)||data.items.length!==395)throw Error("Expected exactly 395 canonical works");
- const ids=new Set(),titles=new Set();let versions=0;
+ const ids=new Set(),titles=new Set(),sourceIndices=new Set();let versions=0;
  for(const x of data.items){
    const title=normalize(x.title);
+   if(Object.keys(x).some(k=>!WORK_FIELDS.has(k)))throw Error("Unexpected public research field in "+x.id);
    if(typeof x.id!=="string"||ids.has(x.id)||!title||titles.has(title)||
       !Array.isArray(x.authors)||!x.authors.length||!Number.isInteger(x.authorCount)||
       x.authorCount<x.authors.length||!Array.isArray(x.topics)||!TYPES.has(x.sourceStatus)||
@@ -27,9 +33,17 @@ function validate(data){
    if(x.versionCount!==1&&x.versionCount!==2)throw Error("Invalid version family "+x.id);
    if(x.versionCount===2&&(!Array.isArray(x.versions)||x.versions.length!==2))
      throw Error("Missing version lineage "+x.id);
+   const entries=x.versionCount===2?x.versions:[x];
+   for(const v of entries){
+     if(v!==x&&Object.keys(v).some(k=>!VERSION_FIELDS.has(k)))
+       throw Error("Unexpected public version field "+x.id);
+     if(!Number.isInteger(v.sourceIndex)||v.sourceIndex<0||v.sourceIndex>=396||
+        sourceIndices.has(v.sourceIndex))throw Error("Duplicate or invalid source version index "+x.id);
+     sourceIndices.add(v.sourceIndex);
+   }
    versions+=x.versionCount;
  }
- if(versions!==396||data.abstractsStored!==0)throw Error("Public version lineage or abstract policy mismatch");
+ if(versions!==396||sourceIndices.size!==396||data.abstractsStored!==0)throw Error("Public version lineage or abstract policy mismatch");
  return data;
 }
 function searchText(x,names){
