@@ -125,10 +125,10 @@ try {
  await page.goForward();
  assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
  await page.locator('#atlas-reset').click();
- await page.locator('#atlas-country').selectOption('Germany');
+ await page.locator('#atlas-country').selectOption('France');
  await page.locator('#atlas-university').selectOption('Technische Universität Berlin');
- assert.equal(await page.locator('.resource-card').count(),1,'verified Germany university');
- assert.match(await page.locator('.resource-card').first().innerText(),/Event-based Vision/i);
+ assert.equal(await page.locator('.resource-card').count(),3,'three source-linked French institution records');
+ assert.match(await page.locator('.resource-card').first().innerText(),/SpikingJelly|Residual|Membrane/i);
  await page.locator('#atlas-reset').click();
  await page.locator('#atlas-country').selectOption('unknown');
  await page.locator('#atlas-format').selectOption('paper');

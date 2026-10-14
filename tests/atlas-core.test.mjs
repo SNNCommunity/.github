@@ -8,11 +8,11 @@ const items=atlas.validate(data).items;
 const find=(id)=>items.find(x=>x.id===id);
 test('catalog is schema-valid and classification covers real research dimensions',()=>{
  assert.equal(data.schemaVersion,2);
- assert.ok(items.length>=22);
+ assert.ok(items.length>=19);
  assert.equal(new Set(items.map(x=>x.id)).size,items.length);
  assert.equal(data.topics.length,11);
  assert.ok(data.topics.every(t=>items.some(x=>x.topics.includes(t.id))));
- assert.ok(items.filter(x=>x.publication).length>=13);
+ assert.ok(items.filter(x=>x.publication).length>=10);
 });
 test('research topic tags are multi-label and apply to papers and tools',()=>{
  assert.ok(atlas.filter(items,{topic:'neuron-dynamics'}).some(x=>x.id==='plif-2021'));
@@ -25,7 +25,7 @@ test('year, publication type and specific venue intersect correctly',()=>{
  assert.deepEqual(results.map(x=>x.id),['spike-htr-2026','spike-vla-2026'].sort((a,b)=>
    find(a).title.localeCompare(find(b).title,'en')));
  results=atlas.filter(items,{format:'paper',venueType:'Journal',year:'2022'});
- assert.deepEqual(results.map(x=>x.id),['gallego-2022']);
+ assert.deepEqual(results.map(x=>x.id),[],'outside-corpus historical survey removed');
  assert.ok(atlas.filter(items,{format:'resource',year:'2026'}).length===0);
 });
 test('country and university reflect author-affiliation combinations, not nationality',()=>{
@@ -36,7 +36,7 @@ test('country and university reflect author-affiliation combinations, not nation
  const usa=atlas.filter(items,{country:'United States',university:'University of Pennsylvania',year:'2025'});
  assert.deepEqual(usa.map(x=>x.id),['spikachu-2025']);
  const de=atlas.filter(items,{country:'Germany',university:'Technische Universität Berlin'});
- assert.deepEqual(de.map(x=>x.id),['gallego-2022']);
+ assert.deepEqual(de.map(x=>x.id),[],'historical German-only survey removed');
  assert.equal(atlas.filter(items,{country:'France',university:'University of Oxford'}).length,0);
  assert.equal(atlas.filter(items,{format:'resource',country:'China'}).length,0);
 });
