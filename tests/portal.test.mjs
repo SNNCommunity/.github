@@ -6,7 +6,7 @@ const html=read('docs/index.html'),js=read('docs/app.js'),css=read('docs/styles.
   catalog=JSON.parse(read('docs/resources.json')),profile=read('profile/README.md');
 test('production files, metadata and required controls are present',()=>{
  for(const p of ['docs/paper.css','scripts/build-paper-pages.mjs','docs/papers/plif-2021/index.html','docs/index.html','docs/app.js','docs/neuron-core.js','docs/resources.json',
-  'docs/atlas-core.js','docs/styles.css','docs/favicon.svg','docs/404.html','docs/og-card.svg','docs/.nojekyll'])
+  'docs/atlas-core.js','docs/home-research.js','docs/styles.css','docs/favicon.svg','docs/404.html','docs/og-card.svg','docs/.nojekyll'])
   assert.ok(existsSync(new URL('../'+p,import.meta.url)),p);
  for(const id of ['lif-canvas','compare-if','if-count','spike-count','lif-rate','if-rate',
   'experiment-summary','export-csv','export-png','share-lab','resource-grid','resource-search'])
@@ -20,7 +20,8 @@ test('production files, metadata and required controls are present',()=>{
  assert.ok(html.indexOf('id="library"')<html.indexOf('id="lab"'),'research first');
  assert.match(html,/class="atlas-kind-switch"/);
  assert.match(html,/class="resource-provenance atlas-provenance-details"/);
- assert.match(js,/function syncFormatButtons/);
+ assert.match(html,/src="\.\/home-research\.js"/);
+ assert.doesNotMatch(html,/src="\.\/atlas-core\.js"/);
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);
  assert.match(record,/not the verbatim abstract/);
@@ -62,7 +63,7 @@ test('progressive enhancement and WCAG-oriented interaction styles',()=>{
  assert.match(css,/:focus-visible/);
  assert.match(css,/@media \(prefers-reduced-motion: reduce\)/);
  assert.match(css,/@media \(max-width: 560px\)/);
- assert.match(js,/fetch\("\.\/resources\.json"\)/);
+ assert.match(read('docs/home-research.js'),/fetch\("\.\/atlas\/works\.json"\)/);
  assert.match(js,/\.textContent/);
  assert.match(js,/function shareURL\(\)/);
  assert.match(js,/function toCSV\(main,other\)/);
@@ -81,8 +82,8 @@ test('share preview and avatar are real PNG binaries with specified dimensions',
 
 test('research cards are progressively disclosed without leaving legacy layout code',()=>{
  assert.match(html,/id="resource-more"[^>]+aria-expanded="false" hidden/);
- assert.match(js,/initialResourceLimit=6/);
- assert.match(js,/filtered\.slice\(0,displayLimit\)/);
+ assert.match(read('docs/home-research.js'),/const minView=8,pageSize=20/);
+ assert.match(read('docs/home-research.js'),/matches\.slice\(0,limit\)/);
  assert.doesNotMatch(js,/resource-arrow/);
  assert.doesNotMatch(css,/\.resource-card-bottom/);
  assert.doesNotMatch(css,/\.resource-arrow/);
@@ -104,7 +105,7 @@ test('atlas metadata separates university affiliations from software ownership',
     assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
   }
  }
- assert.match(html,/affiliations at publication/);
+ assert.match(html,/Only indexed first authors and author counts are available/);
 });
 
 test('reader typography overrides cover research lists, scientific lab and paper pages',()=>{
@@ -116,4 +117,16 @@ test('reader typography overrides cover research lists, scientific lab and paper
  assert.match(paper,/V11 \/ Paper reading hierarchy/);
  assert.match(paper,/\.research-notes p,/);
  assert.match(app,/w<420\?"13px":"14px"/);
+});
+
+test('homepage research and dedicated Atlas share the canonical public 395-work dataset',()=>{
+ const home=read('docs/home-research.js'),html=read('docs/index.html'),data=JSON.parse(read('docs/atlas/works.json'));
+ assert.equal(data.items.length,395);
+ assert.equal(new Set(data.items.map(x=>x.id)).size,395);
+ assert.match(home,/\.\/atlas\/works\.json/);
+ assert.match(html,/All research <span class="atlas-tab-count">395<\/span>/);
+ assert.match(html,/Tools &amp; guides <span class="atlas-tab-count">9<\/span>/);
+ assert.doesNotMatch(html,/atlas-country|atlas-university|atlas-format|v31-corpus-banner|research-corpus-banner|All resources/);
+ assert.doesNotMatch(home,/19 indexed|resourceCount|curatedData|corpus\.json|metadata\.json/);
+ assert.doesNotMatch(html,/mirrored original abstracts/);
 });

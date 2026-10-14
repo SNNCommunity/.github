@@ -13,7 +13,7 @@ const server=createServer((req,res)=>{
  const name=path||'index.html';
  const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|works\.json)$/.test(name);
  const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
- if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
+ if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
   res.writeHead(404);res.end('Not found');return;
  }
  const file=resolve('docs',name.endsWith('/')?name+'index.html':name);
@@ -30,26 +30,31 @@ try {
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base,{waitUntil:'load'});
  await page.locator('.resource-card').first().waitFor();
- assert.equal(await page.locator('.resource-card').count(),6,'initially show six curated resources');
- assert.ok(await page.locator('#library').evaluate(el=>el.compareDocumentPosition(document.querySelector('#lab'))&Node.DOCUMENT_POSITION_FOLLOWING),'Research Atlas precedes Lab');
- await page.locator('.atlas-kind[data-format="paper"]').click();
- assert.equal(await page.locator('#atlas-format').inputValue(),'paper');
- assert.equal(await page.locator('.atlas-kind[aria-pressed="true"]').count(),1);
- assert.equal(await page.locator('.atlas-record-link').count(),6);
+ assert.equal(await page.locator('.resource-card').count(),8,'first eight canonical papers visible');
+ assert.ok(await page.locator('#library').evaluate(el=>el.compareDocumentPosition(document.querySelector('#lab'))&Node.DOCUMENT_POSITION_FOLLOWING),'research comes before Lab');
+ assert.match(await page.locator('#resource-count').innerText(),/of 395 research works/);
+ assert.equal((await page.locator('.atlas-topic[data-topic="all"]').innerText()).includes('395'),true,'All research topic count must be 395');
+ assert.equal(await page.locator('.atlas-kind[data-format="paper"][aria-pressed="true"]').count(),1);
+ assert.equal(await page.locator('.atlas-record-link').count(),8);
+ assert.equal(await page.locator('#atlas-country').count(),0,'obsolete affiliation filter removed');
+ assert.equal(await page.locator('#atlas-format').count(),0,'obsolete 19-resource combined format removed');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),28,'paginated list loads canonical research, not curated cards');
+ for(let i=0;i<20&&await page.locator('.resource-card').count()<395;i++)await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),395,'all canonical research records render on the homepage, not just a count badge');
+ assert.equal(await page.locator('.atlas-record-link').count(),395,'every public paper has its stable canonical research record link');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),8,'Show fewer returns to readable preview without losing papers');
  await page.locator('.atlas-kind[data-format="resource"]').click();
- assert.equal(await page.locator('#atlas-format').inputValue(),'resource');
- assert.equal(await page.locator('.atlas-record-link').count(),0);
- await page.locator('.atlas-kind[data-format="all"]').click();
- assert.equal(await page.locator('#atlas-format').inputValue(),'all');
- assert.equal(await page.locator('#resource-more').isVisible(),true,'view all button is visible');
+ assert.match(await page.locator('#resource-count').innerText(),/of 9 tools and guides/);
+ assert.equal(await page.locator('.resource-card').count(),8);
+ assert.equal(await page.locator('.atlas-record-link').count(),0,'tools are not mistaken for papers');
+ assert.equal(await page.locator('[data-paper-facet]:visible').count(),0,'paper-only filters hidden in tools tab');
  await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),Math.min(recordTotal,18),'first load more reveals next records');
- await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),recordTotal,'second load more reveals indexed records');
- assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'true');
- await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),6,'show fewer restores concise index');
- assert.equal(await page.locator('#resource-more').getAttribute('aria-expanded'),'false');
+ assert.equal(await page.locator('.resource-card').count(),9,'all 9 software and guide resources are discoverable');
+ await page.locator('.atlas-kind[data-format="paper"]').click();
+ assert.equal(await page.locator('.resource-card').count(),8);
+ assert.match(await page.locator('#resource-count').innerText(),/395 research works/);
  assert.ok(Number(await page.locator('#spike-count').innerText())>0,'default LIF fires');
  assert.ok(Number(await page.locator('#if-count').innerText())>0,'matched IF fires');
  assert.match(await page.locator('#experiment-summary').innerText(),/IF without leak/);
@@ -96,43 +101,30 @@ try {
  assert.match(body,/Research question and method/);
  const siteMap=await page.request.get(base+'sitemap.xml');
  assert.match(await siteMap.text(),/papers\/plif-2021/);
- await page.locator('#atlas-format').selectOption('paper');
- assert.equal(await page.locator('.resource-card').count(),6,'filtered results are paginated');
- assert.equal(await page.locator('.atlas-record-link').count(),6,'visible papers have internal record links');
- await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),paperTotal,'all paper results available');
+ const publicDataset=await (await page.request.get(base+'atlas/works.json')).json();
+ assert.equal(publicDataset.items.length,395,'same data source as dedicated Atlas');
+ const group=publicDataset.items.find(x=>x.versionCount===2);
+ assert.ok(group,'linked preprint version retained under one work');
+ await page.locator('#resource-search').fill('Spike-HTR');
+ assert.equal(await page.locator('.resource-card').count(),1,'full-corpus paper title searchable on homepage');
+ assert.match(await page.locator('.resource-card .atlas-record-link').first().getAttribute('href'),/\?paper=v31-work-/);
+ await page.locator('#resource-search').fill('Xiubo Liang');
+ assert.ok(await page.locator('.resource-card').count()>1,'first-author search');
+ await page.locator('#atlas-reset').click();
  await page.locator('#atlas-year').selectOption('2026');
- assert.ok(new URL(page.url()).searchParams.has('atlas.year'));
- await page.locator('#atlas-venue-type').selectOption('Conference');
+ assert.match(page.url(),/atlas.year=2026/);
  await page.locator('#atlas-venue').selectOption('ICML');
- assert.equal(await page.locator('.resource-card').count(),2,'ICML 2026 intersection');
- assert.match(await page.locator('.resource-card').first().innerText(),/ICML/);
+ assert.ok(await page.locator('.resource-card').count()>0,'year-and-venue filter');
  await page.locator('#atlas-reset').click();
- assert.equal(await page.locator('.resource-card').count(),6,'reset restores compact index');
- await page.locator('#atlas-country').selectOption('United Kingdom');
- await page.locator('#atlas-university').selectOption('University of Oxford');
- assert.equal(await page.locator('.resource-card').count(),1,'institution and country intersection');
- assert.match(await page.locator('.resource-card').first().innerText(),/SpikeLLM/);
- await page.locator('.resource-evidence summary').first().click();
- assert.match(await page.locator('.resource-aff-list').first().innerText(),/University of Oxford/);
- // Multi-level browser history must restore dependent country/university controls.
- await page.locator('#atlas-year').selectOption('2025');
- assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
- await page.goBack();
- assert.equal(await page.locator('#atlas-country').inputValue(),'United Kingdom');
- assert.equal(await page.locator('#atlas-university').inputValue(),'University of Oxford');
- assert.equal(await page.locator('#atlas-year').inputValue(),'all');
- await page.goForward();
- assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
+ await page.locator('#atlas-source').selectOption('publisher_specific_page_not_independently_rechecked');
+ assert.match(await page.locator('#resource-count').innerText(),/of 140 research works/);
+ await page.locator('#atlas-source').selectOption('conference_index_or_aggregate_not_paper_specific');
+ assert.match(await page.locator('#resource-count').innerText(),/of 205 research works/);
+ await page.locator('#atlas-source').selectOption('not_identified');
+ assert.match(await page.locator('#resource-count').innerText(),/of 50 research works/);
  await page.locator('#atlas-reset').click();
- await page.locator('#atlas-country').selectOption('France');
- await page.locator('#atlas-university').selectOption('Université Toulouse III – Paul Sabatier');
- assert.equal(await page.locator('.resource-card').count(),3,'three source-linked French institution records');
- assert.match(await page.locator('.resource-card').first().innerText(),/SpikingJelly|Residual|Membrane/i);
- await page.locator('#atlas-reset').click();
- await page.locator('#atlas-country').selectOption('unknown');
- await page.locator('#atlas-format').selectOption('paper');
- assert.ok(await page.locator('.resource-card').count()>0,'unverified affiliation papers explicitly discoverable');
+ await page.locator('#atlas-code').selectOption('yes');
+ assert.ok(await page.locator('.resource-card').count()>0,'code indexing');
  await page.locator('#atlas-reset').click();
  await page.locator('.atlas-topic[data-topic="robotics-embodied"]').click();
  await page.locator('.atlas-topic[data-topic="deep-architectures"]').click();
@@ -140,26 +132,15 @@ try {
  await page.locator('#atlas-topic-mode').selectOption('all');
  assert.match(page.url(),/atlas.mode=all/);
  await page.locator('#atlas-topic-mode').selectOption('any');
- assert.ok(await page.locator('.resource-card').count()>=2,'multi-topic discoverable');
- await page.locator('#resource-search').fill('SpikeVLA');
- assert.ok(await page.locator('.atlas-active-chip').count()>0);
- assert.equal(await page.locator('.resource-card').count(),1);
+ assert.ok(await page.locator('.resource-card').count()>=2);
  await page.locator('#atlas-reset').click();
- await page.locator('#resource-search').fill('Neuron dynamics');
- assert.ok(await page.locator('.resource-card').count()>0,'topic display label is searchable');
- await page.locator('#resource-search').fill('PLIF');
- assert.equal(await page.locator('.resource-card').count(),1,'PLIF acronym is searchable');
- await page.locator('#resource-search').fill('北京大学');
- assert.ok(await page.locator('.resource-card').count()>0,'Chinese institution aliases are searchable');
  await page.locator('#resource-search').fill('2026 ICML');
- assert.equal(await page.locator('.resource-card').count(),2,'year and venue token query');
- await page.locator('#resource-search').fill('impossible missing');
+ assert.ok(await page.locator('.resource-card').count()>0,'multi-field title/year search');
+ await page.locator('#resource-search').fill('not-a-plausible-paper-title');
  assert.equal(await page.locator('.resource-card').count(),0);
  assert.equal(await page.locator('#resource-empty').isVisible(),true);
- await page.locator('#resource-search').fill('');
  await page.locator('#atlas-reset').click();
- assert.equal(await page.locator('.resource-card').count(),6,'clear filters restores untruncated preview');
-
+ assert.equal(await page.locator('.resource-card').count(),8);
  // Real research-page layout, keyboard focus and links (not just GET response).
  for(const width of [1440,768,390,320]){
    await page.setViewportSize({width,height:900});
@@ -264,7 +245,7 @@ try {
    "lab legend":14,"lab stats label":14,"community note":15
  }))assert.ok(sizes[name]>=min,name+" too small: "+sizes[name]+"px");
  const mobileTexts=await page.locator(".resource-card > p").count();
- assert.equal(mobileTexts,6,'default compact index contains six readable resource cards');
+ assert.equal(mobileTexts,8,'default compact homepage displays eight canonical research cards');
  await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:resolve(out,'desktop.png'),fullPage:true});
  console.log('PASS desktop models, chart, downloads, resource provenance, URL safety and no-JS navigation');
@@ -276,9 +257,9 @@ try {
   if(width<=390){
     assert.equal(await page.locator('#atlas-advanced').getAttribute('open'),null,'mobile advanced filters initially closed');
     const firstRecordTop=await page.locator('.resource-card').first().evaluate(el=>el.getBoundingClientRect().top+scrollY);
-    const fullCorpusTop=await page.locator('.research-corpus-link').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    const fullCorpusTop=await page.locator('.atlas-kind[data-format="paper"]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
     assert.ok(fullCorpusTop<1450,'full 395-work entry must be visible within two standard phone viewports: '+fullCorpusTop);
-    assert.ok(firstRecordTop<2300,'curated examples should remain reasonably accessible after public catalog entry: '+firstRecordTop);
+    assert.ok(firstRecordTop<2300,'full public research appears within comfortable scrolling distance: '+firstRecordTop);
   }
   await page.locator('#atlas-advanced').evaluate(el=>{el.open=true;});
   const fit=await page.evaluate(()=>{

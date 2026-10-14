@@ -45,5 +45,5 @@ test("old version database, local upload widgets and ordinal links are absent",(
  assert.doesNotMatch(js,/privateLibrary|file\.text\(|record=|corpus\.json|metadata\.json|localStorage|sessionStorage/);
  assert.match(js,/works\.json/);
  assert.match(js,/search/);
- assert.match(read("docs/index.html"),/Explore all 395 papers/);
+ assert.match(read("docs/index.html"),/All research <span class="atlas-tab-count">395<\/span>/);
 });

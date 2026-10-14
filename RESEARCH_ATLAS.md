@@ -1,6 +1,6 @@
 # SNN Research Atlas — taxonomy, metadata and curation protocol
 
-The [SNNCommunity Research Atlas](https://snncommunity.github.io/.github/#library) is an independently curated, **non-exhaustive** directory of published SNN research and original open resources. It is inspired by the community-maintained [TheBrainLab / Awesome-Spiking-Neural-Networks](https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks), which is primarily a year/venue publication list. SNNCommunity does not scrape, mirror, claim affiliation with, or imply endorsement by that project.
+The [SNNCommunity Research Atlas](https://snncommunity.github.io/.github/#library) now indexes **395 deduplicated research works** on the homepage and full `/atlas/` page. A smaller editorial selection of ten papers provides expanded source-linked method notes, and nine separately categorized resources cover software and learning. Bibliographic inclusion is not independent scientific verification. It is inspired by the community-maintained [TheBrainLab / Awesome-Spiking-Neural-Networks](https://github.com/TheBrainLab/Awesome-Spiking-Neural-Networks), which is primarily a year/venue publication list. SNNCommunity does not scrape, mirror, claim affiliation with, or imply endorsement by that project.
 
 ## Taxonomy: eleven multi-label research areas
 
@@ -109,3 +109,7 @@ The separate downloadable private ZIP `SNN_Research_Atlas_V13_Final_395_Research
 The pinned bibliography snapshot is `TheBrainLab/Awesome-Spiking-Neural-Networks` commit `3695cf0e3d3d8b87a9468467ea8c2b289e033c0e`; updated bibliographic source pointers for the 24 records are sourced from the supplied final V31 source audit. Source-specificity flags are carried over from V31 and are not independent re-verification. Public content does not assert that all 395 papers' experiments have been reproduced.
 
 Regeneration policy: regenerate the 395-work public metadata from the same canonical `workId`-grouped private source; never reintroduce version index positions, separate `corpus.json` and `metadata.json`, aggregate work/version view switches, or a public file-upload control. `tests/public-works.test.mjs` guards these boundaries.
+
+### V14 unified homepage
+
+`docs/home-research.js` uses the exact public `docs/atlas/works.json` dataset as the dedicated `/atlas/` browser. **All research = 395** by default, searchable directly on the root. Topic counts and filtered totals are computed from the 395 works, while **Tools & guides = 9** is a separate non-paper mode. The ten curated scientific records are linked only as optional supporting notes on matching canonical works. The former 19-item mixed homepage index and unsupported country/university facets are no longer active. Public records still mirror no author abstracts; the offline private archive remains separate.
