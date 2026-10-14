@@ -107,7 +107,7 @@ try {
  assert.ok(group,'linked preprint version retained under one work');
  await page.locator('#resource-search').fill('Spike-HTR');
  assert.equal(await page.locator('.resource-card').count(),1,'full-corpus paper title searchable on homepage');
- assert.match(await page.locator('.resource-card .atlas-record-link').first().getAttribute('href'),/\?paper=v31-work-/);
+ assert.match(await page.locator('.resource-card .atlas-record-link').first().getAttribute('href'),/[?&]paper=v31-work-/);
  await page.locator('#resource-search').fill('Xiubo Liang');
  assert.ok(await page.locator('.resource-card').count()>1,'first-author search');
  await page.locator('#atlas-reset').click();
