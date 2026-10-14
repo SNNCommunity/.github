@@ -1,4 +1,4 @@
-/* SNN Community portal. Source of truth: neuron-core.js + resources.json. */
+/* SNNCommunity interactive neuron lab. The research browser is in home-research.js and reads atlas/works.json. */
 "use strict";
 (() => {
   const $=id=>document.getElementById(id);
