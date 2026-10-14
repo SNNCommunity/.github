@@ -88,6 +88,7 @@ function showPaper(x){
  const record=make("a","atlas-record-link","Research record →");record.href="./atlas/?paper="+encodeURIComponent(x.id);
  actions.append(record);
  const sourceLink=link(x.paperUrl,"Publisher / source ↗","resource-main-link");if(sourceLink)actions.append(sourceLink);
+ const codeLink=link(x.codeUrl,"Original code ↗","resource-main-link");if(codeLink)actions.append(codeLink);
  if(x.curatedId){const curated=make("a","atlas-curated-link","Curated method notes →");
    curated.href="./papers/"+encodeURIComponent(x.curatedId)+"/";actions.append(curated);}
  card.append(head,h,summary,excerpt,tags,evidence,actions);return card;
