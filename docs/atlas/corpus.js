@@ -16,7 +16,7 @@ const normalize=research.normalize;
 const label=id=>names.get(id)||id;
 const validLink=v=>typeof v==="string"&&/^https:\/\//i.test(v)?v:null;
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!=null)e.textContent=String(text);if(cls)e.className=cls;return e;};
-let all=[],visible=LIMIT,focusedBeforeDialog=null,openId=null;
+let all=[],visible=LIMIT,focusedBeforeDialog=null,openId=null,extraTopics=[],topicMode="any";
 const state=()=>Object.fromEntries(FIELDS.map(k=>[k,$(k).value]));
 function readURL(){
  const q=new URLSearchParams(location.search);
@@ -25,12 +25,18 @@ function readURL(){
    const target=$(k);
    target.value=k==="q"?wanted:([...target.options].some(o=>o.value===wanted)?wanted:k==="sort"?"recent":"");
  }
+ const allowed=new Set(TOPICS.map(t=>t[0]));
+ extraTopics=[...new Set((q.get("topics")||"").split(",").filter(t=>allowed.has(t)))];
+ topicMode=q.get("mode")==="all"?"all":"any";
+ if(extraTopics.length)$("topic").value="";
 }
 function makeURL(id=openId,withHash=false,clean=false){
  const u=clean?new URL(location.pathname,location.origin):new URL(location.href);
- for(const k of [...FIELDS,"paper"])u.searchParams.delete(k);
+ for(const k of [...FIELDS,"paper","topics","mode"])u.searchParams.delete(k);
  const s=state();
  for(const [k,v] of Object.entries(s))if(v&&!(k==="sort"&&v==="recent"))u.searchParams.set(k,v);
+ if(extraTopics.length){u.searchParams.delete("topic");u.searchParams.set("topics",[...extraTopics].sort().join(","));
+   if(topicMode==="all")u.searchParams.set("mode","all");}
  if(id)u.searchParams.set("paper",id);
  if(withHash)u.hash="results";
  return u;
@@ -51,7 +57,7 @@ function selectOptions(){
 const sourceName=research.sourceLabel;
 function candidates(){
  const s=state();
- return research.filterWorks(all,{query:s.q,topics:s.topic?[s.topic]:[],year:s.year||"all",
+ return research.filterWorks(all,{query:s.q,topics:extraTopics.length?extraTopics:(s.topic?[s.topic]:[]),mode:topicMode,year:s.year||"all",
  venue:s.venue||"all",source:s.source||"all",code:s.code||"all",sort:s.sort},names);
 }
 function chips(s){
@@ -64,11 +70,27 @@ function chips(s){
    button.addEventListener("click",()=>{$(k).value="";visible=LIMIT;render();updateURL();$("q").focus();});
    frag.append(button);
  }
+ if(extraTopics.length){
+   for(const t of extraTopics){
+     const b=el("button","Topic: "+label(t)+" ×");
+     b.type="button";b.setAttribute("aria-label","Remove inherited "+label(t)+" topic");
+     b.addEventListener("click",()=>{
+       extraTopics=extraTopics.filter(x=>x!==t);
+       if(extraTopics.length===1){$("topic").value=extraTopics[0];extraTopics=[];}
+       visible=LIMIT;render();updateURL();
+     });frag.append(b);
+   }
+   if(topicMode==="all"&&extraTopics.length>1){
+     const b=el("button","Match all selected topics ×");b.type="button";
+     b.addEventListener("click",()=>{topicMode="any";visible=LIMIT;render();updateURL();});
+     frag.append(b);
+   }
+ }
  wrap.replaceChildren(frag);
 }
 function tag(id){
  const b=el("button",label(id));b.type="button";b.className="topic-button";
- b.addEventListener("click",()=>{$("topic").value=id;visible=LIMIT;render();updateURL();});
+ b.addEventListener("click",()=>{$("topic").value=id;extraTopics=[];topicMode="any";visible=LIMIT;render();updateURL();});
  return b;
 }
 function anchor(url,title,cls){
@@ -98,6 +120,10 @@ function card(x){
  item.append(body,actions);return item;
 }
 function render(){
+ const note=$("multi-topic-note");
+ note.hidden=!extraTopics.length;
+ note.textContent=extraTopics.length?("Inherited homepage topic filter: "+extraTopics.map(label).join(", ")+
+   " · "+(topicMode==="all"?"match every topic":"match any topic")+". Remove topics using the chips below."):"";
  const matches=candidates(),s=state(),fragment=document.createDocumentFragment();
  $("count").textContent=matches.length+" research works";
  $("scope-label").textContent="Showing "+Math.min(visible,matches.length)+" of "+matches.length+" · 395 unique research works";
@@ -168,10 +194,12 @@ function applyHistory(){
 }
 function bind(){
  for(const k of FIELDS)$(k).addEventListener(k==="q"?"input":"change",()=>{
+   if(k==="topic"){extraTopics=[];topicMode="any";}
    visible=LIMIT;render();updateURL(k==="q"?"replace":"push");
  });
  $("reset").addEventListener("click",()=>{
    for(const k of FIELDS)$(k).value=k==="sort"?"recent":"";
+   extraTopics=[];topicMode="any";
    visible=LIMIT;render();updateURL("push");$("q").focus();
  });
  $("more").addEventListener("click",()=>{visible+=LIMIT;render();});
