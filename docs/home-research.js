@@ -13,6 +13,22 @@ const topicBar=$("atlas-topics"),grid=$("resource-grid"),count=$("resource-count
 let papers=[],resources=[],topics=[],selected=new Set(),mode="any",kind="paper",limit=8;
 const minView=8,pageSize=20;
 const topicLabel=id=>topics.find(t=>t.id===id)?.label||id;
+function dedicatedURL(id=null){
+ const u=new URL("./atlas/",location.href),f=current();
+ if(f.kind==="paper"){
+   if(f.query)u.searchParams.set("q",f.query);
+   if(f.topics.length===1)u.searchParams.set("topic",f.topics[0]);
+   else if(f.topics.length>1){
+     u.searchParams.set("topics",[...f.topics].sort().join(","));
+     if(f.mode==="all")u.searchParams.set("mode","all");
+   }
+   for(const k of ["year","venue","source","code"])if(f[k]!=="all")u.searchParams.set(k,f[k]);
+   if(f.sort!=="recent")u.searchParams.set("sort",f.sort);
+ }
+ if(id)u.searchParams.set("paper",id);
+ u.hash="results";
+ return u.pathname+u.search+u.hash;
+}
 const statusLabel=research.sourceLabel;
 const topicNames=()=>new Map(topics.map(x=>[x.id,x.label]));
 const workFilters=skipTopics=>{const f=current();return {query:f.query,topics:skipTopics?[]:f.topics,mode:f.mode,year:f.year,venue:f.venue,source:f.source,code:f.code,sort:f.sort};};
@@ -74,7 +90,7 @@ function showPaper(x){
  head.append(make("span","resource-label","RESEARCH WORK"));
  head.append(make("span","atlas-venue-label",(x.venue||"Venue pending")+" · "+(x.year||"Year unverified")));
  const h=make("h3");const title=make("a","atlas-title-link",x.title);
- title.href="./atlas/?paper="+encodeURIComponent(x.id);h.append(title);
+ title.href=dedicatedURL(x.id);h.append(title);
  const summary=make("div","atlas-card-summary");
  summary.append(make("span","atlas-authors",(x.authors?.[0]||"Author pending")+(x.authorCount>1?" et al. · "+x.authorCount+" indexed contributors":"")));
  if(x.doi)summary.append(make("span","atlas-affiliation-hint","DOI · "+x.doi));
@@ -90,7 +106,7 @@ function showPaper(x){
  inner.append(make("p","resource-license","The public catalog contains metadata only. Full author–institution mapping and original-source identity may require checking."));
  evidence.append(inner);
  const actions=make("div","atlas-card-actions");
- const record=make("a","atlas-record-link","Research record →");record.href="./atlas/?paper="+encodeURIComponent(x.id);
+ const record=make("a","atlas-record-link","Research record →");record.href=dedicatedURL(x.id);
  actions.append(record);
  const sourceLink=link(x.paperUrl,"Indexed publication / venue ↗","resource-main-link");if(sourceLink)actions.append(sourceLink);
  const codeLink=link(x.codeUrl,"Original code ↗","resource-main-link");if(codeLink)actions.append(codeLink);
@@ -129,6 +145,7 @@ function chips(){
  wrap.replaceChildren(f);
 }
 function render(){
+ for(const a of document.querySelectorAll("[data-full-atlas-link]"))a.href=kind==="paper"?dedicatedURL():"./atlas/";
  for(const tab of document.querySelectorAll(".atlas-kind")){
    const active=tab.dataset.format===kind;tab.classList.toggle("is-selected",active);
    tab.setAttribute("aria-pressed",String(active));
