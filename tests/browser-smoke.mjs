@@ -40,6 +40,11 @@ try {
  assert.equal(await page.locator('#atlas-format').count(),0,'obsolete 19-resource combined format removed');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),28,'paginated list loads canonical research, not curated cards');
+ for(let i=0;i<20&&await page.locator('.resource-card').count()<395;i++)await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),395,'all canonical research records render on the homepage, not just a count badge');
+ assert.equal(await page.locator('.atlas-record-link').count(),395,'every public paper has its stable canonical research record link');
+ await page.locator('#resource-more').click();
+ assert.equal(await page.locator('.resource-card').count(),8,'Show fewer returns to readable preview without losing papers');
  await page.locator('.atlas-kind[data-format="resource"]').click();
  assert.match(await page.locator('#resource-count').innerText(),/of 9 tools and guides/);
  assert.equal(await page.locator('.resource-card').count(),8);
