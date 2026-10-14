@@ -186,7 +186,21 @@ function closePaper(update=true){
  if(update)updateURL("replace",null);
  if(focusedBeforeDialog?.isConnected)focusedBeforeDialog.focus({preventScroll:true});
 }
+function migrateLegacyRecordURL(){
+ const u=new URL(location.href),raw=u.searchParams.get("record");
+ if(raw===null)return;
+ u.searchParams.delete("record");
+ const index=Number(raw);
+ if(/^\d+$/.test(raw)&&Number.isInteger(index)&&index>=0&&index<396){
+   const work=all.find(x=>x.sourceIndex===index||
+     x.versions?.some(v=>v.sourceIndex===index));
+   if(work)u.searchParams.set("paper",work.id);
+ }
+ // Old positional URLs are canonicalized to stable work IDs; the public list remains 395.
+ history.replaceState(history.state,"",u);
+}
 function applyHistory(){
+ migrateLegacyRecordURL();
  readURL();visible=LIMIT;render();
  const id=new URLSearchParams(location.search).get("paper");
  if(id&&all.some(x=>x.id===id))openPaper(id,true);
