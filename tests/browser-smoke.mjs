@@ -339,6 +339,18 @@ try {
  await corpusPage.locator('#abstract').selectOption('editorial');
  assert.match(await corpusPage.locator('#count').innerText(),/24 matching papers/);
  await corpusPage.locator('#reset').click();
+ await corpusPage.locator('#unit').selectOption('works');
+ assert.match(await corpusPage.locator('#count').innerText(),/395 matching research works/);
+ await corpusPage.locator('#unit').selectOption('versions');
+ assert.match(await corpusPage.locator('#count').innerText(),/396 matching papers/);
+ for(const [source,expected] of [['specific',140],['index',205],['unresolved',51]]){
+   await corpusPage.locator('#source').selectOption(source);
+   assert.match(await corpusPage.locator('#count').innerText(),new RegExp(expected+' matching papers'));
+ }
+ await corpusPage.locator('#reset').click();
+ await corpusPage.locator('#code').selectOption('yes');
+ assert.ok(await corpusPage.locator('.item').count()>0,'source-listed code filter');
+ await corpusPage.locator('#reset').click();
  await corpusPage.locator('#topic').selectOption('robotics-embodied');
  assert.ok(await corpusPage.locator('.item').count()>0,'V31 annotated topics');
  assert.match(corpusPage.url(),/topic=robotics-embodied/);
@@ -350,6 +362,31 @@ try {
  assert.match(corpusPage.url(),/record=360/);
  await corpusPage.locator('#close').click();
  assert.ok(!(new URL(corpusPage.url())).searchParams.has('record'));
+ // Use synthetic V31-shaped content; never commit the user's private original abstracts.
+ await corpusPage.goto(base+'atlas/');
+ await corpusPage.locator('.item').first().waitFor();
+ const v31=await (await corpusPage.request.get(base+'atlas/corpus.json')).json();
+ const local={papers:v31.records.map((row,i)=>({
+   title:row[0],authors:[{displayName:'Local Researcher '+i}],
+   abstractDisplayText:'Private research fixture '+i,
+   abstractDisplayType:i===0?'source_grounded_editorial_abstract':'stored_author_abstract',
+   abstractDisplaySource:'https://example.org/test',abstractSummaryZh:i===0?'本地中文摘要测试':null
+ }))};
+ await corpusPage.locator('#private-file').setInputFiles({
+   name:'SNN_Research_Atlas_V31.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(local))
+ });
+ assert.match(await corpusPage.locator('#private-status').innerText(),/396 records/);
+ assert.match(await corpusPage.locator('.zh-preview').first().innerText(),/本地中文摘要测试/);
+ await corpusPage.locator('#q').fill('Local Researcher 0');
+ assert.equal(await corpusPage.locator('.item').count(),1);
+ await corpusPage.locator('.item .actions button').first().click();
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Private research fixture 0/);
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Independent editorial research synopsis/);
+ await corpusPage.locator('#close').click();
+ await corpusPage.locator('#private-clear').click();
+ await corpusPage.locator('#q').fill('Local Researcher 0');
+ assert.equal(await corpusPage.locator('.item').count(),0,'private field removed from search');
+ await corpusPage.locator('#reset').click();
  for(const width of [1440,768,390,320]){
    await corpusPage.setViewportSize({width,height:850});
    await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
