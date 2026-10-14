@@ -379,12 +379,12 @@ try {
    if(width===390)await corpusPage.screenshot({path:resolve(out,'corpus-mobile.png'),fullPage:true});
  }
  // V15: carry exact multi-topic filters across the two public research pages.
- await page.goto(base+'?atlas.topic=robotics-embodied,deep-architectures&atlas.mode=all#library');
+ await page.goto(base+'?atlas.topic=deep-architectures,sequence-language&atlas.mode=all#library');
  await page.locator('.resource-card').first().waitFor();
  const homeCount=Number((await page.locator('#resource-count').innerText()).match(/of (\d+) research works/)[1]);
  assert.ok(homeCount>0,'combined multi-topic criteria must match at least one work');
  const fullLink=await page.locator('[data-full-atlas-link]').first().getAttribute('href');
- assert.match(fullLink,/topics=deep-architectures%2Crobotics-embodied/);
+ assert.match(fullLink,/topics=deep-architectures%2Csequence-language/);
  assert.match(fullLink,/mode=all/);
  await corpusPage.goto(new URL(fullLink,page.url()).href,{waitUntil:'load'});
  await corpusPage.locator('#count').waitFor();
