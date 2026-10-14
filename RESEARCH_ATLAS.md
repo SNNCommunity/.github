@@ -81,7 +81,7 @@ node --test tests/atlas-core.test.mjs tests/portal.test.mjs
 
 GitHub Actions also checks real Chromium behavior, including topic/year/venue combinations, university + country, unverified affiliations, filter resets, all-results display, 320 px layout and preserved LIF/IF experiments. The Atlas uses native HTML controls, no server, and safe DOM `textContent` construction rather than interpolating catalog fields into HTML.
 
-**The initial 22 entries are deliberately selective rather than a complete mirror of the Awesome list.** The structure is designed to grow through evidence-backed community review.
+**The 19 current featured entries (10 papers and 9 learning/software resources) are an editorial selection within the larger public index.** The structure is designed to grow through evidence-backed community review.
 
 ## Research record pages (V8)
 
