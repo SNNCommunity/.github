@@ -1,5 +1,7 @@
 /* SNN Research Atlas V13: one public, deduplicated 395-work bibliography. */
 const $=id=>document.getElementById(id);
+const research=window.SNNResearch;
+if(!research)throw Error("Shared research index is unavailable");
 const TOPICS=[
  ["neuron-dynamics","Neuron dynamics"],["learning-plasticity","Learning & plasticity"],
  ["deep-architectures","Deep architectures"],["coding-conversion","Coding & conversion"],
@@ -10,8 +12,7 @@ const TOPICS=[
 const FIELDS=["q","topic","year","venue","source","code","sort"];
 const LIMIT=24;
 const names=new Map(TOPICS);
-const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"")
-  .toLocaleLowerCase("en").replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
+const normalize=research.normalize;
 const label=id=>names.get(id)||id;
 const validLink=v=>typeof v==="string"&&/^https:\/\//i.test(v)?v:null;
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!=null)e.textContent=String(text);if(cls)e.className=cls;return e;};
@@ -25,8 +26,8 @@ function readURL(){
    target.value=k==="q"?wanted:([...target.options].some(o=>o.value===wanted)?wanted:k==="sort"?"recent":"");
  }
 }
-function makeURL(id=openId,withHash=false){
- const u=new URL(location.href);
+function makeURL(id=openId,withHash=false,clean=false){
+ const u=clean?new URL(location.pathname,location.origin):new URL(location.href);
  for(const k of [...FIELDS,"paper"])u.searchParams.delete(k);
  const s=state();
  for(const [k,v] of Object.entries(s))if(v&&!(k==="sort"&&v==="recent"))u.searchParams.set(k,v);
@@ -47,22 +48,11 @@ function selectOptions(){
  const venues=[...new Set(all.map(x=>x.venue).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
  for(const venue of venues)$("venue").add(new Option(venue,venue));
 }
-function sourceName(code){
- return code==="publisher_specific_page_not_independently_rechecked"?"Publisher-specific source"
-   :code==="conference_index_or_aggregate_not_paper_specific"?"Venue index / aggregate":"Paper-specific source unresolved";
-}
+const sourceName=research.sourceLabel;
 function candidates(){
- const s=state(),terms=normalize(s.q).split(" ").filter(Boolean);
- const hits=all.filter(x=>(!s.topic||x.topics.includes(s.topic))
-   &&(!s.year||String(x.year)===s.year)
-   &&(!s.venue||x.venue===s.venue)
-   &&(!s.source||x.sourceStatus===s.source)
-   &&(!s.code||(s.code==="yes"?Boolean(x.codeUrl):!x.codeUrl))
-   &&terms.every(t=>x.search.includes(t)));
- hits.sort((a,b)=>s.sort==="title"?a.title.localeCompare(b.title):
-   s.sort==="oldest"?(a.year||9999)-(b.year||9999)||a.title.localeCompare(b.title):
-   (b.year||-1)-(a.year||-1)||a.title.localeCompare(b.title));
- return hits;
+ const s=state();
+ return research.filterWorks(all,{query:s.q,topics:s.topic?[s.topic]:[],year:s.year||"all",
+ venue:s.venue||"all",source:s.source||"all",code:s.code||"all",sort:s.sort},names);
 }
 function chips(s){
  const wrap=$("chips"),frag=document.createDocumentFragment();
@@ -103,7 +93,7 @@ function card(x){
  const detail=el("button","View research record →");
  detail.type="button";detail.addEventListener("click",()=>openPaper(x.id));
  actions.append(detail);
- const source=anchor(x.paperUrl,"Publication source ↗");
+ const source=anchor(x.paperUrl,"Indexed publication / venue ↗");
  if(source)actions.append(source);
  item.append(body,actions);return item;
 }
@@ -140,7 +130,7 @@ function openPaper(id,fromHistory=false){
  }
  content.append(facts);
  const refs=el("div",null,"detail-links");
- showLink(refs,p.paperUrl,"Visit primary source ↗");
+ showLink(refs,p.paperUrl,"Open indexed publication / venue ↗");
  if(p.codeUrl)showLink(refs,p.codeUrl,"View software ↗");
  if(p.doi&&/^10\./.test(p.doi))showLink(refs,"https://doi.org/"+p.doi,"Resolve DOI ↗");
  content.append(refs);
@@ -186,7 +176,7 @@ function bind(){
  });
  $("more").addEventListener("click",()=>{visible+=LIMIT;render();});
  $("share").addEventListener("click",async()=>{
-   const url=makeURL(null,true).href;
+   const url=makeURL(null,true,true).href;
    try{await navigator.clipboard.writeText(url);$("announce").textContent="Clean research search URL copied.";}
    catch{$("share-fallback").hidden=false;$("share-input").value=url;$("share-input").focus();$("share-input").select();}
  });
@@ -197,12 +187,8 @@ function bind(){
 async function start(){
  const r=await fetch("./works.json");
  if(!r.ok)throw Error("Research works unavailable");
- const data=await r.json();
- if(data.count!==395||data.items?.length!==395||new Set(data.items.map(x=>x.id)).size!==395
-    ||data.items.some(x=>x.abstractDetailsIncluded||x.abstractDisplayText||x.abstractOriginal||x.abstractSummaryZh)
-    ||data.items.filter(x=>x.versionCount>1).length!==1)throw Error("Final 395-work catalog integrity failure");
+ const data=research.validate(await r.json());
  all=data.items;
- for(const x of all)x.search=normalize([x.title,...(x.authors||[]),x.doi,x.venue,...(x.topics||[]).map(label)].join(" "));
  selectOptions();bind();applyHistory();
 }
 start().catch(e=>{console.error("Research Atlas:",e);$("count").textContent="Unable to load public research works";$("error").hidden=false;});
