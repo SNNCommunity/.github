@@ -367,7 +367,7 @@ try {
  await corpusPage.locator('.item').first().waitFor();
  const v31=await (await corpusPage.request.get(base+'atlas/corpus.json')).json();
  const local={papers:v31.records.map((row,i)=>({
-   title:row[0],authors:[{displayName:'Local Researcher '+i}],
+   title:row[0],authors:[{displayName:i===0?'UniquePersonZero':'Local Researcher '+i}],
    abstractDisplayText:'Private research fixture '+i,
    abstractDisplayType:i===0?'source_grounded_editorial_abstract':'stored_author_abstract',
    abstractDisplaySource:'https://example.org/test',abstractSummaryZh:i===0?'本地中文摘要测试':null
@@ -375,16 +375,17 @@ try {
  await corpusPage.locator('#private-file').setInputFiles({
    name:'SNN_Research_Atlas_V31.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(local))
  });
- assert.match(await corpusPage.locator('#private-status').innerText(),/396 records/);
+ await corpusPage.waitForFunction(()=>document.querySelector('#private-status')?.textContent?.includes('396 records'));
+ await corpusPage.locator('#q').fill('Spike-HTR');
  assert.match(await corpusPage.locator('.zh-preview').first().innerText(),/本地中文摘要测试/);
- await corpusPage.locator('#q').fill('Local Researcher 0');
+ await corpusPage.locator('#q').fill('UniquePersonZero');
  assert.equal(await corpusPage.locator('.item').count(),1);
  await corpusPage.locator('.item .actions button').first().click();
  assert.match(await corpusPage.locator('#detail-body').innerText(),/Private research fixture 0/);
  assert.match(await corpusPage.locator('#detail-body').innerText(),/Independent editorial research synopsis/);
  await corpusPage.locator('#close').click();
  await corpusPage.locator('#private-clear').click();
- await corpusPage.locator('#q').fill('Local Researcher 0');
+ await corpusPage.locator('#q').fill('UniquePersonZero');
  assert.equal(await corpusPage.locator('.item').count(),0,'private field removed from search');
  await corpusPage.locator('#reset').click();
  for(const width of [1440,768,390,320]){
