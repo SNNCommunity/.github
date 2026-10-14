@@ -13,7 +13,7 @@ const server=createServer((req,res)=>{
  const name=path||'index.html';
  const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|works\.json)$/.test(name);
  const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
- if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
+ if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','research-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
   res.writeHead(404);res.end('Not found');return;
  }
  const file=resolve('docs',name.endsWith('/')?name+'index.html':name);
