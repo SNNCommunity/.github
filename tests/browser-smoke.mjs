@@ -13,7 +13,7 @@ const server=createServer((req,res)=>{
  const name=path||'index.html';
  const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|works\.json)$/.test(name);
  const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
- if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
+ if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','research-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
   res.writeHead(404);res.end('Not found');return;
  }
  const file=resolve('docs',name.endsWith('/')?name+'index.html':name);
@@ -107,7 +107,7 @@ try {
  assert.ok(group,'linked preprint version retained under one work');
  await page.locator('#resource-search').fill('Spike-HTR');
  assert.equal(await page.locator('.resource-card').count(),1,'full-corpus paper title searchable on homepage');
- assert.match(await page.locator('.resource-card .atlas-record-link').first().getAttribute('href'),/\?paper=v31-work-/);
+ assert.match(await page.locator('.resource-card .atlas-record-link').first().getAttribute('href'),/[?&]paper=v31-work-/);
  await page.locator('#resource-search').fill('Xiubo Liang');
  assert.ok(await page.locator('.resource-card').count()>1,'first-author search');
  await page.locator('#atlas-reset').click();
@@ -342,6 +342,12 @@ try {
  const merged=publicData.items.filter(x=>x.versionCount>1);
  assert.equal(merged.length,1,'only one merged work');
  assert.equal(merged[0].versions.length,2);
+ await corpusPage.goto(base+'atlas/?record=360');
+ await corpusPage.locator('dialog[open]').waitFor();
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Spikingformer/);
+ assert.ok(!new URL(corpusPage.url()).searchParams.has('record'),'old ordinal deep link migrated');
+ assert.equal(new URL(corpusPage.url()).searchParams.get('paper'),merged[0].id);
+ await corpusPage.locator('#close').click();
  await corpusPage.goto(base+'atlas/?paper='+encodeURIComponent(merged[0].id));
  await corpusPage.locator('dialog[open]').waitFor();
  assert.match(await corpusPage.locator('#detail-body').innerText(),/Consolidated publication history/);
@@ -372,6 +378,29 @@ try {
    if(width===1440)await corpusPage.screenshot({path:resolve(out,'corpus-desktop.png'),fullPage:true});
    if(width===390)await corpusPage.screenshot({path:resolve(out,'corpus-mobile.png'),fullPage:true});
  }
+ // V15: carry exact multi-topic filters across the two public research pages.
+ await page.goto(base+'?atlas.topic=deep-architectures,sequence-language&atlas.mode=all#library');
+ await page.locator('.resource-card').first().waitFor();
+ const homeCount=Number((await page.locator('#resource-count').innerText()).match(/of (\d+) research works/)[1]);
+ assert.ok(homeCount>0,'combined multi-topic criteria must match at least one work');
+ const fullLink=await page.locator('[data-full-atlas-link]').first().getAttribute('href');
+ assert.match(fullLink,/topics=deep-architectures%2Csequence-language/);
+ assert.match(fullLink,/mode=all/);
+ await corpusPage.goto(new URL(fullLink,page.url()).href,{waitUntil:'load'});
+ await corpusPage.locator('#count').waitFor();
+ assert.equal(Number((await corpusPage.locator('#count').innerText()).match(/^(\d+)/)[1]),homeCount,
+   'homepage and dedicated Atlas share scientific search semantics');
+ assert.match(await corpusPage.locator('#multi-topic-note').innerText(),/match every topic/);
+ await corpusPage.locator('#chips button').filter({hasText:'Topic:'}).first().click();
+ assert.ok(!new URL(corpusPage.url()).searchParams.has('mode'),'single remaining topic no longer retains old multi-topic mode');
+ // Sanitized shareable /atlas/ link must never include unrelated sensitive URL parameters.
+ await corpusPage.goto(base+'atlas/?token=should-not-leak&q=Spike-HTR#results');
+ await corpusPage.locator('.item').first().waitFor();
+ await corpusPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));
+ await corpusPage.locator('#share').click();
+ const shared=await corpusPage.locator('#share-input').inputValue();
+ assert.ok(shared.includes('q=Spike-HTR'));
+ assert.ok(!shared.includes('token='),'dedicated Atlas share strips non-research URL params');
  await corpusPage.close();
  assert.deepEqual(errors,[]);
  console.log('PASS 768/390/320 widths, mobile nav, and browser errors');

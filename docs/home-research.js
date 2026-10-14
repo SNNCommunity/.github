@@ -1,8 +1,9 @@
 /* SNNCommunity homepage: one canonical 395-work source, no duplicate local paper database. */
 (()=>{"use strict";
 const $=id=>document.getElementById(id);
-const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase()
- .replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
+const research=window.SNNResearch;
+if(!research)throw Error("Shared research index is unavailable");
+const normalize=research.normalize;
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;};
 const link=(url,label,cls)=>{if(!/^https:\/\//i.test(url||""))return null;
  const a=make("a",cls,label);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
@@ -12,8 +13,25 @@ const topicBar=$("atlas-topics"),grid=$("resource-grid"),count=$("resource-count
 let papers=[],resources=[],topics=[],selected=new Set(),mode="any",kind="paper",limit=8;
 const minView=8,pageSize=20;
 const topicLabel=id=>topics.find(t=>t.id===id)?.label||id;
-const statusLabel=s=>s==="publisher_specific_page_not_independently_rechecked"?"Publisher-specific source (source listed)"
- :s==="conference_index_or_aggregate_not_paper_specific"?"Conference or aggregate index":"Paper-specific source unresolved";
+function dedicatedURL(id=null){
+ const u=new URL("./atlas/",location.href),f=current();
+ if(f.kind==="paper"){
+   if(f.query)u.searchParams.set("q",f.query);
+   if(f.topics.length===1)u.searchParams.set("topic",f.topics[0]);
+   else if(f.topics.length>1){
+     u.searchParams.set("topics",[...f.topics].sort().join(","));
+     if(f.mode==="all")u.searchParams.set("mode","all");
+   }
+   for(const k of ["year","venue","source","code"])if(f[k]!=="all")u.searchParams.set(k,f[k]);
+   if(f.sort!=="recent")u.searchParams.set("sort",f.sort);
+ }
+ if(id)u.searchParams.set("paper",id);
+ u.hash="results";
+ return u.pathname+u.search+u.hash;
+}
+const statusLabel=research.sourceLabel;
+const topicNames=()=>new Map(topics.map(x=>[x.id,x.label]));
+const workFilters=skipTopics=>{const f=current();return {query:f.query,topics:skipTopics?[]:f.topics,mode:f.mode,year:f.year,venue:f.venue,source:f.source,code:f.code,sort:f.sort};};
 function current(){
  return {kind,query:$("resource-search").value.trim(),topics:[...selected],mode,
   ...Object.fromEntries(fields.map(k=>[k,$(opts[k]).value]))};
@@ -24,6 +42,7 @@ function searchText(x){
  return normalize([x.title,x.description,x.publisher,...x.topics.map(topicLabel),...(x.searchAliases||[])].filter(Boolean).join(" "));
 }
 function baseCandidates(disableTopics=false){
+ if(kind==="paper")return research.filterWorks(papers,workFilters(disableTopics),topicNames());
  const q=current(),words=normalize(q.query).split(" ").filter(Boolean);
  return source().filter(x=>{
    const ts=x.topics||[];
@@ -38,6 +57,7 @@ function baseCandidates(disableTopics=false){
  });
 }
 function matching(){
+ if(kind==="paper")return research.filterWorks(papers,workFilters(false),topicNames());
  const data=baseCandidates();
  const sort=$(opts.sort).value;
  data.sort((a,b)=>sort==="title"?a.title.localeCompare(b.title):
@@ -47,9 +67,10 @@ function matching(){
 }
 function syncTopics(){
  const cands=baseCandidates(true),counts=new Map();
- for(const x of cands)for(const t of x.topics||[])counts.set(t,(counts.get(t)||0)+1);
+ if(kind==="paper")for(const [t,n] of research.topicCounts(papers,workFilters(true),topicNames()).counts)counts.set(t,n);
+ else for(const x of cands)for(const t of x.topics||[])counts.set(t,(counts.get(t)||0)+1);
  const fragment=document.createDocumentFragment();
- for(const [id,labelText,n] of [["all","All research",cands.length],...topics.map(t=>[t.id,t.label,counts.get(t.id)||0])]){
+ for(const [id,labelText,n] of [["all",kind==="paper"?"All research":"All tools",cands.length],...topics.map(t=>[t.id,t.label,counts.get(t.id)||0])]){
    const b=make("button","atlas-topic"+(id==="all"?!selected.size?" is-selected":"":selected.has(id)?" is-selected":""),labelText);
    b.type="button";b.dataset.topic=id;b.setAttribute("aria-pressed",String(id==="all"?!selected.size:selected.has(id)));
    b.setAttribute("aria-label",labelText+" · "+n+" results in current "+(kind==="paper"?"paper":"software")+" collection");
@@ -69,7 +90,7 @@ function showPaper(x){
  head.append(make("span","resource-label","RESEARCH WORK"));
  head.append(make("span","atlas-venue-label",(x.venue||"Venue pending")+" · "+(x.year||"Year unverified")));
  const h=make("h3");const title=make("a","atlas-title-link",x.title);
- title.href="./atlas/?paper="+encodeURIComponent(x.id);h.append(title);
+ title.href=dedicatedURL(x.id);h.append(title);
  const summary=make("div","atlas-card-summary");
  summary.append(make("span","atlas-authors",(x.authors?.[0]||"Author pending")+(x.authorCount>1?" et al. · "+x.authorCount+" indexed contributors":"")));
  if(x.doi)summary.append(make("span","atlas-affiliation-hint","DOI · "+x.doi));
@@ -85,9 +106,9 @@ function showPaper(x){
  inner.append(make("p","resource-license","The public catalog contains metadata only. Full author–institution mapping and original-source identity may require checking."));
  evidence.append(inner);
  const actions=make("div","atlas-card-actions");
- const record=make("a","atlas-record-link","Research record →");record.href="./atlas/?paper="+encodeURIComponent(x.id);
+ const record=make("a","atlas-record-link","Research record →");record.href=dedicatedURL(x.id);
  actions.append(record);
- const sourceLink=link(x.paperUrl,"Publisher / source ↗","resource-main-link");if(sourceLink)actions.append(sourceLink);
+ const sourceLink=link(x.paperUrl,"Indexed publication / venue ↗","resource-main-link");if(sourceLink)actions.append(sourceLink);
  const codeLink=link(x.codeUrl,"Original code ↗","resource-main-link");if(codeLink)actions.append(codeLink);
  if(x.curatedId){const curated=make("a","atlas-curated-link","Curated method notes →");
    curated.href="./papers/"+encodeURIComponent(x.curatedId)+"/";actions.append(curated);}
@@ -124,6 +145,7 @@ function chips(){
  wrap.replaceChildren(f);
 }
 function render(){
+ for(const a of document.querySelectorAll("[data-full-atlas-link]"))a.href=kind==="paper"?dedicatedURL():"./atlas/";
  for(const tab of document.querySelectorAll(".atlas-kind")){
    const active=tab.dataset.format===kind;tab.classList.toggle("is-selected",active);
    tab.setAttribute("aria-pressed",String(active));
@@ -176,10 +198,8 @@ function fill(select,values){
 async function load(){
  const [w,r]=await Promise.all([fetch("./atlas/works.json"),fetch("./resources.json")]);
  if(!w.ok||!r.ok)throw Error("Unable to load the canonical paper and tools indexes");
- const works=await w.json(),catalog=await r.json();
- if(works.count!==395||works.items?.length!==395||new Set(works.items.map(x=>x.id)).size!==395
-   ||works.items.some(x=>x.abstractDisplayText||x.abstractSummaryZh||x.abstractOriginal)
-   ||catalog.items?.filter(x=>x.type!=="paper").length!==9)throw Error("Public bibliography integrity error");
+ const works=research.validate(await w.json()),catalog=await r.json();
+ if(catalog.items?.filter(x=>x.type!=="paper").length!==9)throw Error("Invalid tool resource count");
  const cur=new Map(catalog.items.filter(x=>x.type==="paper").map(x=>[normalize(x.title),x.id]));
  papers=works.items.map(x=>({...x,curatedId:cur.get(normalize(x.title))||null}));
  resources=catalog.items.filter(x=>x.type!=="paper");
@@ -187,7 +207,10 @@ async function load(){
  fill($("atlas-year"),[...new Set(papers.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a));
  fill($("atlas-venue"),[...new Set(papers.map(x=>x.venue).filter(Boolean))].sort((a,b)=>a.localeCompare(b)));
  for(const b of document.querySelectorAll(".atlas-kind"))b.addEventListener("click",()=>{
-   kind=b.dataset.format;selected.clear();limit=minView;render();setUrl("push");
+   if(kind===b.dataset.format)return;
+   kind=b.dataset.format;selected.clear();mode="any";$("atlas-topic-mode").value="any";$("resource-search").value="";
+   for(const k of fields)$(opts[k]).value=k==="sort"?"recent":"all";
+   limit=minView;render();setUrl("push");
  });
  for(const key of fields)$(opts[key]).addEventListener("change",()=>{limit=minView;render();setUrl("push");});
  $("atlas-topic-mode").addEventListener("change",e=>{mode=e.target.value;limit=minView;render();setUrl("push");});

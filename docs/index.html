@@ -27,7 +27,8 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./neuron-core.js"></script>
-  <script defer src="./home-research.js"></script>
+  <script defer src="./research-core.js?v=15"></script>
+  <script defer src="./home-research.js?v=15"></script>
   <script defer src="./app.js"></script>
   <noscript><style>.lab-controls input,.lab-controls button{opacity:.6;pointer-events:none}.lab-controls::after{content:"The interactive neuron lab requires JavaScript.";display:block;margin-top:15px;font-weight:600;color:#315448}</style></noscript>
 </head>
@@ -99,7 +100,7 @@
 
     <section class="section section-library" id="library" aria-labelledby="library-title">
       <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">01 /</span> COMPLETE PUBLIC RESEARCH ATLAS</p><h2 id="library-title">395 research works.<br><em>One unified library.</em></h2></div><p>Browse all unique papers here, or open the <a href="./atlas/">full research browser ↗</a>. No author abstracts are mirrored publicly.</p></div>
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">01 /</span> COMPLETE PUBLIC RESEARCH ATLAS</p><h2 id="library-title">395 research works.<br><em>One unified library.</em></h2></div><p>Browse all unique papers here, or open the <a href="./atlas/" data-full-atlas-link>full research browser ↗</a>. No author abstracts are mirrored publicly.</p></div>
         <div class="atlas-kind-switch" role="group" aria-label="Choose collection">
           <button class="atlas-kind is-selected" type="button" data-format="paper" aria-pressed="true">All research <span class="atlas-tab-count">395</span></button>
           <button class="atlas-kind" type="button" data-format="resource" aria-pressed="false">Tools &amp; guides <span class="atlas-tab-count">9</span></button>
@@ -123,7 +124,7 @@
         <p id="atlas-copy-status" class="atlas-copy-status" role="status" aria-live="polite"></p>
         <div id="atlas-copy-fallback" class="atlas-copy-fallback" hidden><label for="atlas-copy-input">Copy the search link</label><input id="atlas-copy-input" type="text" readonly></div>
         <details class="resource-provenance atlas-provenance-details"><summary>Research coverage and source reliability</summary><p><strong>395 unique papers, zero public abstracts.</strong> The homepage and <a href="./atlas/">Research Atlas</a> read exactly the same <a href="./atlas/works.json">canonical metadata file</a>. Research topics are provisional; source links do not prove independently reproduced results. Only indexed first authors and author counts are available for many papers. The 9 tools and guides are separate from the research count.</p></details>
-        <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading 395 research works…</span><a href="./atlas/">Open full Research Atlas ↗</a></div>
+        <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading 395 research works…</span><a href="./atlas/" data-full-atlas-link>Open full Research Atlas ↗</a></div>
         <div id="resource-grid" class="resource-grid" aria-label="Canonical paper records"></div>
         <div class="resource-expand"><button id="resource-more" class="resource-more" type="button" aria-controls="resource-grid" aria-expanded="false" hidden>Load more research ↓</button></div>
         <noscript><div class="noscript-resources"><p>Interactive filters require JavaScript. Browse the <a href="./atlas/">complete 395-paper Research Atlas</a>, <a href="./atlas/works.json">canonical public JSON</a>, <a href="https://github.com/NeuroBench/neurobench">NeuroBench</a> or <a href="https://spikingjelly.readthedocs.io/">SpikingJelly</a>.</p></div></noscript>

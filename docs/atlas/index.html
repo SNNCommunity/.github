@@ -5,7 +5,7 @@
 <title>SNN Research Atlas · 395 Research Works</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://snncommunity.github.io/.github/atlas/">
-<link rel="stylesheet" href="./corpus.css"></head>
+<link rel="stylesheet" href="./corpus.css?v=15"></head>
 <body>
 <a class="skip" href="#results">Skip to research results</a>
 <header class="mast"><div class="wrap mastrow">
@@ -33,6 +33,7 @@
 <div class="filter-top"><h3>Refine results</h3><button id="reset" type="button">Reset</button></div>
 <label for="q">Search title / first author / DOI</label><input id="q" type="search" placeholder="e.g. PLIF, Spikformer, SEW-ResNet" autocomplete="off">
 <label for="topic">Research topic</label><select id="topic"><option value="">All scientific areas</option></select>
+<p id="multi-topic-note" class="multi-topic-note" role="status" aria-live="polite" hidden></p>
 <label for="year">Publication year</label><select id="year"><option value="">All years</option></select>
 <label for="venue">Conference / journal</label><select id="venue"><option value="">All venues</option></select>
 <label for="source">Bibliographic source type</label><select id="source">
@@ -58,5 +59,6 @@
 <dialog id="detail" aria-labelledby="detail-title"><div class="detail-top"><span>SCIENTIFIC RECORD · PUBLIC METADATA</span><button id="close" type="button" aria-label="Close research record">×</button></div><div id="detail-body"></div></dialog>
 <div id="announce" role="status" aria-live="polite" class="sr"></div>
 <footer><div class="wrap footer-in"><span>SNN<span>/</span>COMMUNITY · 395 research works</span><span>Final collection · 2026-10-14 · No public abstracts</span><a href="../#library">Curated research →</a></div></footer>
-<script type="module" src="./corpus.js"></script>
+<script src="../research-core.js?v=15"></script>
+<script type="module" src="./corpus.js?v=15"></script>
 </body></html>

@@ -20,7 +20,7 @@ test('production files, metadata and required controls are present',()=>{
  assert.ok(html.indexOf('id="library"')<html.indexOf('id="lab"'),'research first');
  assert.match(html,/class="atlas-kind-switch"/);
  assert.match(html,/class="resource-provenance atlas-provenance-details"/);
- assert.match(html,/src="\.\/home-research\.js"/);
+ assert.match(html,/src="\.\/home-research\.js(?:\?v=\d+)?"/);
  assert.doesNotMatch(html,/src="\.\/atlas-core\.js"/);
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);

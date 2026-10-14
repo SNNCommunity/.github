@@ -46,3 +46,9 @@
  .item .actions{display:grid;grid-template-columns:1fr}
  .sortbox{gap:6px}
 }
+
+/* V15: inherited multi-topic search is visible and removable, not a hidden URL-only facet. */
+.multi-topic-note{grid-column:1/-1;margin:5px 0 13px;padding:12px 14px;
+ border:1px solid #bcd9c4;border-left:3px solid #387d60;background:#ecf6ee;
+ font-size:14px;font-weight:650;line-height:1.6;color:#2e6246;overflow-wrap:anywhere}
+.multi-topic-note[hidden]{display:none!important}
