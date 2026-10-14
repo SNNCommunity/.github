@@ -240,7 +240,7 @@ try {
    "lab legend":14,"lab stats label":14,"community note":15
  }))assert.ok(sizes[name]>=min,name+" too small: "+sizes[name]+"px");
  const mobileTexts=await page.locator(".resource-card > p").count();
- assert.equal(mobileTexts,6,'default compact index contains six readable resource cards');
+ assert.equal(mobileTexts,8,'default compact homepage displays eight canonical research cards');
  await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:resolve(out,'desktop.png'),fullPage:true});
  console.log('PASS desktop models, chart, downloads, resource provenance, URL safety and no-JS navigation');
