@@ -49,3 +49,25 @@ test("No publisher-authored original abstracts are mirrored in the public files"
  assert.match(readFileSync("docs/index.html","utf8"),/Open the full V31 corpus/);
  assert.match(readFileSync("docs/sitemap.xml","utf8"),/\.github\/atlas\//);
 });
+
+test("V31 source precision, first-author counts and private data isolation",()=>{
+ const hex=metadata.sourceSpecificityPacked;
+ assert.equal(hex.length,198);
+ assert.equal(metadata.authorCountsBase36.length,396);
+ assert.deepEqual(metadata.sourceSpecificityCounts,[51,205,140]);
+ assert.equal(metadata.warningRecordCount,175);
+ assert.equal(metadata.partiallyReviewedRecords,15);
+ const counts=[0,0,0];
+ for(let i=0;i<396;i++){
+   const byte=parseInt(hex.slice(2*Math.floor(i/4),2*Math.floor(i/4)+2),16);
+   const k=(byte>>(2*(i%4)))&3;assert.ok(k<=2);counts[k]++;
+   const authors=parseInt(metadata.authorCountsBase36[i],36);
+   assert.ok(authors>=1&&authors<=23,"invalid author count at "+i);
+ }
+ assert.deepEqual(counts,metadata.sourceSpecificityCounts);
+ const js=readFileSync("docs/atlas/corpus.js","utf8");
+ assert.match(js,/file\.text\(\)/);
+ assert.doesNotMatch(js,/localStorage|sessionStorage|indexedDB/);
+ assert.match(js,/refreshSearchIndex/);
+ assert.doesNotMatch(readFileSync("docs/atlas/corpus.json","utf8"),/abstractDisplayText/);
+});
