@@ -342,6 +342,12 @@ try {
  const merged=publicData.items.filter(x=>x.versionCount>1);
  assert.equal(merged.length,1,'only one merged work');
  assert.equal(merged[0].versions.length,2);
+ await corpusPage.goto(base+'atlas/?record=360');
+ await corpusPage.locator('dialog[open]').waitFor();
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Spikingformer/);
+ assert.ok(!new URL(corpusPage.url()).searchParams.has('record'),'old ordinal deep link migrated');
+ assert.equal(new URL(corpusPage.url()).searchParams.get('paper'),merged[0].id);
+ await corpusPage.locator('#close').click();
  await corpusPage.goto(base+'atlas/?paper='+encodeURIComponent(merged[0].id));
  await corpusPage.locator('dialog[open]').waitFor();
  assert.match(await corpusPage.locator('#detail-body').innerText(),/Consolidated publication history/);
