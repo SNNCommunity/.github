@@ -1,3 +1,4 @@
+/* SNN Research Atlas V13: one public, deduplicated 395-work bibliography. */
 const $=id=>document.getElementById(id);
 const TOPICS=[
  ["neuron-dynamics","Neuron dynamics"],["learning-plasticity","Learning & plasticity"],
@@ -5,279 +6,203 @@ const TOPICS=[
  ["efficiency-hardware","Efficiency & hardware"],["event-vision","Event-based vision"],
  ["robotics-embodied","Robotics & embodied AI"],["sequence-language","Sequence & language"],
  ["neuroscience-bci","Neuroscience & BCI"],["benchmarks-tools","Benchmarks & tools"],
- ["theory-robustness","Theory & robustness"]
-];
-const FIELDS=["q","topic","year","venue","unit","source","code","abstract","sort"];
-const LIMIT=24,NAME=id=>TOPICS.find(t=>t[0]===id)?.[1]||id;
-const clean=s=>String(s??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
-const safeLink=url=>typeof url==="string"&&/^https:\/\//i.test(url)?url:null;
-const node=(tag,text,className)=>{const n=document.createElement(tag);if(text!=null)n.textContent=String(text);if(className)n.className=className;return n;};
-let all=[],display=LIMIT,selected=-1,curated=new Map(),lastFocus=null;
-let privateLibrary=null;
-const sourceLabel=kind=>kind==="specific"?"Publisher-specific page (source-listed)":kind==="index"?"Conference index / aggregate":"Paper-specific page unresolved";
-function isBitSet(hex,i){const s=String(hex||"");const pos=s.length-1-Math.floor(i/4);return pos>=0&&((parseInt(s[pos],16)>>(i%4))&1)===1}
-function sourceKind(packed,i){
- const byte=parseInt(packed.slice(2*Math.floor(i/4),2*Math.floor(i/4)+2),16);
- return ["unresolved","index","specific"][(byte>>(2*(i%4)))&3]||"unresolved";
-}
-const normTitle=s=>clean(s).replace(/[^a-z0-9]/g,"");
-function relatedPrivate(record){return privateLibrary?.papers?.[record.index]||null}
-function refreshSearchIndex(){
-  for(const x of all){
-    const local=relatedPrivate(x);
-    x.search=clean([x.title,x.firstAuthor,x.doi,x.venue,...x.topics.map(NAME),
-      ...(local?.authors||[]).map(a=>a.displayName),
-      local?.abstractDisplayText,local?.abstractSummaryZh].filter(Boolean).join(" "));
-  }
-}
-function state(){
-  return Object.fromEntries(FIELDS.map(k=>[k,($(k==="q"?"q":k)?.value||"")]));
-}
-function parseURL(){
-  const u=new URL(location.href);
-  for(const k of FIELDS){
-    const el=$(k);let v=u.searchParams.get(k)||"";
-    if(k==="sort")v=v||"recent";if(k==="unit")v=v||"versions";
-    el.value=k==="q"?v:([...(el.options||[])].some(o=>o.value===v)?v:k==="sort"?"recent":k==="unit"?"versions":"");
-  }
-}
-function writeURL(method="push",record=selected){
-  const u=new URL(location.pathname,location.origin);
-  const q=state();
-  for(const k of FIELDS)if(q[k]&&!(k==="sort"&&q[k]==="recent"))u.searchParams.set(k,q[k]);
-  if(record>=0)u.searchParams.set("record",String(record));
-  u.hash="results";
-  if(u.pathname+u.search+u.hash!==location.pathname+location.search+location.hash){
-    history[method==="replace"?"replaceState":"pushState"](null,"",u);
-  }
-}
-function rowData(row,i,mask,meta){
-  const [title,sectionYear,venueText,paper,code]=row;
-  const topics=TOPICS.filter((t,j)=>(mask&(1<<j))!==0).map(t=>t[0]);
-  const sameWork=i===75?360:i===360?75:-1;
-  return {index:i,title,year:Object.prototype.hasOwnProperty.call(meta.yearOverrides||{},i)
-      ?Number(meta.yearOverrides[i])||0:Number(sectionYear)||0,venue:(venueText||"").replace(/\s*20\d{2}\s*$/,"").trim()||"Unspecified",
-    originalSource:safeLink(paper||meta.sourceFallback?.[i]),code:safeLink(code),topics,
-    firstAuthor:meta.firstAuthors?.[i]||"",doi:meta.doiAsProvided?.[i]||"",
-    authorCount:parseInt(meta.authorCountsBase36?.[i]||"0",36),
-    sourceType:sourceKind(meta.sourceSpecificityPacked,i),
-    hasWarnings:isBitSet(meta.warningFlagsHex,i),
-    limitedBibliographyReview:isBitSet(meta.limitedBibliographyReviewHex,i),
-    abstractStatus:meta.editorialOnlyIndices.includes(i)?"editorial":"stored",
-    workPartner:sameWork,curated:curated.get(clean(title))||null,search:""};
-}
-function populate(records){
-  const ys=[...new Set(records.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a);
-  const venues=[...new Set(records.map(x=>x.venue))].sort((a,b)=>a.localeCompare(b));
-  for(const [id,name] of TOPICS)$("topic").append(new Option(name,id));
-  for(const year of ys)$("year").append(new Option(String(year),String(year)));
-  for(const venue of venues)$("venue").append(new Option(venue,venue));
-}
-function filtered(){
-  const s=state(),words=clean(s.q).split(" ").filter(Boolean);
-  let matches=all.filter(x=>
-    (!s.topic||x.topics.includes(s.topic))&&(!s.year||String(x.year)===s.year)
-    &&(!s.venue||x.venue===s.venue)&&(!s.abstract||x.abstractStatus===s.abstract)
-    &&(!s.source||x.sourceType===s.source)
-    &&(!s.code||(s.code==="yes"?Boolean(x.code):!x.code))
-    &&words.every(w=>x.search.includes(w)));
-  if(s.unit==="works"){
-    const used=new Set();
-    matches=matches.filter(x=>{
-      const group=x.workPartner>=0?Math.min(x.index,x.workPartner):x.index;
-      if(used.has(group))return false;used.add(group);return true;
-    });
-  }
-  if(s.sort==="oldest")matches.sort((a,b)=>(a.year||9999)-(b.year||9999)||a.title.localeCompare(b.title));
-  else if(s.sort==="title")matches.sort((a,b)=>a.title.localeCompare(b.title));
-  else matches.sort((a,b)=>(b.year||-1)-(a.year||-1)||a.title.localeCompare(b.title));
-  return matches;
-}
-function renderChips(s){
- const c=$("chips");c.replaceChildren();
- for(const field of ["q","topic","year","venue","unit","source","code","abstract"]){
-  const v=s[field];if(!v)continue;
-  const text=field==="topic"?NAME(v):field==="abstract"?(v==="stored"?"Author abstract stored privately":"Editorial only")
-    :field==="source"?sourceLabel(v):field==="unit"?(v==="works"?"Distinct works":"Bibliographic versions")
-    :field==="code"?(v==="yes"?"Code linked":"Code not indexed"):v;
-  const b=node("button",text+" ×");b.type="button";b.setAttribute("aria-label","Remove "+text+" filter");
-  b.addEventListener("click",()=>{$(field).value="";display=LIMIT;render();writeURL();$("q").focus();});c.append(b);
+ ["theory-robustness","Theory & robustness"]];
+const FIELDS=["q","topic","year","venue","source","code","sort"];
+const LIMIT=24;
+const names=new Map(TOPICS);
+const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"")
+  .toLocaleLowerCase("en").replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
+const label=id=>names.get(id)||id;
+const validLink=v=>typeof v==="string"&&/^https:\/\//i.test(v)?v:null;
+const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!=null)e.textContent=String(text);if(cls)e.className=cls;return e;};
+let all=[],visible=LIMIT,focusedBeforeDialog=null,openId=null;
+const state=()=>Object.fromEntries(FIELDS.map(k=>[k,$(k).value]));
+function readURL(){
+ const q=new URLSearchParams(location.search);
+ for(const k of FIELDS){
+   const wanted=q.get(k)|| (k==="sort"?"recent":"");
+   const target=$(k);
+   target.value=k==="q"?wanted:([...target.options].some(o=>o.value===wanted)?wanted:k==="sort"?"recent":"");
  }
+}
+function makeURL(id=openId,withHash=false){
+ const u=new URL(location.href);
+ for(const k of [...FIELDS,"paper"])u.searchParams.delete(k);
+ const s=state();
+ for(const [k,v] of Object.entries(s))if(v&&!(k==="sort"&&v==="recent"))u.searchParams.set(k,v);
+ if(id)u.searchParams.set("paper",id);
+ if(withHash)u.hash="results";
+ return u;
+}
+function updateURL(method="push",id=openId){
+ const u=makeURL(id),next=u.pathname+u.search+u.hash;
+ if(next!==location.pathname+location.search+location.hash){
+   history[method==="replace"?"replaceState":"pushState"](history.state,"",next);
+ }
+}
+function selectOptions(){
+ for(const [id,name] of TOPICS)$("topic").add(new Option(name,id));
+ const years=[...new Set(all.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a);
+ for(const year of years)$("year").add(new Option(String(year),String(year)));
+ const venues=[...new Set(all.map(x=>x.venue).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ for(const venue of venues)$("venue").add(new Option(venue,venue));
+}
+function sourceName(code){
+ return code==="publisher_specific_page_not_independently_rechecked"?"Publisher-specific source"
+   :code==="conference_index_or_aggregate_not_paper_specific"?"Venue index / aggregate":"Paper-specific source unresolved";
+}
+function candidates(){
+ const s=state(),terms=normalize(s.q).split(" ").filter(Boolean);
+ const hits=all.filter(x=>(!s.topic||x.topics.includes(s.topic))
+   &&(!s.year||String(x.year)===s.year)
+   &&(!s.venue||x.venue===s.venue)
+   &&(!s.source||x.sourceStatus===s.source)
+   &&(!s.code||(s.code==="yes"?Boolean(x.codeUrl):!x.codeUrl))
+   &&terms.every(t=>x.search.includes(t)));
+ hits.sort((a,b)=>s.sort==="title"?a.title.localeCompare(b.title):
+   s.sort==="oldest"?(a.year||9999)-(b.year||9999)||a.title.localeCompare(b.title):
+   (b.year||-1)-(a.year||-1)||a.title.localeCompare(b.title));
+ return hits;
+}
+function chips(s){
+ const wrap=$("chips"),frag=document.createDocumentFragment();
+ for(const k of ["q","topic","year","venue","source","code"]){
+   if(!s[k])continue;
+   const title=k==="topic"?label(s[k]):k==="source"?sourceName(s[k]):k==="code"?(s[k]==="yes"?"Code available":"Code not indexed"):s[k];
+   const button=el("button",title+" ×");
+   button.type="button";button.setAttribute("aria-label","Remove "+title+" filter");
+   button.addEventListener("click",()=>{$(k).value="";visible=LIMIT;render();updateURL();$("q").focus();});
+   frag.append(button);
+ }
+ wrap.replaceChildren(frag);
+}
+function tag(id){
+ const b=el("button",label(id));b.type="button";b.className="topic-button";
+ b.addEventListener("click",()=>{$("topic").value=id;visible=LIMIT;render();updateURL();});
+ return b;
+}
+function anchor(url,title,cls){
+ if(!validLink(url))return null;
+ const a=el("a",title,cls);a.href=url;a.target="_blank";a.rel="noopener noreferrer";
+ return a;
+}
+function card(x){
+ const item=el("article",null,"item");
+ const body=el("div",null,"item-main"),actions=el("div",null,"actions");
+ body.append(el("small",[x.venue,x.year||"Year unconfirmed"].filter(Boolean).join(" · ")));
+ const h=el("h3"),button=el("button",x.title,"title-button");button.type="button";button.addEventListener("click",()=>openPaper(x.id));
+ h.append(button);body.append(h);
+ body.append(el("p",[x.authors?.[0]?(x.authors[0]+(x.authorCount>1?" et al. · "+x.authorCount+" authors":"")):"Author information pending",x.doi?"DOI · "+x.doi:""].filter(Boolean).join("  ·  "),"paper-authors"));
+ const tags=el("div",null,"tags");
+ for(const t of (x.topics||[]).slice(0,4))tags.append(tag(t));
+ body.append(tags);
+ const info=el("p",(x.versionCount>1?"Multiple versions grouped · ":"")+sourceName(x.sourceStatus)
+   +(x.codeUrl?" · Linked code":"")+(x.editorialSourceChecked20261014?" · Publication source reviewed":""),
+   "fine");
+ body.append(info);
+ const detail=el("button","View research record →");
+ detail.type="button";detail.addEventListener("click",()=>openPaper(x.id));
+ actions.append(detail);
+ const source=anchor(x.paperUrl,"Publication source ↗");
+ if(source)actions.append(source);
+ item.append(body,actions);return item;
 }
 function render(){
- const results=filtered(),s=state();
- $("count").textContent=results.length+(s.unit==="works"?" matching research works":" matching papers");
- $("scope-label").textContent="Showing "+Math.min(display,results.length)+" of "+results.length+
-   (s.unit==="works"?" work entries · 395 independent works":" bibliographic versions · 396 total versions");
- renderChips(s);
- const group=document.createDocumentFragment();
- for(const x of results.slice(0,display)){
-  const item=node("article",null,"item"),left=node("div"),actions=node("div",null,"actions");
-  const info=node("small",(x.venue||"Unspecified venue")+" · "+(x.year||"Year unresolved")+" · V31 record "+String(x.index+1).padStart(3,"0"));
-  const h=node("h3",x.title),tags=node("div",null,"tags");
-  for(const topic of x.topics.slice(0,4)){
-    const b=node("button",NAME(topic));b.type="button";b.setAttribute("aria-label","Filter by "+NAME(topic));
-    b.addEventListener("click",()=>{$("topic").value=topic;display=LIMIT;render();writeURL();});
-    tags.append(b);
-  }
-  const preview=relatedPrivate(x);
-  if(preview?.abstractSummaryZh){
-    const summary=node("p",preview.abstractSummaryZh,"zh-preview");
-    summary.lang="zh-CN";left.append(summary);
-  }
-  const f=node("div",(x.firstAuthor?"First author: "+x.firstAuthor+(x.authorCount>1?" (of "+x.authorCount+" authors)":"")+" · ":"")
-    +(x.abstractStatus==="editorial"?"Editorial-only synopsis in private V31 · ":"Author original stored in private V31 · ")
-    +(x.doi?"DOI listed · ":"")+(x.code?"Linked code · ":"")
-    +sourceLabel(x.sourceType)+" · "+(x.curated?"Curated detail available":"Source-list bibliographic entry"),"fine");
-  left.append(info,h,tags,f);
-  const detail=node("button",preview?"Read research abstract →":"Explore record →");detail.type="button";
-  detail.addEventListener("click",()=>openRecord(x.index));
-  actions.append(detail);
-  if(x.originalSource){const a=node("a","Source link ↗");a.href=x.originalSource;a.target="_blank";a.rel="noopener noreferrer";actions.append(a);}
-  item.append(left,actions);group.append(item);
- }
- $("papers").replaceChildren(group);
- $("none").hidden=results.length>0;
- $("more").hidden=results.length<=display;
- $("more").textContent="Load more papers ("+Math.min(LIMIT,results.length-display)+" next) ↓";
+ const matches=candidates(),s=state(),fragment=document.createDocumentFragment();
+ $("count").textContent=matches.length+" research works";
+ $("scope-label").textContent="Showing "+Math.min(visible,matches.length)+" of "+matches.length+" · 395 unique research works";
+ chips(s);
+ for(const x of matches.slice(0,visible))fragment.append(card(x));
+ $("papers").replaceChildren(fragment);
+ $("none").hidden=matches.length!==0;
+ $("more").hidden=visible>=matches.length;
+ $("more").textContent="Load "+Math.min(LIMIT,Math.max(0,matches.length-visible))+" more papers ↓";
 }
-function link(parent,url,label){
- if(!safeLink(url))return;
- const a=node("a",label);a.href=url;a.rel="noopener noreferrer";a.target="_blank";parent.append(a);
+function showLink(target,url,caption){
+ const a=anchor(url,caption);if(a)target.append(a);
 }
-function openRecord(index,fromHistory=false){
- const x=all[index];if(!x)return;
- const dialog=$("detail"),body=$("detail-body");body.replaceChildren();
- lastFocus=document.activeElement;
- const section=node("div",null,"detail-content");
- section.append(node("div",(x.venue||"Unknown venue")+" · "+(x.year||"Unknown year")+" · V31 #"+(x.index+1),"record-top"));
- const h=node("h2",x.title);h.id="detail-title";section.append(h);
- const tags=node("div",null,"tags");
- for(const t of x.topics)tags.append(node("span",NAME(t)));section.append(tags);
- const grid=node("div",null,"factgrid");
- for(const [key,value] of [["Research areas",x.topics.length],["Abstract status",x.abstractStatus==="editorial"?"Editorial synopsis only":"Original in private V31"],["Source",x.originalSource?"Listed upstream":"Link missing"],["Code",x.code?"Linked":"Not indexed"],["DOI",x.doi||"Not indexed"],
- ["Authors",x.authorCount+" indexed in V31"],["Source detail",sourceLabel(x.sourceType)]]){
-  const box=node("div");box.append(node("span",key),node("strong",value));grid.append(box);
+function openPaper(id,fromHistory=false){
+ const p=all.find(x=>x.id===id);if(!p)return;
+ focusedBeforeDialog=document.activeElement;
+ const dialog=$("detail"),box=$("detail-body");box.replaceChildren();
+ const content=el("section",null,"detail-content");
+ content.append(el("p",[p.venue,p.year].filter(Boolean).join(" · "),"record-top"));
+ const h=el("h2",p.title);h.id="detail-title";content.append(h);
+ content.append(el("h3","Indexed authors"));
+ content.append(el("p",(p.authors||[]).join(", ")+(p.authorCount>p.authors.length?
+    " · "+p.authorCount+" contributors in source database (see publisher for complete attribution).":"")));
+ const badges=el("div",null,"tags");for(const t of p.topics||[])badges.append(el("span",label(t)));content.append(badges);
+ const facts=el("div",null,"factgrid");
+ for(const [key,value] of [["Research work","Single deduplicated record"],["Publication",p.venue+" · "+(p.year||"Unknown year")],
+   ["DOI",p.doi||"Not indexed"],["Source coverage",sourceName(p.sourceStatus)],
+   ["Software",p.codeUrl?"Repository linked":"No code link indexed"]]){
+   const cell=el("div");cell.append(el("span",key),el("strong",value));facts.append(cell);
  }
- section.append(grid);
- const caution=node("p","This is a bibliographic source-list entry. Many V31 topics were assigned automatically and have not been independently reviewed. Abstract source coverage describes the user's local V31 archive; no original abstract is mirrored on this public page.","warning");
- section.append(caution);
- if(x.hasWarnings){
-   section.append(node("p","V31 flags one or more source or identity warnings for this version. Verify publication identity before citing it.","warning"));
- }
- const privateRecord=relatedPrivate(x);
- if(privateRecord){
-   const authorNames=(privateRecord.authors||[]).map(a=>a.displayName).filter(Boolean);
-   if(authorNames.length){
-     section.append(node("h3","Authors · V31 local database"));
-     section.append(node("p",authorNames.join(", ")));
+ content.append(facts);
+ const refs=el("div",null,"detail-links");
+ showLink(refs,p.paperUrl,"Visit primary source ↗");
+ if(p.codeUrl)showLink(refs,p.codeUrl,"View software ↗");
+ if(p.doi&&/^10\./.test(p.doi))showLink(refs,"https://doi.org/"+p.doi,"Resolve DOI ↗");
+ content.append(refs);
+ if(p.versionCount>1){
+   content.append(el("h3","Consolidated publication history"));
+   content.append(el("p","One research work with multiple bibliographic versions. The earlier preprint is grouped under the later publication; it is not counted twice."));
+   const vl=el("ul",null,"version-list");
+   for(const v of p.versions||[]){
+     const li=el("li");
+     li.append(el("strong",v.title+" · "+(v.year||"Year unresolved")+" "));
+     showLink(li,v.paperUrl,"Version source ↗");vl.append(li);
    }
-   if(privateRecord.abstractDisplayText){
-     const aType=privateRecord.abstractDisplayType==="stored_author_abstract"
-       ?"Author-original abstract · locally stored":"Independent editorial research synopsis · not an author's abstract";
-     section.append(node("h3",aType));
-     const para=node("p",privateRecord.abstractDisplayText,"local-abstract");para.lang="en";section.append(para);
-     section.append(node("p","This text is read from your locally selected JSON only; it is not part of the public website database.","local-disclosure"));
-   }
-   if(privateRecord.abstractSummaryZh){
-     const zh=node("p",privateRecord.abstractSummaryZh,"local-abstract");zh.lang="zh-CN";
-     section.append(node("h3","中文研究要点 · 本地 V31 编辑摘要"));section.append(zh);
-   }
-   const src=privateRecord.abstractDisplaySource||privateRecord.abstractOriginalSource;
-   if(safeLink(src)){const cite=node("div",null,"detail-links");link(cite,src,"Check abstract source ↗");section.append(cite);}
+   content.append(vl);
  }
- const links=node("div",null,"detail-links");
- link(links,x.originalSource,"Read source-listed publication ↗");
- if(x.doi&&!/\/full$/i.test(x.doi))link(links,"https://doi.org/"+x.doi,"Resolve source-listed DOI ↗");
- link(links,x.code,"View linked code ↗");
- if(x.curated)link(links,new URL("../papers/"+x.curated+"/",location.href).href,"Open curated scientific record →");
- section.append(links);
- if(x.workPartner>=0){
-  const rel=node("div",null,"relation");
-  rel.append(node("strong","Version family: "));
-  rel.append(node("span","V31 links this bibliographic version with one other record for the same research work. "));
-  const b=node("button","Open related version →");b.type="button";b.addEventListener("click",()=>openRecord(x.workPartner));rel.append(b);section.append(rel);
- }
- section.append(node("h3","Authorship and evidence"));
- section.append(node("p",x.firstAuthor?"First author indexed by V31: "+x.firstAuthor+". Additional author names and author–affiliation relationships should be checked against the linked publication.":"Author list has not been imported for this public metadata entry."));
- section.append(node("h3","Scope and citation"));
- section.append(node("p","For complete author listings, independently written synopses and any locally stored abstracts, consult the supplied V31 personal research database. For publication details, consult the linked publisher or source. No task-level result has been reproduced by SNNCommunity for this indexed entry."));
- body.append(section);
+ if(p.sourceWarnings)content.append(el("p","The source database records at least one bibliographic warning for this work. Verify the publication record before citing.","warning"));
+ content.append(el("h3","Editorial and scientific evidence boundary"));
+ content.append(el("p","This public research record intentionally contains no paper abstract or interpretation. The research topics are primarily provisional assignments. Publication links and source metadata do not imply independent model reproduction. Full abstracts and complete personal research notes belong to the separate offline private database."));
+ if(p.editorialSourceChecked20261014)content.append(el("p","Publication source was checked in the 2026-10-14 V31 research archive. This is source-level documentation, not a claim of independently reproduced experimental results.","fine"));
+ box.append(content);
  if(!dialog.open)dialog.showModal();
- selected=index;
- if(!fromHistory)writeURL("push",index);
+ openId=p.id;
+ if(!fromHistory)updateURL("push",p.id);
 }
-function closeRecord(write=true){
- const d=$("detail");if(d.open)d.close();
- selected=-1;
- if(write)writeURL("replace",-1);
- if(lastFocus?.isConnected)lastFocus.focus({preventScroll:true});
+function closePaper(update=true){
+ const dialog=$("detail");if(dialog.open)dialog.close();
+ openId=null;
+ if(update)updateURL("replace",null);
+ if(focusedBeforeDialog?.isConnected)focusedBeforeDialog.focus({preventScroll:true});
 }
-async function copySearch(){
- const u=new URL(location.pathname,location.origin),s=state();
- for(const k of FIELDS)if(s[k]&&!(k==="sort"&&s[k]==="recent"))u.searchParams.set(k,s[k]);
- u.hash="results";
- try{await navigator.clipboard.writeText(u.href);$("announce").textContent="Clean research search link copied.";}
- catch{window.prompt("Copy research link:",u.href);}
+function applyHistory(){
+ readURL();visible=LIMIT;render();
+ const id=new URLSearchParams(location.search).get("paper");
+ if(id&&all.some(x=>x.id===id))openPaper(id,true);
+ else if($("detail").open)closePaper(false);
 }
-function initHandlers(){
- for(const key of FIELDS){
-  const e=$(key);
-  e.addEventListener(key==="q"?"input":"change",()=>{
-   display=LIMIT;render();writeURL(key==="q"?"replace":"push");
-  });
- }
+function bind(){
+ for(const k of FIELDS)$(k).addEventListener(k==="q"?"input":"change",()=>{
+   visible=LIMIT;render();updateURL(k==="q"?"replace":"push");
+ });
  $("reset").addEventListener("click",()=>{
-  for(const f of FIELDS)$(f).value=f==="sort"?"recent":f==="unit"?"versions":"";
-  display=LIMIT;render();writeURL();$("q").focus();
+   for(const k of FIELDS)$(k).value=k==="sort"?"recent":"";
+   visible=LIMIT;render();updateURL("push");$("q").focus();
  });
- $("more").addEventListener("click",()=>{display+=LIMIT;render();});
- $("share").addEventListener("click",copySearch);
- $("private-file").addEventListener("change",async event=>{
-   const file=event.target.files?.[0];if(!file)return;
-   const status=$("private-status");
-   try{
-     if(file.size>40*1024*1024)throw Error("File is unexpectedly large (over 40 MB).");
-     const content=JSON.parse(await file.text());
-     if(!Array.isArray(content.papers)||content.papers.length!==396)
-       throw Error("Not a complete V31 corpus (396 records expected).");
-     const same=content.papers.reduce((sum,p,i)=>sum+(normTitle(p.title)===normTitle(all[i].title)?1:0),0);
-     if(same<390)throw Error("The selected V31 data do not match the current source snapshot.");
-     privateLibrary={papers:content.papers};
-     $("private-clear").hidden=false;
-     status.textContent="Local V31 loaded: 396 records and "+same+" aligned titles. Full authors and local abstracts are available. No file was uploaded.";
-     refreshSearchIndex();render();
-     if(selected>=0)openRecord(selected,true);
-   }catch(e){
-     privateLibrary=null;$("private-clear").hidden=true;
-     status.textContent="Local import failed: "+e.message+" No private data loaded.";
-     refreshSearchIndex();render();
-   }
+ $("more").addEventListener("click",()=>{visible+=LIMIT;render();});
+ $("share").addEventListener("click",async()=>{
+   const url=makeURL(null,true).href;
+   try{await navigator.clipboard.writeText(url);$("announce").textContent="Clean research search URL copied.";}
+   catch{$("share-fallback").hidden=false;$("share-input").value=url;$("share-input").focus();$("share-input").select();}
  });
- $("private-clear").addEventListener("click",()=>{
-   privateLibrary=null;$("private-file").value="";$("private-clear").hidden=true;
-   $("private-status").textContent="Private V31 unloaded. Public metadata browsing restored.";
-   refreshSearchIndex();render();if(selected>=0)openRecord(selected,true);
- });
- $("close").addEventListener("click",()=>closeRecord());
- $("detail").addEventListener("close",()=>{if(selected>=0)closeRecord();});
- window.addEventListener("popstate",()=>{parseURL();display=LIMIT;render();const id=Number(new URLSearchParams(location.search).get("record"));const raw=new URLSearchParams(location.search).get("record");if(raw!==null&&Number.isInteger(id)&&id>=0&&id<all.length)openRecord(id,true);else if($("detail").open)closeRecord(false);});
+ $("close").addEventListener("click",()=>closePaper());
+ $("detail").addEventListener("close",()=>{if(openId)closePaper();});
+ window.addEventListener("popstate",applyHistory);
 }
-async function load(){
- const [ra,rb,rc]=await Promise.all([fetch("./corpus.json"),fetch("./metadata.json"),fetch("../resources.json")]);
- if(!ra.ok||!rb.ok)throw Error("Corpus metadata unavailable");
- const [corpus,meta]=await Promise.all([ra.json(),rb.json()]);
- if(corpus.recordCount!==396||corpus.records.length!==396||meta.bitmasks.length!==396||
-   meta.firstAuthors.length!==396||meta.authorCountsBase36?.length!==396||meta.sourceSpecificityPacked?.length!==198||
-   meta.editorialOnlyIndices.length!==24||meta.distinctWorkCount!==395)throw Error("V31 data integrity mismatch");
- if(rc.ok){
-  const old=await rc.json();
-  for(const p of old.items.filter(x=>x.type==="paper"))curated.set(clean(p.title),p.id);
- }
- all=corpus.records.map((row,i)=>rowData(row,i,meta.bitmasks[i],meta));
- refreshSearchIndex();
- populate(all);parseURL();initHandlers();render();
- const raw=new URLSearchParams(location.search).get("record");
- if(raw!==null&&Number.isInteger(Number(raw))&&+raw>=0&&+raw<all.length)openRecord(+raw,true);
+async function start(){
+ const r=await fetch("./works.json");
+ if(!r.ok)throw Error("Research works unavailable");
+ const data=await r.json();
+ if(data.count!==395||data.items?.length!==395||new Set(data.items.map(x=>x.id)).size!==395
+    ||data.items.some(x=>x.abstractDetailsIncluded||x.abstractDisplayText||x.abstractOriginal||x.abstractSummaryZh)
+    ||data.items.filter(x=>x.versionCount>1).length!==1)throw Error("Final 395-work catalog integrity failure");
+ all=data.items;
+ for(const x of all)x.search=normalize([x.title,...(x.authors||[]),x.doi,x.venue,...(x.topics||[]).map(label)].join(" "));
+ selectOptions();bind();applyHistory();
 }
-load().catch(e=>{console.error("V31 Atlas:",e);$("count").textContent="Could not load the V31 research index";$("error").hidden=false;});
+start().catch(e=>{console.error("Research Atlas:",e);$("count").textContent="Unable to load public research works";$("error").hidden=false;});

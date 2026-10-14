@@ -11,7 +11,7 @@ const server=createServer((req,res)=>{
  const u=new URL(req.url,'http://localhost');
  const path=u.pathname.startsWith('/.github/')?u.pathname.slice(9):'';
  const name=path||'index.html';
- const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|corpus\.json|metadata\.json)$/.test(name);
+ const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|works\.json)$/.test(name);
  const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
  if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
   res.writeHead(404);res.end('Not found');return;
@@ -125,10 +125,10 @@ try {
  await page.goForward();
  assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
  await page.locator('#atlas-reset').click();
- await page.locator('#atlas-country').selectOption('Germany');
- await page.locator('#atlas-university').selectOption('Technische Universität Berlin');
- assert.equal(await page.locator('.resource-card').count(),1,'verified Germany university');
- assert.match(await page.locator('.resource-card').first().innerText(),/Event-based Vision/i);
+ await page.locator('#atlas-country').selectOption('France');
+ await page.locator('#atlas-university').selectOption('Université Toulouse III – Paul Sabatier');
+ assert.equal(await page.locator('.resource-card').count(),3,'three source-linked French institution records');
+ assert.match(await page.locator('.resource-card').first().innerText(),/SpikingJelly|Residual|Membrane/i);
  await page.locator('#atlas-reset').click();
  await page.locator('#atlas-country').selectOption('unknown');
  await page.locator('#atlas-format').selectOption('paper');
@@ -276,7 +276,9 @@ try {
   if(width<=390){
     assert.equal(await page.locator('#atlas-advanced').getAttribute('open'),null,'mobile advanced filters initially closed');
     const firstRecordTop=await page.locator('.resource-card').first().evaluate(el=>el.getBoundingClientRect().top+scrollY);
-    assert.ok(firstRecordTop<1680,'first research record should appear within two phone viewports: '+firstRecordTop);
+    const fullCorpusTop=await page.locator('.research-corpus-link').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    assert.ok(fullCorpusTop<1450,'full 395-work entry must be visible within two standard phone viewports: '+fullCorpusTop);
+    assert.ok(firstRecordTop<2300,'curated examples should remain reasonably accessible after public catalog entry: '+firstRecordTop);
   }
   await page.locator('#atlas-advanced').evaluate(el=>{el.open=true;});
   const fit=await page.evaluate(()=>{
@@ -322,71 +324,56 @@ try {
   }
  }
 
- // V31 research corpus uses a separate metadata-only Explorer and does not disturb the curated Atlas.
+ // Final V13: one public card per unique work, no original abstracts or private upload controls.
  const corpusPage=await browser.newPage({viewport:{width:1440,height:900}});
- corpusPage.on('pageerror',e=>errors.push('V31 '+e.message));
+ corpusPage.on('pageerror',e=>errors.push('V13 '+e.message));
  await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
  await corpusPage.locator('.item').first().waitFor();
- assert.match(await corpusPage.locator('#count').innerText(),/396 matching papers/);
+ assert.match(await corpusPage.locator('#count').innerText(),/395 research works/);
  assert.equal(await corpusPage.locator('.item').count(),24);
- assert.equal(await corpusPage.locator('.metrics strong').first().innerText(),'396');
- assert.match(await corpusPage.locator('.item').first().innerText(),/First author: /);
+ assert.equal(await corpusPage.locator('.metrics strong').first().innerText(),'395');
+ assert.equal(await corpusPage.locator('#private-file').count(),0,'public page must not accept private abstracts');
+ assert.equal(await corpusPage.locator('#unit').count(),0,'no obsolete version/work toggle');
+ assert.equal(await corpusPage.locator('#abstract').count(),0,'no public abstract browser');
+ assert.match(await corpusPage.locator('.item').first().innerText(),/authors|Xiubo Liang/i);
  await corpusPage.locator('#q').fill('Spike-HTR');
- assert.equal(await corpusPage.locator('.item').count(),1,'source title search');
+ assert.equal(await corpusPage.locator('.item').count(),1,'search by title');
  await corpusPage.locator('#q').fill('Xiubo Liang');
- assert.ok(await corpusPage.locator('.item').count()>1,'first-author index search');
- await corpusPage.locator('#q').fill('');
- await corpusPage.locator('#abstract').selectOption('editorial');
- assert.match(await corpusPage.locator('#count').innerText(),/24 matching papers/);
+ assert.ok(await corpusPage.locator('.item').count()>1,'search by first author');
  await corpusPage.locator('#reset').click();
- await corpusPage.locator('#unit').selectOption('works');
- assert.match(await corpusPage.locator('#count').innerText(),/395 matching research works/);
- await corpusPage.locator('#unit').selectOption('versions');
- assert.match(await corpusPage.locator('#count').innerText(),/396 matching papers/);
- for(const [source,expected] of [['specific',140],['index',205],['unresolved',51]]){
+ for(const [source,expected] of [
+   ['publisher_specific_page_not_independently_rechecked',140],
+   ['conference_index_or_aggregate_not_paper_specific',205],
+   ['not_identified',50]]){
    await corpusPage.locator('#source').selectOption(source);
-   assert.match(await corpusPage.locator('#count').innerText(),new RegExp(expected+' matching papers'));
+   assert.match(await corpusPage.locator('#count').innerText(),new RegExp(expected+' research works'));
  }
  await corpusPage.locator('#reset').click();
  await corpusPage.locator('#code').selectOption('yes');
- assert.ok(await corpusPage.locator('.item').count()>0,'source-listed code filter');
+ assert.ok(await corpusPage.locator('.item').count()>0,'code filter');
  await corpusPage.locator('#reset').click();
  await corpusPage.locator('#topic').selectOption('robotics-embodied');
- assert.ok(await corpusPage.locator('.item').count()>0,'V31 annotated topics');
+ assert.ok(await corpusPage.locator('.item').count()>0,'topic filter');
  assert.match(corpusPage.url(),/topic=robotics-embodied/);
  await corpusPage.locator('#reset').click();
- await corpusPage.goto(base+'atlas/?record=75');
+ const publicData=await (await corpusPage.request.get(base+'atlas/works.json')).json();
+ assert.equal(publicData.items.length,395);
+ const merged=publicData.items.filter(x=>x.versionCount>1);
+ assert.equal(merged.length,1,'only one merged work');
+ assert.equal(merged[0].versions.length,2);
+ await corpusPage.goto(base+'atlas/?paper='+encodeURIComponent(merged[0].id));
  await corpusPage.locator('dialog[open]').waitFor();
- assert.match(await corpusPage.locator('#detail-body').innerText(),/Version family/);
- await corpusPage.locator('.relation button').click();
- assert.match(corpusPage.url(),/record=360/);
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Consolidated publication history/);
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Spikingformer: Spike-driven Residual Learning/);
+ assert.doesNotMatch(await corpusPage.locator('#detail-body').innerText(),/Author-original abstract|Abstract text/);
  await corpusPage.locator('#close').click();
- assert.ok(!(new URL(corpusPage.url())).searchParams.has('record'));
- // Use synthetic V31-shaped content; never commit the user's private original abstracts.
- await corpusPage.goto(base+'atlas/');
- await corpusPage.locator('.item').first().waitFor();
- const v31=await (await corpusPage.request.get(base+'atlas/corpus.json')).json();
- const local={papers:v31.records.map((row,i)=>({
-   title:row[0],authors:[{displayName:i===0?'UniquePersonZero':'Local Researcher '+i}],
-   abstractDisplayText:'Private research fixture '+i,
-   abstractDisplayType:i===0?'source_grounded_editorial_abstract':'stored_author_abstract',
-   abstractDisplaySource:'https://example.org/test',abstractSummaryZh:i===0?'本地中文摘要测试':null
- }))};
- await corpusPage.locator('#private-file').setInputFiles({
-   name:'SNN_Research_Atlas_V31.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(local))
- });
- await corpusPage.waitForFunction(()=>document.querySelector('#private-status')?.textContent?.includes('396 records'));
+ assert.ok(!(new URL(corpusPage.url())).searchParams.has('paper'));
+ // Stable history: closing a card leaves the current search criteria intact.
  await corpusPage.locator('#q').fill('Spike-HTR');
- assert.match(await corpusPage.locator('.zh-preview').first().innerText(),/本地中文摘要测试/);
- await corpusPage.locator('#q').fill('UniquePersonZero');
- assert.equal(await corpusPage.locator('.item').count(),1);
  await corpusPage.locator('.item .actions button').first().click();
- assert.match(await corpusPage.locator('#detail-body').innerText(),/Private research fixture 0/);
- assert.match(await corpusPage.locator('#detail-body').innerText(),/Independent editorial research synopsis/);
+ assert.match(corpusPage.url(),/paper=v31-work-/);
  await corpusPage.locator('#close').click();
- await corpusPage.locator('#private-clear').click();
- await corpusPage.locator('#q').fill('UniquePersonZero');
- assert.equal(await corpusPage.locator('.item').count(),0,'private field removed from search');
+ assert.match(await corpusPage.locator('#q').inputValue(),/Spike-HTR/);
  await corpusPage.locator('#reset').click();
  for(const width of [1440,768,390,320]){
    await corpusPage.setViewportSize({width,height:850});
@@ -398,9 +385,9 @@ try {
      title:getComputedStyle(document.querySelector('.item h3')).fontSize,
      search:getComputedStyle(document.querySelector('#q')).fontSize
    }));
-   assert.ok(fit.scroll<=fit.client+1,'V31 horizontal overflow at '+width+': '+JSON.stringify(fit));
-   assert.ok(parseFloat(fit.title)>=19,'V31 title too small at '+width);
-   assert.ok(parseFloat(fit.search)>=14,'V31 search field too small at '+width);
+   assert.ok(fit.scroll<=fit.client+1,'V13 horizontal overflow at '+width+': '+JSON.stringify(fit));
+   assert.ok(parseFloat(fit.title)>=19,'V13 title too small at '+width);
+   assert.ok(parseFloat(fit.search)>=14,'V13 search field too small at '+width);
    if(width===1440)await corpusPage.screenshot({path:resolve(out,'corpus-desktop.png'),fullPage:true});
    if(width===390)await corpusPage.screenshot({path:resolve(out,'corpus-mobile.png'),fullPage:true});
  }

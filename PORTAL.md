@@ -74,7 +74,7 @@ without JavaScript.
 
 ## Research resource governance
 
-`docs/resources.json` (schema v2) is the canonical source of 22 curated entries (13 papers plus 9 independent resources). It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/atlas-core.js` engine handles deterministic multi-facet filtering. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
+`docs/resources.json` (schema v2) is the source of 19 featured entries (10 papers within the 395-work corpus plus 9 independent resources); the full 395-work canonical catalog is `docs/atlas/works.json`. It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/atlas-core.js` engine handles deterministic multi-facet filtering. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
 
 Paper DOIs are sourced from original publisher or authors' publication records. Resource inclusion is **not a claim of affiliation or of independent technical reproduction**.
 
@@ -119,3 +119,7 @@ The public home page leads with the Research Atlas before the full LIF/IF Lab an
 ## V11 scientific typography and accessible reading
 
 The portal uses a 16px body baseline. Research descriptions and scientific method explanations are at least 16px. Primary controls target 15px, and visible supporting metadata has a 14px minimum. Paper pages follow the same reader type scale in `docs/paper.css`. The interactive neuron Canvas label text grows from 11/12px to 13/14px. Most added type rules use rem units so users can enlarge the root font without breaking the hierarchy. Chromium tests evaluate computed sizes at desktop and mobile widths, check 125% root font scaling and reject unwanted horizontal overflow. Smaller schematic annotations never replace textual scientific definitions.
+
+## Final 395-paper public research catalogue (V13)
+
+The public home page leads to `/atlas/`, a complete 395-entry unique-work bibliography. The editorial 10 papers are featured members, not additional records. Public records show only metadata, primary sources, original code and publication-version lineage. Full abstracts are provided separately in the standalone, offline private 395-work ZIP and are never uploaded to the public website. The stale 396-record dual-mode navigation, upload control and legacy public corpus files have been removed. Deep links use stable work identifiers via `?paper=...` rather than old ordinal positions.

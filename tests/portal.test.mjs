@@ -34,7 +34,7 @@ test('production files, metadata and required controls are present',()=>{
 });
 test('open source provenance entries use unique structured records',()=>{
  assert.equal(catalog.schemaVersion,2);
- assert.ok(catalog.items.length>=22);
+ assert.ok(catalog.items.length>=19);
  assert.equal(new Set(catalog.items.map(x=>x.id)).size,catalog.items.length);
  for(const x of catalog.items){
   assert.match(x.url,/^https:\/\//);
@@ -43,9 +43,9 @@ test('open source provenance entries use unique structured records',()=>{
   assert.ok('license' in x&&'licenseUrl' in x&&'doi' in x&&'code' in x);
  }
  const doi=catalog.items.filter(x=>x.type==='paper').map(x=>x.doi);
- for(const id of ['10.1109/JPROC.2023.3308088','10.1109/MSP.2019.2931595','10.1109/TPAMI.2020.3008413'])assert.ok(doi.includes(id));
+ for(const id of ['10.1109/ICCV48922.2021.00266','10.1126/sciadv.adi1480'])assert.ok(doi.includes(id));
  assert.equal(catalog.topics.length,11);
- assert.ok(catalog.items.filter(x=>x.type==='paper').length>=13);
+ assert.ok(catalog.items.filter(x=>x.type==='paper').length>=10);
  assert.ok(catalog.items.some(x=>(x.affiliations||[]).some(a=>a.country==='France')));
 });
 test('no abandoned V2/V3 assets and no invented evidence',()=>{
