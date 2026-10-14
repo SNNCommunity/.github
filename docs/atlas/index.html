@@ -1,22 +1,62 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#103d32"><meta name="description" content="Explore 396 SNN bibliographic versions across 395 research works, with topic, venue, year, and source filtering."><title>SNN Research Corpus · V31</title><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://snncommunity.github.io/.github/atlas/"><link rel="stylesheet" href="./corpus.css"></head>
-<body><a class="skip" href="#results">Skip to research results</a><header class="mast"><div class="wrap mastrow"><a class="brand" href="../">SNN<span>/</span>COMMUNITY</a><nav aria-label="Research navigation"><a href="../#library">Curated Atlas</a><a href="../#lab">Neuron Lab</a><a href="https://github.com/SNNCommunity/.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></div></header>
-<main><section class="hero"><div class="wrap hero-grid"><div><p class="overline">RESEARCH ATLAS / V31 EXTENDED CORPUS</p><h1>Explore the full<br><em>spiking research landscape.</em></h1><p class="lead">Discover papers by mechanism, task, venue, and year. Trace original links, compare research areas, and return to the curated collection for source-checked technical reading.</p><div class="hero-actions"><a class="hero-primary" href="#results">Explore 396 records ↓</a><a href="../#library">Read the curated 13 ↗</a></div></div><div class="metrics" aria-label="V31 corpus metrics"><div><strong>396</strong><span>Bibliographic versions</span></div><div><strong>395</strong><span>Distinct research works</span></div><div><strong>11</strong><span>Research areas</span></div><div><strong>24</strong><span>Original abstracts not stored</span></div></div></div></section>
-<div class="disclosure"><div class="wrap"><strong>Evidence-aware indexing.</strong> The V31 corpus includes partly automated, unreviewed topic assignments and publisher/source-list links. Its 372 stored author abstracts remain in the private research package and are not republished here. No listing implies independent scientific reproduction.</div></div>
-<section class="wrap explorer" id="results"><div class="section-intro"><div><p class="overline darker">DISCOVERY WORKSPACE</p><h2>Find a research direction.</h2></div><p>Browse the extended bibliography. For individually analyzed methods, visit <a href="../#library">Curated Research Atlas ↗</a>.</p></div>
-<section class="private-import" aria-labelledby="private-title">
-<div class="private-copy"><p class="overline darker">OPTIONAL · PRIVATE RESEARCH LIBRARY</p>
-<h3 id="private-title">Read deeper with your local V31 database.</h3>
-<p>Choose <code>data/SNN_Research_Atlas_V31.json</code> from the extracted personal ZIP to unlock full author lists and locally stored author or editorial abstracts. The file stays in this browser tab; it is never sent to SNNCommunity.</p>
-<p id="private-status" role="status" aria-live="polite">Public metadata mode · no private file loaded.</p></div>
-<div class="private-controls"><label class="private-load" for="private-file">Open local V31 JSON <span aria-hidden="true">↗</span></label>
-<input id="private-file" type="file" accept=".json,application/json" aria-describedby="private-status">
-<button id="private-clear" type="button" hidden>Unload private database</button></div>
-</section>
-<div class="workspace"><aside class="filters" aria-label="Research corpus filters"><div class="filter-top"><h3>Refine results</h3><button id="reset" type="button">Reset</button></div><label for="q">Search papers and methods</label><input id="q" type="search" placeholder="e.g. residual, STDP, VLA" autocomplete="off"><label for="topic">Research topic</label><select id="topic"><option value="">All 11 research topics</option></select><label for="year">Year</label><select id="year"><option value="">All years</option></select><label for="venue">Venue</label><select id="venue"><option value="">All venues</option></select><label for="unit">Display unit</label><select id="unit"><option value="versions">Bibliographic versions (396)</option><option value="works">Distinct research works (395)</option></select>
-<label for="source">Publication source detail</label><select id="source"><option value="">All source types</option><option value="specific">Publisher-specific page (140)</option><option value="index">Index or aggregate listing (205)</option><option value="unresolved">No paper-specific page (51)</option></select>
-<label for="code">Linked source code</label><select id="code"><option value="">With or without code</option><option value="yes">Code listed</option><option value="no">No code link indexed</option></select>
-<label for="abstract">Author abstract in V31</label><select id="abstract"><option value="">All records</option><option value="stored">Original stored privately</option><option value="editorial">Editorial synopsis only (24)</option></select><p class="filter-note">Topic labels are imported from V31 and are primarily provisional. Publication links may point to a source listing rather than a checked version of record.</p></aside>
-<div class="result-col"><div class="result-header"><div><strong id="count" role="status" aria-live="polite">Loading corpus…</strong><p id="scope-label">396 bibliographic versions</p></div><div class="sortbox"><label for="sort">Sort</label><select id="sort"><option value="recent">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select><button id="share" type="button">Copy link ↗</button></div></div><div id="chips" class="chips" aria-label="Selected filters"></div><div id="papers" class="papers" aria-label="Matching research papers"></div><p id="none" class="notice" hidden>No results. Clear a filter or try another topic.</p><p id="error" class="notice error" hidden>Research corpus unavailable. Open the GitHub source directory for metadata.</p><div class="pagination"><button id="more" type="button" hidden>Load more papers ↓</button></div></div></div></section></main>
-<dialog id="detail" aria-labelledby="detail-title"><div class="detail-top"><span>V31 · RESEARCH RECORD</span><button id="close" type="button" aria-label="Close record">×</button></div><div id="detail-body"></div></dialog><div id="announce" role="status" aria-live="polite" class="sr"></div>
-<footer><div class="wrap footer-in"><span>SNN<span>/</span>COMMUNITY · V31 Research Corpus</span><span>Metadata index · source snapshot 2026-10-09</span><a href="../#library">Curated research →</a></div></footer>
-<script type="module" src="./corpus.js"></script></body></html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#103d32">
+<meta name="description" content="Explore all 395 unique SNN research works. Browse authors, papers, sources, DOI, topics and code; no paper abstracts are redistributed.">
+<title>SNN Research Atlas · 395 Research Works</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://snncommunity.github.io/.github/atlas/">
+<link rel="stylesheet" href="./corpus.css"></head>
+<body>
+<a class="skip" href="#results">Skip to research results</a>
+<header class="mast"><div class="wrap mastrow">
+<a class="brand" href="../">SNN<span>/</span>COMMUNITY</a>
+<nav aria-label="Research navigation"><a href="../#library">Curated highlights</a><a href="../#lab">Neuron Lab</a><a href="https://github.com/SNNCommunity/.github" target="_blank" rel="noopener noreferrer">Contribute ↗</a></nav>
+</div></header>
+<main>
+<section class="hero"><div class="wrap hero-grid"><div>
+<p class="overline">PUBLIC RESEARCH ATLAS / FINAL 395-WORK COLLECTION</p>
+<h1>Explore spiking<br><em>neural research.</em></h1>
+<p class="lead">One canonical entry per research work. Discover SNN papers by author, method, venue, year, research topic and source evidence. All 395 records appear in the public catalog, with no abstract text or private research notes.</p>
+<div class="hero-actions"><a class="hero-primary" href="#results">Explore all 395 papers ↓</a><a href="../#library">Browse curated highlights ↗</a></div>
+</div><div class="metrics" aria-label="Research collection metrics">
+<div><strong>395</strong><span>Unique research works</span></div>
+<div><strong>11</strong><span>Research areas</span></div>
+<div><strong>13</strong><span>Curated records within the wider collection</span></div>
+<div><strong>0</strong><span>Abstracts republished in the public catalog</span></div>
+</div></div></section>
+<div class="disclosure"><div class="wrap"><strong>One work, one record.</strong> Earlier preprints and later publication versions are grouped together, not counted as separate papers. This catalog provides source-listed bibliographic information; provisional topics and external results are not independent reproduction claims. The separate <strong>private offline research package</strong> contains full abstracts and personal notes.</div></div>
+<section class="wrap explorer" id="results" aria-labelledby="results-title">
+<div class="section-intro"><div><p class="overline darker">FULL PUBLIC BIBLIOGRAPHY</p><h2 id="results-title">Discover the research.</h2></div>
+<p>All 395 unique works are searchable here. The <a href="../#library">curated highlights</a> are a subset, not extra papers.</p></div>
+<div class="workspace">
+<aside class="filters" aria-label="Research filters">
+<div class="filter-top"><h3>Refine results</h3><button id="reset" type="button">Reset</button></div>
+<label for="q">Search title / first author / DOI</label><input id="q" type="search" placeholder="e.g. PLIF, Spikformer, SEW-ResNet" autocomplete="off">
+<label for="topic">Research topic</label><select id="topic"><option value="">All scientific areas</option></select>
+<label for="year">Publication year</label><select id="year"><option value="">All years</option></select>
+<label for="venue">Conference / journal</label><select id="venue"><option value="">All venues</option></select>
+<label for="source">Bibliographic source type</label><select id="source">
+<option value="">All source types</option>
+<option value="publisher_specific_page_not_independently_rechecked">Publisher-specific source</option>
+<option value="conference_index_or_aggregate_not_paper_specific">Venue index / aggregate</option>
+<option value="not_identified">Paper-specific source unresolved</option>
+</select>
+<label for="code">Software source</label><select id="code"><option value="">All papers</option><option value="yes">Code linked</option><option value="no">Code not indexed</option></select>
+<p class="filter-note">Source records and categories originate from the final V31 research archive and a pinned bibliography. Classification, full authorship and paper-version identity may require additional original-source checking.</p>
+</aside>
+<div class="result-col">
+<div class="result-header"><div><strong id="count" role="status" aria-live="polite">Loading all 395 research works…</strong><p id="scope-label">Full deduplicated collection</p></div>
+<div class="sortbox"><label for="sort">Sort</label><select id="sort"><option value="recent">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select><button id="share" type="button">Share search ↗</button></div></div>
+<div id="share-fallback" hidden class="share-fallback"><label for="share-input">Copy the research link</label><input id="share-input" type="text" readonly></div>
+<div id="chips" class="chips" aria-label="Applied filters"></div>
+<div id="papers" class="papers" aria-label="Matching unique research papers"></div>
+<p id="none" class="notice" hidden>No matching research works. Remove filters or try another search.</p>
+<p id="error" class="notice error" role="alert" hidden>Research metadata could not be loaded. Check the public source repository.</p>
+<div class="pagination"><button id="more" type="button" hidden>Load more papers ↓</button></div>
+</div></div>
+</section></main>
+<dialog id="detail" aria-labelledby="detail-title"><div class="detail-top"><span>SCIENTIFIC RECORD · PUBLIC METADATA</span><button id="close" type="button" aria-label="Close research record">×</button></div><div id="detail-body"></div></dialog>
+<div id="announce" role="status" aria-live="polite" class="sr"></div>
+<footer><div class="wrap footer-in"><span>SNN<span>/</span>COMMUNITY · 395 research works</span><span>Final collection · 2026-10-14 · No public abstracts</span><a href="../#library">Curated research →</a></div></footer>
+<script type="module" src="./corpus.js"></script>
+</body></html>
