@@ -140,8 +140,9 @@ function render(){
  more.hidden=matches.length<=minView;more.setAttribute("aria-expanded",String(limit>=matches.length));
  more.textContent=limit>=matches.length?"Show fewer results ↑":"Load "+Math.min(pageSize,matches.length-limit)+" more results ↓";
 }
-function urls(){
- const u=new URL(location.href);
+function urls(clean=false){
+ const u=clean?new URL(location.pathname,location.origin):new URL(location.href);
+ if(clean)u.hash="#library";
  for(const [key] of [...u.searchParams])if(key.startsWith("atlas."))u.searchParams.delete(key);
  const q=current();
  if(q.kind!=="paper")u.searchParams.set("atlas.format",q.kind);
@@ -199,7 +200,7 @@ async function load(){
    const n=matching().length;limit=limit>=n?minView:Math.min(limit+pageSize,n);render();
  });
  $("atlas-copy").addEventListener("click",async()=>{
-   const u=urls().href;
+   const u=urls(true).href;
    try{await navigator.clipboard.writeText(u);$("atlas-copy-fallback").hidden=true;$("atlas-copy-status").textContent="Research search link copied.";}
    catch{$("atlas-copy-input").value=u;$("atlas-copy-fallback").hidden=false;$("atlas-copy-input").select();$("atlas-copy-status").textContent="Copy the selected URL.";}
  });
