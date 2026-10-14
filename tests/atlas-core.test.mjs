@@ -57,9 +57,9 @@ test('search includes country university and authors publishers without guessing
 });
 test('facets enumerate publication years, venues and real cited universities',()=>{
  const f=atlas.facets(items);
- assert.ok(f.years.includes(2026)&&f.years.includes(2019));
- assert.ok(f.venues.includes('ICML')&&f.venues.includes('IEEE TPAMI'));
- assert.ok(f.countries.includes('Germany')&&f.countries.includes('China'));
+ assert.ok(f.years.includes(2026)&&f.years.includes(2021));
+ assert.ok(f.venues.includes('ICML')&&f.venues.includes('Science Advances'));
+ assert.ok(f.countries.includes('France')&&f.countries.includes('China'));
  assert.ok(f.universities('United Kingdom').includes('University of Oxford'));
  assert.ok(!f.universities('France').includes('University of Oxford'));
 });
