@@ -8,10 +8,12 @@ const names=new Map(catalog.topics.map(x=>[x.id,x.label]));
 test("shared filter validates exact canonical 395-work source without paper abstracts",()=>{
  assert.equal(core.validate(works),works);
  assert.equal(core.filterWorks(works.items,{},names).length,395);
+ assert.throws(()=>core.validate({...works,items:works.items.map((x,i)=>i?x:{...x,originalAbstract:"text copied from a publisher"})}),/Unexpected public research field/);
+ assert.throws(()=>core.validate({...works,items:works.items.map((x,i)=>i?x:{...x,sourceIndex:works.items[1].sourceIndex})}),/Duplicate or invalid source version index/);
  assert.equal(core.filterWorks(works.items,{topics:["robotics-embodied"]},names).length>0,true);
  assert.throws(()=>core.validate({...works,count:396}),/395/);
  assert.throws(()=>core.validate({...works,items:[...works.items.slice(0,-1),{...works.items[0]}]}),/duplicate/i);
- assert.throws(()=>core.validate({...works,items:works.items.map((x,i)=>i?x:{...x,abstract:"Private research abstract"})}),/Invalid/);
+ assert.throws(()=>core.validate({...works,items:works.items.map((x,i)=>i?x:{...x,abstract:"Private research abstract"})}),/Invalid|Unexpected/);
 });
 test("homepage and full Atlas use shared search semantics for representative public queries",()=>{
  const variants=[
