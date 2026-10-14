@@ -126,7 +126,7 @@ try {
  assert.equal(await page.locator('#atlas-year').inputValue(),'2025');
  await page.locator('#atlas-reset').click();
  await page.locator('#atlas-country').selectOption('France');
- await page.locator('#atlas-university').selectOption('Technische Universität Berlin');
+ await page.locator('#atlas-university').selectOption('Université Toulouse III – Paul Sabatier');
  assert.equal(await page.locator('.resource-card').count(),3,'three source-linked French institution records');
  assert.match(await page.locator('.resource-card').first().innerText(),/SpikingJelly|Residual|Membrane/i);
  await page.locator('#atlas-reset').click();
