@@ -43,13 +43,14 @@ jobs:
           node --check docs/app.js
           node --check docs/atlas-core.js
           node --check docs/neuron-core.js
+          node --check docs/atlas/corpus.js
           node --check scripts/build-paper-pages.mjs
       - name: Validate deterministic paper page generation
         run: |
           node scripts/build-paper-pages.mjs
           git diff --exit-code -- docs/papers docs/sitemap.xml
       - name: Run portal source checks
-        run: node --test tests/portal.test.mjs tests/neuron-core.test.mjs tests/typography.test.mjs tests/atlas-core.test.mjs
+        run: node --test tests/portal.test.mjs tests/neuron-core.test.mjs tests/typography.test.mjs tests/atlas-core.test.mjs tests/v31-corpus.test.mjs
   browser-smoke:
     runs-on: ubuntu-latest
     steps:

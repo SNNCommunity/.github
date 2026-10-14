@@ -88,6 +88,6 @@ for(const item of papers){
  const folder=resolve(out,item.id);mkdirSync(folder,{recursive:true});
  writeFileSync(resolve(folder,"index.html"),polishRecord(render(item,papers,data.topics)));
 }
-const urls=["https://snncommunity.github.io/.github/",...papers.map(p=>"https://snncommunity.github.io/.github/papers/"+p.id+"/")];
+const urls=["https://snncommunity.github.io/.github/","https://snncommunity.github.io/.github/atlas/",...papers.map(p=>"https://snncommunity.github.io/.github/papers/"+p.id+"/")];
 writeFileSync(resolve(root,"docs/sitemap.xml"),'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"  <url><loc>"+xmlEsc(u)+"</loc></url>").join("\n")+'\n</urlset>\n');
 console.log("Generated",papers.length,"paper pages; removed stale pages.");
