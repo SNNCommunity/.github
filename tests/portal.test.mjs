@@ -25,7 +25,7 @@ test('production files, metadata and required controls are present',()=>{
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);
  assert.match(record,/Research notes based on the linked publication/);
- assert.match(record,/Not independently reproduced/);
+ assert.match(record,/independent reproduction is not documented/);
  assert.match(record,/class="paper-jump-nav"/);
  assert.doesNotMatch(record,/class="paper-side"/);
  assert.match(record,/atlas.topic=/);
