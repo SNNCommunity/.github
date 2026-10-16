@@ -32,7 +32,7 @@ try {
  await page.locator('.resource-card').first().waitFor();
  assert.equal(await page.locator('.resource-card').count(),8,'first eight canonical papers visible');
  assert.ok(await page.locator('#library').evaluate(el=>el.compareDocumentPosition(document.querySelector('#lab'))&Node.DOCUMENT_POSITION_FOLLOWING),'research comes before Lab');
- assert.match(await page.locator('#resource-count').innerText(),/of 395 research works/);
+ assert.match(await page.locator('#resource-count').innerText(),/of 395 papers/);
  assert.equal((await page.locator('.atlas-topic[data-topic="all"]').innerText()).includes('395'),true,'All research topic count must be 395');
  assert.equal(await page.locator('.atlas-kind[data-format="paper"][aria-pressed="true"]').count(),1);
  assert.equal(await page.locator('.atlas-record-link').count(),8);
@@ -54,7 +54,7 @@ try {
  assert.equal(await page.locator('.resource-card').count(),9,'all 9 software and guide resources are discoverable');
  await page.locator('.atlas-kind[data-format="paper"]').click();
  assert.equal(await page.locator('.resource-card').count(),8);
- assert.match(await page.locator('#resource-count').innerText(),/395 research works/);
+ assert.match(await page.locator('#resource-count').innerText(),/395 papers/);
  assert.ok(Number(await page.locator('#spike-count').innerText())>0,'default LIF fires');
  assert.ok(Number(await page.locator('#if-count').innerText())>0,'matched IF fires');
  assert.match(await page.locator('#experiment-summary').innerText(),/IF without leak/);
@@ -95,7 +95,7 @@ try {
  assert.equal(record.status(),200,'source-linked paper route works');
  const body=await record.text();
  assert.match(body,/Peng Cheng Laboratory/);
- assert.match(body,/Not independently reproduced/);
+ assert.match(body,/independent reproduction is not documented/);
  assert.match(body,/canonical.*papers\/sew-resnet-2021/);
  assert.match(body,/Wei Fang/);
  assert.match(body,/Research question and method/);
@@ -117,11 +117,11 @@ try {
  assert.ok(await page.locator('.resource-card').count()>0,'year-and-venue filter');
  await page.locator('#atlas-reset').click();
  await page.locator('#atlas-source').selectOption('publisher_specific_page_not_independently_rechecked');
- assert.match(await page.locator('#resource-count').innerText(),/of 140 research works/);
+ assert.match(await page.locator('#resource-count').innerText(),/of 140 papers/);
  await page.locator('#atlas-source').selectOption('conference_index_or_aggregate_not_paper_specific');
- assert.match(await page.locator('#resource-count').innerText(),/of 205 research works/);
+ assert.match(await page.locator('#resource-count').innerText(),/of 205 papers/);
  await page.locator('#atlas-source').selectOption('not_identified');
- assert.match(await page.locator('#resource-count').innerText(),/of 50 research works/);
+ assert.match(await page.locator('#resource-count').innerText(),/of 50 papers/);
  await page.locator('#atlas-reset').click();
  await page.locator('#atlas-code').selectOption('yes');
  assert.ok(await page.locator('.resource-card').count()>0,'code indexing');
@@ -310,7 +310,7 @@ try {
  corpusPage.on('pageerror',e=>errors.push('V13 '+e.message));
  await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
  await corpusPage.locator('.item').first().waitFor();
- assert.match(await corpusPage.locator('#count').innerText(),/395 research works/);
+ assert.match(await corpusPage.locator('#count').innerText(),/395 papers/);
  assert.equal(await corpusPage.locator('.item').count(),24);
  assert.equal(await corpusPage.locator('.metrics strong').first().innerText(),'395');
  assert.equal(await corpusPage.locator('#private-file').count(),0,'public page must not accept private abstracts');
@@ -327,7 +327,7 @@ try {
    ['conference_index_or_aggregate_not_paper_specific',205],
    ['not_identified',50]]){
    await corpusPage.locator('#source').selectOption(source);
-   assert.match(await corpusPage.locator('#count').innerText(),new RegExp(expected+' research works'));
+   assert.match(await corpusPage.locator('#count').innerText(),new RegExp(expected+' papers'));
  }
  await corpusPage.locator('#reset').click();
  await corpusPage.locator('#code').selectOption('yes');
@@ -350,7 +350,7 @@ try {
  await corpusPage.locator('#close').click();
  await corpusPage.goto(base+'atlas/?paper='+encodeURIComponent(merged[0].id));
  await corpusPage.locator('dialog[open]').waitFor();
- assert.match(await corpusPage.locator('#detail-body').innerText(),/Consolidated publication history/);
+ assert.match(await corpusPage.locator('#detail-body').innerText(),/Publication history/);
  assert.match(await corpusPage.locator('#detail-body').innerText(),/Spikingformer: Spike-driven Residual Learning/);
  assert.doesNotMatch(await corpusPage.locator('#detail-body').innerText(),/Author-original abstract|Abstract text/);
  await corpusPage.locator('#close').click();
@@ -381,7 +381,7 @@ try {
  // V15: carry exact multi-topic filters across the two public research pages.
  await page.goto(base+'?atlas.topic=deep-architectures,sequence-language&atlas.mode=all#library');
  await page.locator('.resource-card').first().waitFor();
- const homeCount=Number((await page.locator('#resource-count').innerText()).match(/of (\d+) research works/)[1]);
+ const homeCount=Number((await page.locator('#resource-count').innerText()).match(/of (\d+) papers/)[1]);
  assert.ok(homeCount>0,'combined multi-topic criteria must match at least one work');
  const fullLink=await page.locator('[data-full-atlas-link]').first().getAttribute('href');
  assert.match(fullLink,/topics=deep-architectures%2Csequence-language/);
