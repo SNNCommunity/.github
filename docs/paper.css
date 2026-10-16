@@ -22,13 +22,6 @@
 .paper-actions,.paper-source-links{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .paper-button{display:inline-flex;gap:10px;align-items:center;text-decoration:none;font-size:14px;font-weight:770;border:1px solid #8cad9a;color:#f6fff8;padding:13px 18px;min-height:47px}
 .paper-button.primary{background:#e2efdd;border-color:#e2efdd;color:#163e30}
-.paper-side{background:#194a3c;border:1px solid #3a6754;padding:26px 23px;font-size:13px;line-height:1.5;color:#ecfff3}
-.paper-side hr{border:0;border-top:1px solid #4e7665;margin:20px 0}
-.paper-side p{margin:12px 0}
-.paper-side p.paper-aside-label{font-size:11px;letter-spacing:.13em;color:#acd5be;font-weight:850}
-.paper-side strong{font-size:18px;overflow-wrap:anywhere}
-.paper-side b{display:block;font-weight:650;color:#b6e1c3;margin-top:3px}
-.paper-side .paper-fine{font-size:12px;color:#b3d4be;margin:18px 0 0}
 .paper-content{padding:clamp(38px,6vw,85px) 0 100px}
 .paper-content-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(270px,.85fr);gap:25px;align-items:start}
 .paper-main,.paper-aside{display:grid;gap:24px;min-width:0}
@@ -54,24 +47,20 @@
 .paper-small p{color:#526b60;line-height:1.65}
 .paper-footer{background:#123e32;padding:34px 0;color:#c9e3d3;font-size:13px}
 .paper-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
-@media(max-width:850px){.paper-content-grid{grid-template-columns:1fr}.paper-hero-main{grid-template-columns:1fr}.paper-side{max-width:none}}
+@media(max-width:850px){.paper-content-grid{grid-template-columns:1fr}.paper-hero-main{grid-template-columns:1fr}}
 @media(max-width:540px){.paper-nav-inner{padding-block:17px;align-items:flex-start;flex-direction:column}.paper-nav nav{gap:13px}.paper-nav nav a{font-size:13px}.paper-hero{padding:42px 0}.paper-evidence-list li{grid-template-columns:1fr}.paper-status{flex-direction:column;gap:4px}.paper-status strong{text-align:left}.paper-actions .paper-button{width:100%;justify-content:space-between}.paper-footer .container{display:block}}
 @media(prefers-reduced-motion:reduce){.paper-view *{scroll-behavior:auto!important}}
 
-/* V9 content-rich research pages */
+/* Research notes, author lists and publication sources */
 .paper-authors{font-size:14px;line-height:1.65;color:#d1e8d9;margin:0 0 20px}
 .paper-authors .paper-button{font-size:11px;min-height:30px;padding:4px 8px;margin-left:8px}
 .research-notes h3{font-size:16px;color:#245b46;margin:20px 0 6px}
 .research-notes p{font-size:15px;line-height:1.75;margin:0 0 12px}
 .research-notes .paper-button{color:#185c43;border-color:#9cbaaa;min-height:40px;margin-top:12px}
-.paper-side p{font-size:13px;line-height:1.55;border-top:1px solid #507968;padding:12px 0;margin:0;display:grid;gap:4px}
-.paper-side p strong{font-size:12px;color:#bce4ce;font-weight:600}
-.paper-side p span{font-size:14px;color:#fff}
-.paper-side p.paper-fine{font-size:12px;color:#b3d4be;border:0;line-height:1.6;margin-top:12px}
-@media(max-width:540px){.paper-authors .paper-button{display:inline-flex;margin:9px 0 0}.paper-side p{padding:10px 0}}
+@media(max-width:540px){.paper-authors .paper-button{display:inline-flex;margin:9px 0 0}}
 
 
-/* V10 paper-reader hierarchy: authors/method first, detailed evidence later */
+/* Paper reading order and source navigation */
 .paper-view .paper-hero{padding:clamp(28px,4vw,52px) 0 clamp(30px,4vw,48px)}
 .paper-hero-main{grid-template-columns:minmax(0,1fr);gap:0}
 .paper-view .paper-hero h1{font-size:clamp(32px,3.55vw,52px);line-height:1.11;max-width:980px;margin-bottom:15px}
@@ -120,11 +109,11 @@
 }
 
 
-/* V11 / Paper reading hierarchy. Accessible 16px technical prose, 14-15px metadata. */
+/* Research record / Paper reading hierarchy. Accessible 16px technical prose, 14-15px metadata. */
 .paper-view{font-size:1rem;line-height:1.65}
 .paper-nav nav a{font-size:.9375rem;line-height:1.5}
 .paper-brand{font-size:1.25rem}
-.paper-eyebrow,.paper-venue,.paper-side .paper-aside-label{font-size:.875rem;letter-spacing:.075em}
+.paper-eyebrow,.paper-venue{font-size:.875rem;letter-spacing:.075em}
 .paper-view .paper-venue{font-size:.9375rem}
 .paper-view .paper-deck{font-size:1.0625rem;line-height:1.65}
 .paper-hero .paper-authors{font-size:1rem;line-height:1.65}
