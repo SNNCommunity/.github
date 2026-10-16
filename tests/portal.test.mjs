@@ -114,7 +114,7 @@ test('reader typography overrides cover research lists, scientific lab and paper
  assert.match(css,/--type-reading:1rem/);
  assert.match(css,/\.atlas-card>p\{font-size:var\(--type-reading\)/);
  assert.match(css,/\.atlas-field select\{font-size:var\(--type-ui\)/);
- assert.match(paper,/V11 \/ Paper reading hierarchy/);
+ assert.match(paper,/\.paper-view \.paper-hero h1/);
  assert.match(paper,/\.research-notes p,/);
  assert.match(app,/w<420\?"13px":"14px"/);
 });
