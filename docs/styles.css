@@ -711,3 +711,42 @@ body{font-size:var(--type-body);line-height:1.65}
  .atlas-card .resource-evidence summary{font-size:.875rem}
  .resource-card.atlas-card{padding-inline:3px}
 }
+
+/* Bibliography coverage and paper-first reading layout. */
+.research-coverage{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:0 0 22px;
+ padding:15px 18px;border:1px solid #cdded3;border-radius:4px;background:#eff6ef}
+.coverage-item{display:flex;align-items:baseline;gap:9px;padding:3px 19px;border-right:1px solid #ceded3}
+.coverage-item:first-child{padding-left:0}
+.coverage-item strong{font-size:1.65rem;line-height:1.2;color:#174b3a;font-variant-numeric:tabular-nums}
+.coverage-item span{font-size:.875rem;font-weight:650;color:#446759}
+.coverage-quick{margin-left:auto;min-height:44px;border:1px solid #6b9f88;border-radius:3px;
+ background:#fff;color:#175b43;font-size:.875rem;font-weight:760;padding:10px 14px;cursor:pointer}
+.coverage-quick:hover{background:#ddf0e3}
+.coverage-quick[aria-pressed="true"]{background:#184d3a;color:#fff}
+.coverage-quick:focus-visible{outline:3px solid #cf804e;outline-offset:3px}
+.section-library .resource-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.section-library .resource-card.atlas-card{min-height:0;padding:21px 23px}
+.section-library .atlas-card h3{margin:12px 0 8px;line-height:1.33;font-size:1.25rem}
+.section-library .atlas-card .atlas-card-summary{margin:9px 0;gap:5px}
+.section-library .atlas-card .atlas-affiliation-hint{text-decoration:underline;text-underline-offset:3px}
+.section-library .atlas-card .atlas-affiliation-hint:hover{color:#147655}
+.section-library .atlas-card .resource-evidence{margin-top:14px}
+.section-library .atlas-card .atlas-card-actions{margin-top:auto}
+@media(max-width:1050px){
+ .research-coverage{gap:12px}
+ .coverage-item{padding:4px 10px}
+ .coverage-quick{margin-left:0}
+}
+@media(max-width:740px){
+ .section-library .resource-grid{grid-template-columns:1fr}
+ .research-coverage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px}
+ .coverage-item{display:flex;flex-direction:column;align-items:flex-start;gap:3px;border-right:0;padding:0}
+ .coverage-item strong{font-size:1.5rem}
+ .coverage-item span{font-size:.8125rem;line-height:1.35}
+ .coverage-quick{grid-column:1/-1;width:100%}
+}
+@media(max-width:360px){
+ .research-coverage{gap:7px}
+ .coverage-item strong{font-size:1.325rem}
+ .coverage-item span{font-size:.75rem}
+}

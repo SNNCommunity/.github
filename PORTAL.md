@@ -65,12 +65,7 @@ focus remain supported. These design targets are not an independent WCAG
 certification. Browser checks validate computed font sizes and minimum control
 bounds across 1440, 768, 390 and 320 CSS pixel viewports.
 
-The Research Atlas initially renders **six** cards to reduce page length on
-small displays. All seven metadata/search dimensions can be intersected, including
-multiple topic memberships and evidence-linked author institutions. The “Load more resources” reveals up to 12 additional cards per activation; filtered results use the same incremental disclosure without losing matches. Active-filter chips offer direct removal and multi-topic Any/All search is indexed by human-readable topic labels. Every index entry retains its source provenance
-and `indexed_not_reproduced` disclosure. The show-all section is hidden when
-unneeded, including its spacing. Original resource URLs remain accessible
-without JavaScript.
+The homepage initially renders **eight** paper cards from the shared 395-work bibliography and reveals 20 more per click. A separate tools tab contains nine original resources. The homepage supports full-corpus title, indexed-author, topic and DOI search, Any/All topic matching, source/code/year/venue filters, and shareable URLs. The Atlas initially renders 24 paper cards, with separate code and DOI links and quick topic shortcuts. For most papers only the first author is currently indexed, so search does not yet cover all coauthors. The homepage coverage strip is computed from `docs/atlas/works.json` and can toggle code-only results. In the Atlas, facet chips and the URL retain filter state on Back/Forward navigation.
 
 ## Research resource governance
 

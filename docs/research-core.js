@@ -3,6 +3,12 @@
 (function(root){"use strict";
 const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"")
  .toLocaleLowerCase("en").replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
+// Presentation-only normalization; canonical paper titles remain unchanged in works.json.
+const displayTitle=v=>String(v??"")
+ .replace(/\$\\mathcal\{O\}\(([^$]+)\)\$/g,"O($1)")
+ .replace(/\$O\(([^$]+)\)\$/g,"O($1)")
+ .replace(/\$\^([0-9])\$/g,(_,n)=>["⁰","¹","²","³","⁴","⁵","⁶","⁷","⁸","⁹"][Number(n)])
+ .replace(/\$([^$]+)\$/g,"$1");
 const WORK_FIELDS=new Set(["sourceIndex","title","year","venue","authors","authorCount",
  "doi","topics","paperUrl","codeUrl","sourceStatus","sourceWarnings",
  "abstractDetailsIncluded","id","versionCount","versions","editorialSourceChecked20261014"]);
@@ -73,7 +79,7 @@ function topicCounts(items,opts,names){
  for(const x of base)for(const t of x.topics)counts.set(t,(counts.get(t)||0)+1);
  return {total:base.length,counts};
 }
-const api=Object.freeze({normalize,validate,searchText,filterWorks,topicCounts,sourceLabel});
+const api=Object.freeze({normalize,displayTitle,validate,searchText,filterWorks,topicCounts,sourceLabel});
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.SNNResearch=api;
 })(typeof window!=="undefined"?window:globalThis);

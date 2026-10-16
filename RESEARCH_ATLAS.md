@@ -20,31 +20,13 @@ The [SNNCommunity Research Atlas](https://snncommunity.github.io/.github/#librar
 
 These are editorial topical tags, not official paper field labels. **A paper may have more than one topic**; assignments are reviewed and not inferred from the conference name.
 
-## Seven independent discovery dimensions
+## Current research discovery and search
 
-1. Search terms: paper title, publication, topics, institution and country.
-2. Research area: multiple selected topics from the eleven categories (Any/All).
-3. Content type: papers vs original tools, docs and other resources.
-4. Publication year: only an official **paper publication year**, not an arXiv posting or software repository's first commit.
-5. Publication type and venue: Conference / Journal; ICLR, ICML, NeurIPS, ICCV, Science Advances, IEEE periodicals etc.
-6. Author-affiliation country and university: **institutional address cited on the publication**, not the author's citizenship.
-7. Sorting: newest year, oldest year or title, with yearless software entries last.
+The canonical 395-work catalogue is `docs/atlas/works.json`. Both the homepage and Atlas search this same file with `docs/research-core.js`. Search covers titles, indexed author names (currently first author in most cases), DOI, year, venue, topic names and scientific topic aliases. Filters cover topic (including multi-topic Any/All from the homepage), year, venue, bibliographic source type, code-link availability, and sort order. Source-type labels do **not** certify bibliographic verification.
 
-Filters intersect (logical AND) across dimensions. Multiple author universities/countries for the same paper are alternatives within the corresponding facet. For example, a China–France co-authored publication will appear under **both** countries, **not** be duplicated into two records. Institution + country matching requires one matching affiliation object.
+The homepage shows eight cards initially, then 20 more per expansion, as well as a coverage strip with total works, code links and DOI counts from the JSON. The dedicated Atlas begins with 24 cards and adds topic shortcuts, per-record DOI/code links and a detailed record dialog. Ten separately generated curated paper pages remain a subset of the 395 works, not 395 static paper pages. Nine non-paper tools and guides are separated from the research count.
 
-### What "country–university" means, precisely
-
-`affiliations` is an array of `{university, country, source}` records linked to a **paper's original affiliation source**. Cross-country coauthorship is supported. No "primary nationality" or "leading university" is assigned by default. Research institutes that are not universities should eventually use an explicit institution type; this initial university selector contains verified university-level affiliations only. An unverified author university is omitted rather than invented. "Not verified · paper" returns papers without indexed affiliation evidence; "Not applicable · resource" includes non-paper entries and does not infer any paper author affiliation.
-
-Initial verified examples:
-
-- NeurIPS 2021 SEW-ResNet: Peking University and Peng Cheng Laboratory (China), and Université Toulouse III (France), as identified in the [proceedings manuscript](https://proceedings.neurips.cc/paper/2021/file/afe434653a898da20044041262b3ac74-Paper.pdf).
-- ICCV 2021 PLIF: Peking University (China), Université Toulouse III (France), from the [published paper](https://openaccess.thecvf.com/content/ICCV2021/papers/Fang_Incorporating_Learnable_Membrane_Time_Constant_To_Enhance_Learning_of_Spiking_ICCV_2021_paper.pdf).
-- ICLR 2025 SpikeLLM: University of Chinese Academy of Sciences and Peking University (China), University of Oxford (UK), from its [ICLR manuscript](https://proceedings.iclr.cc/paper_files/paper/2025/file/510e7d39fce008a3e31de54b8f5be9ac-Paper-Conference.pdf).
-- NeurIPS 2025 Spikachu: University of Pennsylvania (US), from [conference author slides](https://neurips.cc/media/neurips-2025/Slides/116071.pdf).
-- 2022 Event-based Vision survey: universities in Germany, Switzerland, the UK, Sweden and US, documented in the [survey author affiliation text](https://arxiv.org/pdf/1904.08405).
-
-**Important:** These represent *the cited participating institutions*, not a complete audit of every historic coauthor position. A partial university list must not be described as exhaustive. No ranking, leaderboard or nation-level publication count is inferred from this curated collection.
+The full 395-work index does not currently include institution or country metadata for each paper; the earlier country/university facets belong only to the ten-item editorial source catalogue and must not be described as full-corpus search.
 
 ## File schema and scientific constraints
 
@@ -72,20 +54,9 @@ Inclusion is based on traceable metadata, not the magnitude of claims in the abs
 
 For broader archival coverage, future releases should add ORCID/ROR IDs, full author-affiliation mappings, per-record review dates, citation formats, Crossref/OpenAlex provenance references and an explicit distinguishable "Preprint" publication kind. Those fields are **future work**, not fabricated metadata in this initial version.
 
-## Testing
+## Testing and curated paper pages
 
-```bash
-node --check docs/atlas-core.js
-node --test tests/atlas-core.test.mjs tests/portal.test.mjs
-```
-
-GitHub Actions also checks real Chromium behavior, including topic/year/venue combinations, university + country, unverified affiliations, filter resets, all-results display, 320 px layout and preserved LIF/IF experiments. The Atlas uses native HTML controls, no server, and safe DOM `textContent` construction rather than interpolating catalog fields into HTML.
-
-**The 19 current featured entries (10 papers and 9 learning/software resources) are an editorial selection within the larger public index.** The structure is designed to grow through evidence-backed community review.
-
-## Research record pages (V8)
-
-Each indexed research paper is served at `/.github/papers/<id>/` with a stable canonical URL, original publication links, editorial topic associations, separately sourced affiliation evidence and explicit reproduction limitations. These pages do not assert a full authorship mapping or independent model reproduction. Run `node scripts/build-paper-pages.mjs` after changing the catalog to regenerate static pages and the sitemap. Source-linked indexing remains distinct from endorsement.
+Run `node --test tests/research-core.test.mjs tests/public-works.test.mjs tests/portal.test.mjs tests/editorial-copy.test.mjs` for the 395-work source, shared indexing logic and editorial boundary. The Playwright browser smoke suite also checks navigation, filters, source links, responsive viewports and neuron simulation. Browsable standalone paper pages are generated for the ten selected research records by `node scripts/build-paper-pages.mjs`. All other works have shareable Atlas record URLs using `?paper=<id>`.
 
 ## V9 correctness and evidence revisions
 
