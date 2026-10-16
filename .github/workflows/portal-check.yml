@@ -52,7 +52,7 @@ jobs:
           node scripts/build-paper-pages.mjs
           git diff --exit-code -- docs/papers docs/sitemap.xml
       - name: Run portal source checks
-        run: node --test tests/portal.test.mjs tests/neuron-core.test.mjs tests/typography.test.mjs tests/atlas-core.test.mjs tests/public-works.test.mjs tests/research-core.test.mjs
+        run: node --test tests/portal.test.mjs tests/neuron-core.test.mjs tests/typography.test.mjs tests/atlas-core.test.mjs tests/public-works.test.mjs tests/research-core.test.mjs tests/editorial-copy.test.mjs
   browser-smoke:
     runs-on: ubuntu-latest
     steps:
