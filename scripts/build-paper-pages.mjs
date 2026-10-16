@@ -55,13 +55,13 @@ const render=function render(p,papers,topics){
 <section class="paper-content"><div class="container paper-content-grid"><article class="paper-main">
 <section class="paper-panel" id="research"><p class="paper-eyebrow">01 / RESEARCH NOTES</p><h2>Research question and method</h2>${notes}</section>
 <section class="paper-panel" id="affiliations"><p class="paper-eyebrow">02 / AUTHOR AFFILIATIONS</p><h2>Source-linked institutions</h2>
-<p class="paper-muted">Institution records from linked sources; author assignments may be incomplete.</p>${sourceAff}</section>
+${affs.length?'<p class="paper-muted">Institution records from linked sources; author assignments may be incomplete.</p>':""}${sourceAff}</section>
 <section class="paper-panel" id="evidence"><p class="paper-eyebrow">03 / EVIDENCE STATUS</p><h2>Record coverage</h2>
 <div class="paper-status"><span>Publication</span><strong>Source linked</strong></div>
 <div class="paper-status"><span>Authors</span><strong>${authors.length?"Names transcribed from linked record":"Unverified"}</strong></div>
 <div class="paper-status"><span>Institution coverage</span><strong>${affs.length?"Partial":"Unverified"}</strong></div>
 
-<p class="paper-muted">Experimental results in these notes are reported by the paper's authors.</p></section>
+<p class="paper-muted">Results are author-reported; independent reproduction is not documented.</p></section>
 <section class="paper-panel" id="sources"><p class="paper-eyebrow">04 / ORIGINAL SOURCES</p><h2>Publication &amp; implementation</h2><div class="paper-source-links">
 ${sourceLinks}</div></section></article>
 <aside class="paper-aside"><div class="paper-panel"><p class="paper-eyebrow">RELATED CATALOG WORK</p><h2>Shared research areas</h2>
