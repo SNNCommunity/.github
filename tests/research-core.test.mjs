@@ -53,3 +53,23 @@ test("both public pages depend on one shared core and no separate abstract libra
  }
  assert.match(root,/research-core\.js/);assert.match(sub,/research-core\.js/);
 });
+
+test("publication facets use canonical labels and corrected ICCV citation",()=>{
+ const v=works.items.map(x=>x.venue);
+ assert.equal(v.filter(x=>x==="NeurIPS").length,66);
+ assert.ok(!v.includes("Neurips"));
+ assert.ok(!v.some(x=>x.endsWith(",")));
+ const paper=works.items.find(x=>x.title==="Temporal-wise Attention Spiking Neural Networks for Event Streams Classification");
+ assert.ok(paper);
+ assert.equal(paper.venue,"ICCV");
+ assert.equal(paper.year,2021);
+ assert.match(paper.paperUrl,/ICCV2021/);
+ assert.equal(works.items.length,395);
+ assert.equal(works.items.reduce((n,x)=>n+x.versionCount,0),396);
+});
+test("readable scientific title presentation does not mutate canonical metadata",()=>{
+ assert.equal(core.displayTitle("A$^2$SG"),"A²SG");
+ assert.equal(core.displayTitle("O($\\mathcal{O}(T)$)"),"O(O(T))");
+ assert.equal(core.displayTitle("complexity $O(L)$"),"complexity O(L)");
+ assert.equal(works.items.find(x=>x.title.startsWith("A$^2$SG")).title.startsWith("A$^2$SG"),true);
+});
