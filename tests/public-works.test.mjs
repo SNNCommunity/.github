@@ -40,7 +40,7 @@ test("old version database, local upload widgets and ordinal links are absent",(
    assert.ok(!existsSync(path),"obsolete legacy public file remains: "+path);
  const html=read("docs/atlas/index.html");
  const js=read("docs/atlas/corpus.js");
- assert.match(html,/395 unique SNN research works/);
+ assert.match(html,/RESEARCH ATLAS \/ 395 PAPERS/);
  assert.doesNotMatch(html,/396|private-file|private-clear|V31 JSON|id="unit"|id="abstract"/);
  assert.doesNotMatch(js,/privateLibrary|file\.text\(|record=|corpus\.json|metadata\.json|localStorage|sessionStorage/);
  assert.match(js,/works\.json/);
