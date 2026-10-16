@@ -11,9 +11,22 @@ const TOPICS=[
  ["theory-robustness","Theory & robustness"]];
 const FIELDS=["q","topic","year","venue","source","code","sort"];
 const LIMIT=24;
-const names=new Map(TOPICS);
+const TOPIC_ALIASES={
+ "neuron-dynamics":["LIF","PLIF","membrane potential","神经元动力学","膜电位"],
+ "learning-plasticity":["surrogate gradient","STDP","替代梯度","脉冲学习"],
+ "deep-architectures":["Spikformer","SNN Transformer","residual SNN","深度架构"],
+ "coding-conversion":["ANN SNN conversion","coding","脉冲编码","编码转换"],
+ "efficiency-hardware":["low power","neuromorphic chip","低功耗"],
+ "event-vision":["event camera","DVS","事件相机","事件视觉"],
+ "robotics-embodied":["embodied AI","robot","VLA","具身智能"],
+ "sequence-language":["temporal modeling","speech","language model","时序建模"],
+ "neuroscience-bci":["EEG","brain computer interface","脑机接口"],
+ "benchmarks-tools":["dataset","benchmark","framework","数据集"],
+ "theory-robustness":["stability","adversarial","robustness","鲁棒性"]};
+const names=new Map(TOPICS.map(([id,title])=>[id,[title,...(TOPIC_ALIASES[id]||[])].join(" ")]));
 const normalize=research.normalize;
-const label=id=>names.get(id)||id;
+const labels=new Map(TOPICS);
+const label=id=>labels.get(id)||id;
 const validLink=v=>typeof v==="string"&&/^https:\/\//i.test(v)?v:null;
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!=null)e.textContent=String(text);if(cls)e.className=cls;return e;};
 let all=[],visible=LIMIT,focusedBeforeDialog=null,openId=null,extraTopics=[],topicMode="any";
@@ -102,9 +115,10 @@ function card(x){
  const item=el("article",null,"item");
  const body=el("div",null,"item-main"),actions=el("div",null,"actions");
  body.append(el("small",[x.venue,x.year||"Year not listed"].filter(Boolean).join(" · ")));
- const h=el("h3"),button=el("button",x.title,"title-button");button.type="button";button.addEventListener("click",()=>openPaper(x.id));
+ const h=el("h3"),button=el("button",research.displayTitle(x.title),"title-button");button.type="button";button.addEventListener("click",()=>openPaper(x.id));
  h.append(button);body.append(h);
- body.append(el("p",[x.authors?.[0]?(x.authors[0]+(x.authorCount>1?" et al. · "+x.authorCount+" authors":"")):"Author information pending",x.doi?"DOI · "+x.doi:""].filter(Boolean).join("  ·  "),"paper-authors"));
+ body.append(el("p",[x.authors?.[0]?(x.authors[0]+(x.authorCount>1?" et al. · "+x.authorCount+" authors":"")):"Author information pending"].join(""),"paper-authors"));
+ if(x.doi&&/^10\./.test(x.doi)){const doi=anchor("https://doi.org/"+x.doi,"DOI · "+x.doi,"paper-doi");if(doi)body.append(doi);}
  const tags=el("div",null,"tags");
  for(const t of (x.topics||[]).slice(0,4))tags.append(tag(t));
  body.append(tags);
@@ -117,7 +131,24 @@ function card(x){
  actions.append(detail);
  const source=anchor(x.paperUrl,"Indexed publication / venue ↗");
  if(source)actions.append(source);
+ const code=anchor(x.codeUrl,"View code ↗","action-code");if(code)actions.append(code);
  item.append(body,actions);return item;
+}
+function renderShortcuts(s){
+ const target=$("topic-shortcuts");if(!target)return;
+ const counts=research.topicCounts(all,{query:s.q,year:s.year||"all",venue:s.venue||"all",source:s.source||"all",code:s.code||"all"},names).counts;
+ const chosen=extraTopics.length?extraTopics:[s.topic].filter(Boolean);
+ const frag=document.createDocumentFragment();
+ for(const id of ["neuron-dynamics","learning-plasticity","deep-architectures","event-vision","robotics-embodied"]){
+   const b=el("button",label(id)+" · "+(counts.get(id)||0),"topic-shortcut");
+   b.type="button";b.setAttribute("aria-pressed",String(chosen.includes(id)));
+   b.addEventListener("click",()=>{
+     $("topic").value=chosen.length===1&&chosen[0]===id?"":id;
+     extraTopics=[];topicMode="any";visible=LIMIT;render();updateURL();
+   });
+   frag.append(b);
+ }
+ target.replaceChildren(frag);
 }
 function render(){
  const note=$("multi-topic-note");
@@ -125,6 +156,7 @@ function render(){
  note.textContent=extraTopics.length?("Inherited homepage topic filter: "+extraTopics.map(label).join(", ")+
    " · "+(topicMode==="all"?"match every topic":"match any topic")+". Remove topics using the chips below."):"";
  const matches=candidates(),s=state(),fragment=document.createDocumentFragment();
+ renderShortcuts(s);
  $("count").textContent=matches.length+" papers";
  $("scope-label").textContent="Showing "+Math.min(visible,matches.length)+" of "+matches.length+" · 395 indexed papers";
  chips(s);
@@ -143,7 +175,7 @@ function openPaper(id,fromHistory=false){
  const dialog=$("detail"),box=$("detail-body");box.replaceChildren();
  const content=el("section",null,"detail-content");
  content.append(el("p",[p.venue,p.year].filter(Boolean).join(" · "),"record-top"));
- const h=el("h2",p.title);h.id="detail-title";content.append(h);
+ const h=el("h2",research.displayTitle(p.title));h.id="detail-title";content.append(h);
  content.append(el("h3","Authors"));
  content.append(el("p",(p.authors||[]).join(", ")+(p.authorCount>p.authors.length?
     " · "+p.authorCount+" authors listed (first author indexed here).":"")));
@@ -172,8 +204,7 @@ function openPaper(id,fromHistory=false){
    content.append(vl);
  }
  if(p.sourceWarnings)content.append(el("p","Source or identity warning: check the linked publication before citing.","warning"));
- content.append(el("h3","About this record"));
- content.append(el("p","This is a bibliography entry. Topic assignments are provisional; consult the linked publication for methods and experimental results. The separate private research archive contains abstracts and reading notes."));
+
  if(p.editorialSourceChecked20261014)content.append(el("p","Publication link reviewed for the October 2026 index.","fine"));
  box.append(content);
  if(!dialog.open)dialog.showModal();
