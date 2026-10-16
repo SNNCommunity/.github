@@ -101,6 +101,12 @@
     <section class="section section-library" id="library" aria-labelledby="library-title">
       <div class="container">
         <div class="section-heading"><div><p class="eyebrow"><span class="section-index">01 /</span> COMPLETE PUBLIC RESEARCH ATLAS</p><h2 id="library-title">Find research.<br><em>Follow the sources.</em></h2></div><p>Search 395 papers by topic, author, venue or year. For more filters, open the <a href="./atlas/" data-full-atlas-link>Research Atlas ↗</a>.</p></div>
+        <div class="research-coverage" aria-label="Research bibliography coverage">
+          <div class="coverage-item"><strong id="coverage-total">395</strong><span>research works</span></div>
+          <div class="coverage-item"><strong id="coverage-code">106</strong><span>code links indexed</span></div>
+          <div class="coverage-item"><strong id="coverage-doi">92</strong><span>DOIs indexed</span></div>
+          <button class="coverage-quick" id="atlas-code-quick" type="button" aria-pressed="false" aria-controls="resource-grid">Show papers with code <span aria-hidden="true">↗</span></button>
+        </div>
         <div class="atlas-kind-switch" role="group" aria-label="Choose collection">
           <button class="atlas-kind is-selected" type="button" data-format="paper" aria-pressed="true">All research <span class="atlas-tab-count">395</span></button>
           <button class="atlas-kind" type="button" data-format="resource" aria-pressed="false">Tools &amp; guides <span class="atlas-tab-count">9</span></button>
@@ -123,7 +129,7 @@
         <div id="atlas-active-filters" class="atlas-active-filters" aria-label="Active filters"></div>
         <p id="atlas-copy-status" class="atlas-copy-status" role="status" aria-live="polite"></p>
         <div id="atlas-copy-fallback" class="atlas-copy-fallback" hidden><label for="atlas-copy-input">Copy the search link</label><input id="atlas-copy-input" type="text" readonly></div>
-        <details class="resource-provenance atlas-provenance-details"><summary>Research coverage and source reliability</summary><p><strong>About this index.</strong> Both pages use the same <a href="./atlas/works.json">395-paper bibliography</a>. Topic labels are provisional. Some references link to conference indexes rather than individual papers; check the linked publication before citing. Most entries list only the first author. Full abstracts are kept in the separate private research archive.</p></details>
+        <details class="resource-provenance atlas-provenance-details" id="atlas-provenance"><summary>About source coverage</summary><p>Both research pages use the same <a href="./atlas/works.json">395-paper bibliography</a>. Most records index only the first author, and some links lead to conference listings rather than individual papers. Check the original publication before citing.</p></details>
         <div class="library-bottom"><span id="resource-count" role="status" aria-live="polite" aria-atomic="true">Loading 395 research works…</span><a href="./atlas/" data-full-atlas-link>Open full Research Atlas ↗</a></div>
         <div id="resource-grid" class="resource-grid" aria-label="Canonical paper records"></div>
         <div class="resource-expand"><button id="resource-more" class="resource-more" type="button" aria-controls="resource-grid" aria-expanded="false" hidden>Load more research ↓</button></div>
