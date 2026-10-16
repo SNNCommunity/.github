@@ -49,3 +49,15 @@ Do not compare accuracy or efficiency across mismatched datasets, sample splits,
 Do not redistribute restricted datasets, private checkpoints, confidential collaboration materials, or code subject to double-blind submission constraints. Respect licenses and cite original work. Record negative outcomes and limitations as well as successes.
 
 [Community governance](GOVERNANCE.md) · [Contributing](CONTRIBUTING.md)
+
+## Public research copy and editorial maintenance
+
+The public site is a research discovery interface, not a release note or a compliance report. Visitor-facing copy should answer a concrete question: What paper is this? Who wrote it? Where was it published? Which research topic does it cover? Where can the original publication or code be found?
+
+Use concise, source-specific labels. Distinguish an individual publisher page from a conference-wide index, and distinguish a listed code repository from a tested reproduction. Missing years, incomplete author lists, provisional topics and unresolved source identities must stay explicit; do not fill them from guesses. Every public paper card derives from the single 395-work `docs/atlas/works.json` index and contains no publisher abstract or personal reading notes.
+
+Avoid repeatedly announcing that every card is a “public metadata record”, an “independent research index”, “not reproduced”, or “not a verbatim abstract”. Keep the general coverage note once near the research filters; put a specific source warning inside the affected record; describe independent replication only in a relevant evidence section. Research method and evaluation paragraphs in the ten extended paper notes must stay grounded in linked publications, not overwritten with generic disclaimers or generated claims.
+
+Do not copy-paste an author-independent AI-style “Question / Method / Results / Limitations” narrative into the 395-paper public dataset. The ten extended paper notes may include a short question, concrete method and author-reported evaluation scope where supported. Do not invent absent metrics, author affiliations or results.
+
+Maintain both the deterministic paper-page generator (`scripts/build-paper-pages.mjs`) and committed HTML together. Source links in one link group must not duplicate the same URL under several buttons. Update public-facing copy regression checks in `tests/editorial-copy.test.mjs` when the editorial presentation changes. Keep the original 395-work/396-source-version integrity and public/private boundary tests intact.

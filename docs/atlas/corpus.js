@@ -101,18 +101,18 @@ function anchor(url,title,cls){
 function card(x){
  const item=el("article",null,"item");
  const body=el("div",null,"item-main"),actions=el("div",null,"actions");
- body.append(el("small",[x.venue,x.year||"Year unconfirmed"].filter(Boolean).join(" · ")));
+ body.append(el("small",[x.venue,x.year||"Year not listed"].filter(Boolean).join(" · ")));
  const h=el("h3"),button=el("button",x.title,"title-button");button.type="button";button.addEventListener("click",()=>openPaper(x.id));
  h.append(button);body.append(h);
  body.append(el("p",[x.authors?.[0]?(x.authors[0]+(x.authorCount>1?" et al. · "+x.authorCount+" authors":"")):"Author information pending",x.doi?"DOI · "+x.doi:""].filter(Boolean).join("  ·  "),"paper-authors"));
  const tags=el("div",null,"tags");
  for(const t of (x.topics||[]).slice(0,4))tags.append(tag(t));
  body.append(tags);
- const info=el("p",(x.versionCount>1?"Multiple versions grouped · ":"")+sourceName(x.sourceStatus)
-   +(x.codeUrl?" · Linked code":"")+(x.editorialSourceChecked20261014?" · Publication source reviewed":""),
+ const info=el("p",(x.versionCount>1?"Preprint + publication · ":"")+sourceName(x.sourceStatus)
+   +(x.codeUrl?" · Linked code":"")+(x.editorialSourceChecked20261014?" · Source reviewed":""),
    "fine");
  body.append(info);
- const detail=el("button","View research record →");
+ const detail=el("button","Paper details →");
  detail.type="button";detail.addEventListener("click",()=>openPaper(x.id));
  actions.append(detail);
  const source=anchor(x.paperUrl,"Indexed publication / venue ↗");
@@ -125,8 +125,8 @@ function render(){
  note.textContent=extraTopics.length?("Inherited homepage topic filter: "+extraTopics.map(label).join(", ")+
    " · "+(topicMode==="all"?"match every topic":"match any topic")+". Remove topics using the chips below."):"";
  const matches=candidates(),s=state(),fragment=document.createDocumentFragment();
- $("count").textContent=matches.length+" research works";
- $("scope-label").textContent="Showing "+Math.min(visible,matches.length)+" of "+matches.length+" · 395 unique research works";
+ $("count").textContent=matches.length+" papers";
+ $("scope-label").textContent="Showing "+Math.min(visible,matches.length)+" of "+matches.length+" · 395 indexed papers";
  chips(s);
  for(const x of matches.slice(0,visible))fragment.append(card(x));
  $("papers").replaceChildren(fragment);
@@ -144,14 +144,14 @@ function openPaper(id,fromHistory=false){
  const content=el("section",null,"detail-content");
  content.append(el("p",[p.venue,p.year].filter(Boolean).join(" · "),"record-top"));
  const h=el("h2",p.title);h.id="detail-title";content.append(h);
- content.append(el("h3","Indexed authors"));
+ content.append(el("h3","Authors"));
  content.append(el("p",(p.authors||[]).join(", ")+(p.authorCount>p.authors.length?
-    " · "+p.authorCount+" contributors in source database (see publisher for complete attribution).":"")));
+    " · "+p.authorCount+" authors listed (first author indexed here).":"")));
  const badges=el("div",null,"tags");for(const t of p.topics||[])badges.append(el("span",label(t)));content.append(badges);
  const facts=el("div",null,"factgrid");
- for(const [key,value] of [["Research work","Single deduplicated record"],["Publication",p.venue+" · "+(p.year||"Unknown year")],
+ for(const [key,value] of [["Publication",p.venue+" · "+(p.year||"Year not listed")],
    ["DOI",p.doi||"Not indexed"],["Source coverage",sourceName(p.sourceStatus)],
-   ["Software",p.codeUrl?"Repository linked":"No code link indexed"]]){
+   ["Code",p.codeUrl?"Link available":"Not listed"]]){
    const cell=el("div");cell.append(el("span",key),el("strong",value));facts.append(cell);
  }
  content.append(facts);
@@ -161,8 +161,8 @@ function openPaper(id,fromHistory=false){
  if(p.doi&&/^10\./.test(p.doi))showLink(refs,"https://doi.org/"+p.doi,"Resolve DOI ↗");
  content.append(refs);
  if(p.versionCount>1){
-   content.append(el("h3","Consolidated publication history"));
-   content.append(el("p","One research work with multiple bibliographic versions. The earlier preprint is grouped under the later publication; it is not counted twice."));
+   content.append(el("h3","Publication history"));
+   
    const vl=el("ul",null,"version-list");
    for(const v of p.versions||[]){
      const li=el("li");
@@ -171,10 +171,10 @@ function openPaper(id,fromHistory=false){
    }
    content.append(vl);
  }
- if(p.sourceWarnings)content.append(el("p","The source database records at least one bibliographic warning for this work. Verify the publication record before citing.","warning"));
- content.append(el("h3","Editorial and scientific evidence boundary"));
- content.append(el("p","This public research record intentionally contains no paper abstract or interpretation. The research topics are primarily provisional assignments. Publication links and source metadata do not imply independent model reproduction. Full abstracts and complete personal research notes belong to the separate offline private database."));
- if(p.editorialSourceChecked20261014)content.append(el("p","Publication source was checked in the 2026-10-14 V31 research archive. This is source-level documentation, not a claim of independently reproduced experimental results.","fine"));
+ if(p.sourceWarnings)content.append(el("p","Source or identity warning: check the linked publication before citing.","warning"));
+ content.append(el("h3","About this record"));
+ content.append(el("p","This is a bibliography entry. Topic assignments are provisional; consult the linked publication for methods and experimental results. The separate private research archive contains abstracts and reading notes."));
+ if(p.editorialSourceChecked20261014)content.append(el("p","Publication link reviewed for the October 2026 index.","fine"));
  box.append(content);
  if(!dialog.open)dialog.showModal();
  openId=p.id;

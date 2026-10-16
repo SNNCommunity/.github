@@ -94,16 +94,16 @@ function showPaper(x){
  const summary=make("div","atlas-card-summary");
  summary.append(make("span","atlas-authors",(x.authors?.[0]||"Author pending")+(x.authorCount>1?" et al. · "+x.authorCount+" indexed contributors":"")));
  if(x.doi)summary.append(make("span","atlas-affiliation-hint","DOI · "+x.doi));
- const excerpt=make("p",null,"Public bibliographic record · "+statusLabel(x.sourceStatus)+". No abstract text is mirrored.");
+ const excerpt=make("p",null,statusLabel(x.sourceStatus)+(x.versionCount>1?" · Preprint and publication linked":"")+(x.codeUrl?" · Code link available":""));
  const tags=make("div","atlas-card-topics");
  for(const t of (x.topics||[]).slice(0,4))tags.append(make("span","atlas-tag",topicLabel(t)));
  const evidence=make("details","resource-evidence");
- evidence.append(make("summary",null,"Publication and evidence status"));
+ evidence.append(make("summary",null,"Source details"));
  const inner=make("div","resource-evidence-body");
- inner.append(make("p","resource-review",(x.versionCount>1?"Consolidated preprint and published version · ":"")+
-   (x.editorialSourceChecked20261014?"Source examined in the 2026-10-14 archive · ":"")+
-   (x.sourceWarnings?"Bibliographic flags present · ":"")+"Not independently reproduced."));
- inner.append(make("p","resource-license","The public catalog contains metadata only. Full author–institution mapping and original-source identity may require checking."));
+ if(x.sourceWarnings)inner.append(make("p","resource-review","Source or identity warning: check the publication before citing."));
+ if(x.versionCount>1)inner.append(make("p","resource-review","The preprint and published version appear under one paper."));
+ if(x.editorialSourceChecked20261014)inner.append(make("p","resource-review","Source checked in the October 2026 bibliography."));
+ if(!inner.childNodes.length)inner.append(make("p","resource-review","Link type: "+statusLabel(x.sourceStatus)+"."));
  evidence.append(inner);
  const actions=make("div","atlas-card-actions");
  const record=make("a","atlas-record-link","Research record →");record.href=dedicatedURL(x.id);
@@ -124,8 +124,8 @@ function showResource(x){
  const tags=make("div","atlas-card-topics");
  for(const t of x.topics||[])tags.append(make("span","atlas-tag",topicLabel(t)));
  const details=make("details","resource-evidence");
- details.append(make("summary",null,"Resource provenance"));
- const inner=make("div","resource-evidence-body",x.licenseNote||"Open-source ecosystem entry; no independent endorsement.");details.append(inner);
+ details.append(make("summary",null,"About this resource"));
+ const inner=make("div","resource-evidence-body",x.licenseNote||"See the linked project for documentation and licensing.");details.append(inner);
  const actions=make("div","atlas-card-actions");const a=link(x.url,"Open original resource ↗","resource-main-link");if(a)actions.append(a);
  card.append(head,h,summary,excerpt,tags,details,actions);return card;
 }
@@ -157,7 +157,7 @@ function render(){
  for(const x of matches.slice(0,limit))fragment.append(kind==="paper"?showPaper(x):showResource(x));
  grid.replaceChildren(fragment);
  count.textContent="Showing "+Math.min(limit,matches.length)+" of "+matches.length+
-   " "+(kind==="paper"?"research works · 395 total unique papers":"tools and guides · 9 independent resources");
+   " "+(kind==="paper"?"papers":"tools and guides");
  $("resource-empty").hidden=matches.length>0;
  const more=$("resource-more");
  more.hidden=matches.length<=minView;more.setAttribute("aria-expanded",String(limit>=matches.length));

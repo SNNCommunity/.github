@@ -11,17 +11,21 @@ const render=function render(p,papers,topics){
  const rel=papers.filter(x=>x.id!==p.id).map(x=>({x,common:x.topics.filter(t=>p.topics.includes(t))}))
    .filter(x=>x.common.length).sort((a,b)=>b.common.length-a.common.length||a.x.title.localeCompare(b.x.title)).slice(0,3);
  const label=id=>topics.find(t=>t.id===id)?.label||id;
- const linked=action(p.researchContentSource||p.bibliographySource,"Verify with publication");
+ const linked=action(p.researchContentSource||p.bibliographySource,"Publication source");
+ const sourceLinks=(()=>{const seen=new Set();return [[p.url,"Original paper"],[p.bibliographySource,"Bibliography"],[p.authorshipSource,"Author listing"],[p.code,"Linked source code"],[p.doi&&"https://doi.org/"+p.doi,"DOI resolver"]].map(([url,label])=>{
+   if(typeof url!=="string"||!url.startsWith("https://")||seen.has(url))return "";
+   seen.add(url);return action(url,label);
+ }).join("");})();
  const notes=p.researchMethod||p.researchQuestion||p.evaluationScope?
    `<div class="research-notes">
-   <p class="paper-muted">Editorial synthesis from the original publication. These descriptions are not the verbatim abstract, or independent reproduction.</p>
+   <p class="paper-muted">Research notes based on the linked publication.</p>
    ${p.researchQuestion?`<h3>Question</h3><p>${esc(p.researchQuestion)}</p>`:""}
    ${p.researchMethod?`<h3>Method</h3><p>${esc(p.researchMethod)}</p>`:""}
    ${p.evaluationScope?`<h3>Evaluation described by the authors</h3><p>${esc(p.evaluationScope)}</p>`:""}
    ${linked}</div>`:
-   `<p class="paper-muted">A detailed methodological synopsis has not been verified for this record. Read the original publication for its full method, assumptions and experiments.</p>${action(p.url,"Read original publication")}`;
+   `<p class="paper-muted">No method notes are available yet. Read the linked publication.</p>${action(p.url,"Read original publication")}`;
  const sourceAff=affs.length?`<ul class="paper-evidence-list">${affs.map(a=>`<li><strong>${esc(a.university)}</strong><span>${esc(a.country)}</span><a href="${esc(a.source)}" target="_blank" rel="noopener noreferrer">Original affiliation source ↗</a></li>`).join("")}</ul>`:
- `<p class="paper-muted">Institutions have not been independently transcribed for this record. No country is inferred.</p>`;
+ `<p class="paper-muted">Institution details are not indexed for this paper.</p>`;
  const related=rel.map(y=>`<a class="paper-related-link" href="../${esc(y.x.id)}/"><span>${esc(y.x.publication.venue)} · ${y.x.publication.year}</span><strong>${esc(y.x.title)}</strong><span>${y.common.map(label).map(esc).join(" · ")}</span></a>`).join("");
  const structured={"@context":"https://schema.org","@type":"ScholarlyArticle",headline:p.title,url:p.url,
    datePublished:String(p.publication.year),mainEntityOfPage:base,isPartOf:{"@type":"CreativeWork",name:p.publication.venue}};
@@ -47,35 +51,29 @@ const render=function render(p,papers,topics){
 <p class="paper-deck">${esc(p.description)}</p>
 <div class="paper-tags">${p.topics.map(t=>`<a href="../../?atlas.topic=${encodeURIComponent(t)}#library">${esc(label(t))}</a>`).join("")}</div>
 <div class="paper-actions">${action(p.url,"Original paper","primary")}${action(p.code,"Linked code")}${p.doi?action("https://doi.org/"+p.doi,"DOI"):""}</div></div>
-<aside class="paper-side"><p class="paper-aside-label">SOURCE COVERAGE</p>
-<p><strong>Publication</strong><span>Primary reference linked</span></p>
-<p><strong>Authors</strong><span>${authors.length?"Names transcribed":"Pending review"}</span></p>
-<p><strong>Affiliations</strong><span>${affs.length?"Partial index":"Unverified"}</span></p>
-<p><strong>Reproduction</strong><span>Not independently reproduced</span></p>
-<p class="paper-fine">Indexing does not certify scientific results.</p></aside></div></div></section>
+</div></div></section>
 <section class="paper-content"><div class="container paper-content-grid"><article class="paper-main">
-<section class="paper-panel" id="research"><p class="paper-eyebrow">01 / SCIENTIFIC ORIENTATION</p><h2>Research question and method</h2>${notes}</section>
+<section class="paper-panel" id="research"><p class="paper-eyebrow">01 / RESEARCH NOTES</p><h2>Research question and method</h2>${notes}</section>
 <section class="paper-panel" id="affiliations"><p class="paper-eyebrow">02 / AUTHOR AFFILIATIONS</p><h2>Source-linked institutions</h2>
-<p class="paper-muted">This list is not a complete author-to-institution audit.</p>${sourceAff}</section>
-<section class="paper-panel" id="evidence"><p class="paper-eyebrow">03 / EVIDENCE STATUS</p><h2>What is documented?</h2>
-<div class="paper-status"><span>Publication</span><strong>Source linked, not full audit</strong></div>
+${affs.length?'<p class="paper-muted">Institution records from linked sources; author assignments may be incomplete.</p>':""}${sourceAff}</section>
+<section class="paper-panel" id="evidence"><p class="paper-eyebrow">03 / EVIDENCE STATUS</p><h2>Record coverage</h2>
+<div class="paper-status"><span>Publication</span><strong>Source linked</strong></div>
 <div class="paper-status"><span>Authors</span><strong>${authors.length?"Names transcribed from linked record":"Unverified"}</strong></div>
 <div class="paper-status"><span>Institution coverage</span><strong>${affs.length?"Partial":"Unverified"}</strong></div>
-<div class="paper-status"><span>Independent reproduction</span><strong>Not independently reproduced</strong></div>
-<p class="paper-muted">Any experimental performance statements are author-reported. No SNNCommunity task-level benchmark or energy study is implied.</p></section>
+
+<p class="paper-muted">Results are author-reported; independent reproduction is not documented.</p></section>
 <section class="paper-panel" id="sources"><p class="paper-eyebrow">04 / ORIGINAL SOURCES</p><h2>Publication &amp; implementation</h2><div class="paper-source-links">
-${action(p.bibliographySource,"Bibliography")}${action(p.url,"Original paper")}${action(p.authorshipSource,"Author listing")}${action(p.code,"Linked source code")}${p.doi?action("https://doi.org/"+p.doi,"DOI resolver"):""}</div></section></article>
+${sourceLinks}</div></section></article>
 <aside class="paper-aside"><div class="paper-panel"><p class="paper-eyebrow">RELATED CATALOG WORK</p><h2>Shared research areas</h2>
-<p class="paper-muted">Taxonomy overlap, not a verified method-citation relationship.</p><div class="paper-related">${related||"<p>No related indexed papers.</p>"}</div>
+<p class="paper-muted">Papers sharing a research topic.</p><div class="paper-related">${related||"<p>No related indexed papers.</p>"}</div>
 <a class="paper-back" href="../../#library">← Browse all research</a></div>
 <div class="paper-panel paper-small"><p class="paper-eyebrow">IMPROVE THIS RECORD</p><p>Correct metadata or propose better scientific notes with a citable source.</p>
 <a class="paper-back" href="${esc(correction)}" target="_blank" rel="noopener noreferrer">Submit correction ↗</a></div></aside></div></section>
-</main><footer class="paper-footer"><div class="container"><span>SNNCommunity · Research Atlas</span><span>Curated, non-exhaustive, independent</span></div></footer>
+</main><footer class="paper-footer"><div class="container"><span>SNNCommunity · Research Atlas</span><span>Selected papers · Research Atlas</span></div></footer>
 </body></html>\n`;
 };
 function polishRecord(html){
- return html.replace(/<aside class="paper-side">[\s\S]*?<\/aside>/,"")
- .replace('<section class="paper-content">',`<nav class="paper-jump-nav" aria-label="Research record sections"><div class="container">
+ return html.replace('<section class="paper-content">',`<nav class="paper-jump-nav" aria-label="Research record sections"><div class="container">
 <a href="#research">Method &amp; evaluation</a><a href="#sources">Original sources</a><a href="#affiliations">Institutions</a><a href="#evidence">Evidence status</a></div></nav>
 <section class="paper-content">`);
 }

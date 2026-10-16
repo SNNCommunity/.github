@@ -308,7 +308,7 @@
       "authorshipStatus": "publisher_listed",
       "researchQuestion": "How can deep spiking residual networks preserve identity mappings?",
       "researchMethod": "Spike-element-wise (SEW) residual connections are designed to preserve spike-compatible identity paths.",
-      "evaluationScope": "The authors evaluate ImageNet, DVS Gesture and CIFAR10-DVS; reported comparisons belong to the original paper, not this catalog.",
+      "evaluationScope": "The experiments include ImageNet, DVS Gesture and CIFAR10-DVS.",
       "researchContentSource": "https://proceedings.neurips.cc/paper/2021/hash/afe434653a898da20044041262b3ac74-Abstract.html"
     },
     {
@@ -719,7 +719,7 @@
       "authorshipStatus": "publisher_listed",
       "researchQuestion": "Can causal spiking networks support scalable real-time neural decoding?",
       "researchMethod": "The study combines latent projections with temporal spiking modules for neural-signal decoding.",
-      "evaluationScope": "The official paper reports 113 recording sessions from six non-human primates; these remain author-reported measurements.",
+      "evaluationScope": "The paper reports 113 recording sessions from six non-human primates.",
       "researchContentSource": "https://papers.neurips.cc/paper_files/paper/2025/hash/47387bb0aeb97785f608c11f2f4bb091-Abstract-Conference.html"
     },
     {
@@ -866,7 +866,7 @@
       "authorshipStatus": "publisher_listed",
       "researchQuestion": "How can visual, linguistic and action processing use a spiking computation pathway?",
       "researchMethod": "Spike-V vision encoding, Spike-L multimodal reasoning, and Spike-A continuous-action policy form an end-to-end architecture.",
-      "evaluationScope": "The paper evaluates multimodal interaction and robotic control; energy and performance claims are author-reported.",
+      "evaluationScope": "The paper evaluates multimodal interaction and robotic control.",
       "researchContentSource": "https://proceedings.mlr.press/v306/song26r.html"
     },
     {
@@ -970,7 +970,7 @@
       "authorshipStatus": "publisher_listed",
       "researchQuestion": "How can deep SNN training be stabilized without conventional normalization layers?",
       "researchMethod": "An excitatory–inhibitory (E–I) interaction circuit combines subtractive/divisive inhibition with E-I Init and E-I Prop.",
-      "evaluationScope": "The paper evaluates multiple datasets and architectures; no result has been independently reproduced here.",
+      "evaluationScope": "Evaluation covers multiple datasets and network architectures.",
       "researchContentSource": "https://proceedings.iclr.cc/paper_files/paper/2026/hash/c7c7cf10082e454b9662a686ce6f1b6f-Abstract-Conference.html"
     }
   ],

@@ -24,8 +24,8 @@ test('production files, metadata and required controls are present',()=>{
  assert.doesNotMatch(html,/src="\.\/atlas-core\.js"/);
  const record=read('docs/papers/plif-2021/index.html');
  assert.match(record,/Incorporating Learnable Membrane Time Constant/);
- assert.match(record,/not the verbatim abstract/);
- assert.match(record,/Not independently reproduced/);
+ assert.match(record,/Research notes based on the linked publication/);
+ assert.match(record,/independent reproduction is not documented/);
  assert.match(record,/class="paper-jump-nav"/);
  assert.doesNotMatch(record,/class="paper-side"/);
  assert.match(record,/atlas.topic=/);
@@ -105,7 +105,7 @@ test('atlas metadata separates university affiliations from software ownership',
     assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
   }
  }
- assert.match(html,/Only indexed first authors and author counts are available/);
+ assert.match(html,/Most entries list only the first author/);
 });
 
 test('reader typography overrides cover research lists, scientific lab and paper pages',()=>{
@@ -114,7 +114,7 @@ test('reader typography overrides cover research lists, scientific lab and paper
  assert.match(css,/--type-reading:1rem/);
  assert.match(css,/\.atlas-card>p\{font-size:var\(--type-reading\)/);
  assert.match(css,/\.atlas-field select\{font-size:var\(--type-ui\)/);
- assert.match(paper,/V11 \/ Paper reading hierarchy/);
+ assert.match(paper,/\.paper-view \.paper-hero h1/);
  assert.match(paper,/\.research-notes p,/);
  assert.match(app,/w<420\?"13px":"14px"/);
 });
