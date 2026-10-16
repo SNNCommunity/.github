@@ -30,6 +30,14 @@ try {
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base,{waitUntil:'load'});
  await page.locator('.resource-card').first().waitFor();
+ assert.equal(await page.locator('#coverage-total').innerText(),'395');
+ assert.equal(await page.locator('#coverage-code').innerText(),'106');
+ assert.equal(await page.locator('#coverage-doi').innerText(),'92');
+ await page.locator('#atlas-code-quick').click();
+ assert.match(await page.locator('#resource-count').innerText(),/of 106 papers/,'code shortcut filters complete bibliography');
+ assert.equal(await page.locator('#atlas-code-quick').getAttribute('aria-pressed'),'true');
+ await page.locator('#atlas-code-quick').click();
+ assert.match(await page.locator('#resource-count').innerText(),/of 395 papers/);
  assert.equal(await page.locator('.resource-card').count(),8,'first eight canonical papers visible');
  assert.ok(await page.locator('#library').evaluate(el=>el.compareDocumentPosition(document.querySelector('#lab'))&Node.DOCUMENT_POSITION_FOLLOWING),'research comes before Lab');
  assert.match(await page.locator('#resource-count').innerText(),/of 395 papers/);
@@ -366,6 +374,11 @@ try {
    await corpusPage.setViewportSize({width,height:850});
    await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
    await corpusPage.locator('.item').first().waitFor();
+  assert.equal(await corpusPage.locator('#topic-shortcuts .topic-shortcut').count(),5);
+  await corpusPage.locator('#topic-shortcuts .topic-shortcut').first().click();
+  assert.match(await corpusPage.locator('#count').innerText(),/papers/);
+  await corpusPage.locator('#reset').click();
+  assert.match(await corpusPage.locator('#count').innerText(),/395 papers/);
    const fit=await corpusPage.evaluate(()=>({
      client:document.documentElement.clientWidth,
      scroll:document.documentElement.scrollWidth,
