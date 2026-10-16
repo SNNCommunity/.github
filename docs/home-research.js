@@ -30,7 +30,7 @@ function dedicatedURL(id=null){
  return u.pathname+u.search+u.hash;
 }
 const statusLabel=research.sourceLabel;
-const topicNames=()=>new Map(topics.map(x=>[x.id,x.label]));
+const topicNames=()=>new Map(topics.map(x=>[x.id,[x.label,...(x.aliases||[])].join(" ")]));
 const workFilters=skipTopics=>{const f=current();return {query:f.query,topics:skipTopics?[]:f.topics,mode:f.mode,year:f.year,venue:f.venue,source:f.source,code:f.code,sort:f.sort};};
 function current(){
  return {kind,query:$("resource-search").value.trim(),topics:[...selected],mode,
@@ -89,12 +89,12 @@ function showPaper(x){
  const head=make("div","resource-card-head");
  head.append(make("span","resource-label","RESEARCH WORK"));
  head.append(make("span","atlas-venue-label",(x.venue||"Venue pending")+" · "+(x.year||"Year unverified")));
- const h=make("h3");const title=make("a","atlas-title-link",x.title);
+ const h=make("h3");const title=make("a","atlas-title-link",research.displayTitle(x.title));
  title.href=dedicatedURL(x.id);h.append(title);
  const summary=make("div","atlas-card-summary");
  summary.append(make("span","atlas-authors",(x.authors?.[0]||"Author pending")+(x.authorCount>1?" et al. · "+x.authorCount+" indexed contributors":"")));
- if(x.doi)summary.append(make("span","atlas-affiliation-hint","DOI · "+x.doi));
- const excerpt=make("p",null,statusLabel(x.sourceStatus)+(x.versionCount>1?" · Preprint and publication linked":"")+(x.codeUrl?" · Code link available":""));
+ if(x.doi&&/^10\./.test(x.doi)){const doi=link("https://doi.org/"+x.doi,"DOI · "+x.doi,"atlas-affiliation-hint");if(doi)summary.append(doi);}
+ const excerpt=make("p",null,statusLabel(x.sourceStatus)+(x.versionCount>1?" · Publication history linked":""));
  const tags=make("div","atlas-card-topics");
  for(const t of (x.topics||[]).slice(0,4))tags.append(make("span","atlas-tag",topicLabel(t)));
  const evidence=make("details","resource-evidence");
@@ -153,6 +153,11 @@ function render(){
  for(const el of document.querySelectorAll("[data-paper-facet]"))el.hidden=kind!=="paper";
  $("resource-search").placeholder=kind==="paper"?"Search 395 papers by title, author, DOI or topic…":"Search tools, libraries and learning resources…";
  const matches=matching();syncTopics();chips();
+ const quick=$("atlas-code-quick");if(quick){
+   const active=kind==="paper"&&$(opts.code).value==="yes";
+   quick.setAttribute("aria-pressed",String(active));
+   quick.textContent=active?"Show all indexed papers ↗":"Show papers with code ↗";
+ }
  const fragment=document.createDocumentFragment();
  for(const x of matches.slice(0,limit))fragment.append(kind==="paper"?showPaper(x):showResource(x));
  grid.replaceChildren(fragment);
@@ -202,10 +207,18 @@ async function load(){
  if(catalog.items?.filter(x=>x.type!=="paper").length!==9)throw Error("Invalid tool resource count");
  const cur=new Map(catalog.items.filter(x=>x.type==="paper").map(x=>[normalize(x.title),x.id]));
  papers=works.items.map(x=>({...x,curatedId:cur.get(normalize(x.title))||null}));
+ $("coverage-total").textContent=String(papers.length);
+ $("coverage-code").textContent=String(papers.filter(x=>x.codeUrl).length);
+ $("coverage-doi").textContent=String(papers.filter(x=>x.doi).length);
  resources=catalog.items.filter(x=>x.type!=="paper");
  topics=catalog.topics;
  fill($("atlas-year"),[...new Set(papers.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a));
  fill($("atlas-venue"),[...new Set(papers.map(x=>x.venue).filter(Boolean))].sort((a,b)=>a.localeCompare(b)));
+ $("atlas-code-quick").addEventListener("click",()=>{
+   kind="paper";
+   $(opts.code).value=$(opts.code).value==="yes"?"all":"yes";
+   limit=minView;render();setUrl("push");
+ });
  for(const b of document.querySelectorAll(".atlas-kind"))b.addEventListener("click",()=>{
    if(kind===b.dataset.format)return;
    kind=b.dataset.format;selected.clear();mode="any";$("atlas-topic-mode").value="any";$("resource-search").value="";
