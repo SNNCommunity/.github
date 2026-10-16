@@ -51,12 +51,7 @@ const render=function render(p,papers,topics){
 <p class="paper-deck">${esc(p.description)}</p>
 <div class="paper-tags">${p.topics.map(t=>`<a href="../../?atlas.topic=${encodeURIComponent(t)}#library">${esc(label(t))}</a>`).join("")}</div>
 <div class="paper-actions">${action(p.url,"Original paper","primary")}${action(p.code,"Linked code")}${p.doi?action("https://doi.org/"+p.doi,"DOI"):""}</div></div>
-<aside class="paper-side"><p class="paper-aside-label">SOURCE COVERAGE</p>
-<p><strong>Publication</strong><span>Primary reference linked</span></p>
-<p><strong>Authors</strong><span>${authors.length?"Names transcribed":"Pending review"}</span></p>
-<p><strong>Affiliations</strong><span>${affs.length?"Partial index":"Unverified"}</span></p>
-<p><strong>Reproduction</strong><span>Not independently reproduced</span></p>
-<p class="paper-fine">Indexing does not certify scientific results.</p></aside></div></div></section>
+</div></div></section>
 <section class="paper-content"><div class="container paper-content-grid"><article class="paper-main">
 <section class="paper-panel" id="research"><p class="paper-eyebrow">01 / RESEARCH NOTES</p><h2>Research question and method</h2>${notes}</section>
 <section class="paper-panel" id="affiliations"><p class="paper-eyebrow">02 / AUTHOR AFFILIATIONS</p><h2>Source-linked institutions</h2>
@@ -78,8 +73,7 @@ ${sourceLinks}</div></section></article>
 </body></html>\n`;
 };
 function polishRecord(html){
- return html.replace(/<aside class="paper-side">[\s\S]*?<\/aside>/,"")
- .replace('<section class="paper-content">',`<nav class="paper-jump-nav" aria-label="Research record sections"><div class="container">
+ return html.replace('<section class="paper-content">',`<nav class="paper-jump-nav" aria-label="Research record sections"><div class="container">
 <a href="#research">Method &amp; evaluation</a><a href="#sources">Original sources</a><a href="#affiliations">Institutions</a><a href="#evidence">Evidence status</a></div></nav>
 <section class="paper-content">`);
 }
