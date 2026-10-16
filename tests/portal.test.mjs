@@ -105,7 +105,7 @@ test('atlas metadata separates university affiliations from software ownership',
     assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
   }
  }
- assert.match(html,/Only indexed first authors and author counts are available/);
+ assert.match(html,/Most entries list only the first author/);
 });
 
 test('reader typography overrides cover research lists, scientific lab and paper pages',()=>{
