@@ -18,6 +18,7 @@ function validate(data,ontology){
  if(data?.schemaVersion!=="atomic-public-395-v1"||data.count!==395||data.items?.length!==395)
   throw Error("Expected 395 unique canonical research works");
  const ids=new Set(),aliases=new Set(),titles=new Set();let technical=0;const used=new Set();
+ const dset=new Set((ontology?.domains||[]).map(x=>x.id));
  const parent=new Map((ontology?.techniques||[]).map(t=>[t.id,t.domain]));
  if(ontology){
   const groupDomains=new Set((ontology.groups||[]).flatMap(g=>g.domains));
@@ -25,7 +26,6 @@ function validate(data,ontology){
   if(ontology.techniques.some(t=>t.id.split(".")[0]!==t.domain||!dset.has(t.domain)||!t.definition||!t.exclude))
    throw Error("Invalid technical concept parent domain or missing definition/exclusion");
  }
- const dset=new Set((ontology?.domains||[]).map(x=>x.id));
  const tset=new Set((ontology?.techniques||[]).map(x=>x.id));
  for(const w of data.items){
   if(Object.keys(w).some(k=>!keys.has(k)))throw Error("Unexpected or private research field in "+w.id);
