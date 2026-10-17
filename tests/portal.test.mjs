@@ -18,7 +18,9 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(html,/id="atlas-active-filters"/);
  assert.match(html,/id="atlas-advanced"/);
  assert.ok(html.indexOf('id="library"')<html.indexOf('id="lab"'),'research first');
- assert.match(html,/class="atlas-kind-switch"/);
+ assert.doesNotMatch(html,/class="atlas-kind-switch"/);
+ assert.match(html,/class="research-index-note"/);
+ assert.match(html,/href="\.\/ecosystem\/"/);
  assert.match(html,/class="resource-provenance atlas-provenance-details"/);
  assert.match(html,/src="\.\/home-research\.js(?:\?v=\d+)?"/);
  assert.doesNotMatch(html,/src="\.\/atlas-core\.js"/);
@@ -67,7 +69,7 @@ test('open source provenance entries use unique structured records',()=>{
  assert.ok(catalog.items.filter(x=>x.type==='paper').length>=10);
  assert.ok(catalog.items.some(x=>(x.affiliations||[]).some(a=>a.country==='France')));
 });
-test('no abandoned V2/V3 assets and no invented evidence',()=>{
+test('retired site assets are absent and evidence boundaries remain visible',()=>{
  for(const p of ['DESIGN.md','SETUP.md','assets/hero-dark.svg','assets/hero-light.svg','assets/logo-mark.svg'])
    assert.ok(!existsSync(new URL('../'+p,import.meta.url)),p);
  assert.match(profile,/Explore SNN Community/);
@@ -128,7 +130,7 @@ test('atlas metadata separates university affiliations from software ownership',
 
 test('reader typography overrides cover research lists, scientific lab and paper pages',()=>{
  const css=read('docs/styles.css'),paper=read('docs/paper.css'),app=read('docs/app.js');
- assert.match(css,/V11 \/ Readability system/);
+ assert.match(css,/Scientific readability and accessible controls/);
  assert.match(css,/--type-reading:1rem/);
  assert.match(css,/\.atlas-card>p\{font-size:var\(--type-reading\)/);
  assert.match(css,/\.atlas-field select\{font-size:var\(--type-ui\)/);
@@ -142,9 +144,11 @@ test('homepage research and dedicated Atlas share the canonical public 395-work 
  assert.equal(data.items.length,395);
  assert.equal(new Set(data.items.map(x=>x.id)).size,395);
  assert.match(home,/\.\/atlas\/works\.json/);
- assert.match(html,/All research <span class="atlas-tab-count">395<\/span>/);
- assert.match(html,/Tools &amp; guides <span class="atlas-tab-count">9<\/span>/);
+ assert.match(html,/395 research works/);
+ assert.doesNotMatch(html,/Tools &amp; guides|atlas-kind-switch/);
  assert.doesNotMatch(html,/atlas-country|atlas-university|atlas-format|v31-corpus-banner|research-corpus-banner|All resources/);
+ assert.doesNotMatch(read('docs/home-research.js'),/showResource|kind==="resource"|atlas\.format".*,q\.kind/);
+ assert.match(read('docs/home-research.js'),/location\.replace\("\.\/ecosystem\/"\)/);
  assert.doesNotMatch(home,/19 indexed|resourceCount|curatedData|corpus\.json|metadata\.json/);
  assert.doesNotMatch(html,/mirrored original abstracts/);
 });

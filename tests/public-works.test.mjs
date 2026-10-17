@@ -45,5 +45,8 @@ test("old version database, local upload widgets and ordinal links are absent",(
  assert.doesNotMatch(js,/privateLibrary|file\.text\(|record=|corpus\.json|metadata\.json|localStorage|sessionStorage/);
  assert.match(js,/works\.json/);
  assert.match(js,/search/);
- assert.match(read("docs/index.html"),/All research <span class="atlas-tab-count">395<\/span>/);
+ const home=read("docs/index.html");
+ assert.match(home,/id="resource-grid"/);
+ assert.match(home,/class="research-index-note"/);
+ assert.doesNotMatch(home,/atlas-kind-switch|data-format="resource"/);
 });
