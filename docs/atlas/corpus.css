@@ -193,3 +193,10 @@
  .factgrid{grid-template-columns:1fr}
  .item .actions{grid-template-columns:1fr}
 }
+
+/* Atomic technique rationale and exclusions. */
+.technique-explanations{display:grid;gap:10px}
+.technique-explanation{padding:13px 15px;border:1px solid #bfd7c7;background:#f0f7f3;border-radius:6px;min-width:0}
+.technique-explanation strong{font-size:14px;line-height:1.5;color:#175a41;overflow-wrap:anywhere}
+.technique-explanation p{font-size:13px;line-height:1.6;margin:8px 0 0;overflow-wrap:anywhere}
+.technique-explanation .mechanism-exclusion{color:#7b4d30}
