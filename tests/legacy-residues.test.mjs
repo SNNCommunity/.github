@@ -28,6 +28,8 @@ test("obsolete homepage components and static datasets are not present",()=>{
 test("395-work canonical IDs and historic inbound deep-link mapping remain stable",()=>{
  assert.equal(data.items.length,395);
  assert.ok(data.items.every(w=>!w.versions&&!w.versionCount&&!w.abstract));
+ assert.equal(data.items.filter(w=>w.legacyId).length,394);
+ assert.ok(data.items.every(w=>w.techniques.every(t=>w.domains.includes(t.split(".")[0]))));
  assert.match(atlas,/convertOldLinks/);
  assert.match(atlas,/n===360\?75/);
  assert.match(atlas,/legacyTopics/);
