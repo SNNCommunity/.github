@@ -17,8 +17,8 @@ test("visitor-facing research writing avoids previous repetitive explanations",(
  assert.ok(!cards.includes("Not independently reproduced."));
  assert.ok(!record.includes("Editorial and scientific evidence boundary"));
  assert.equal(works.length,395);
- assert.equal(works.filter(x=>x.codeUrl).length,106);
- assert.match(atlas,/106<\/strong><span>Entries with code links/);
+ assert.equal(works.filter(x=>x.codeUrl).length,159);
+ assert.match(atlas,/159<\/strong><span>Indexed code \/ resource links/);
 });
 test("ten generated research pages retain methods but avoid repetitive AI QA notes",()=>{
  assert.equal(records.length,10);
