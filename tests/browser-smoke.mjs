@@ -44,6 +44,10 @@ try {
  assert.match(await page.locator('#resource-count').innerText(),/of 395 papers/);
  assert.equal((await page.locator('.atlas-topic[data-topic="all"]').innerText()).includes('395'),true,'All research topic count must be 395');
  assert.equal(await page.locator('.atlas-kind-switch').count(),0,'retired mixed paper/software navigation removed');
+ assert.equal(await page.locator('.section-statement').count(),0);
+ assert.equal(await page.locator('.path-card').count(),0);
+ assert.equal(await page.locator('.home-learning-inner').count(),1);
+
  assert.ok(await page.locator('.research-index-note a[href="./ecosystem/"]').count()>0,'software has its own destination');
  assert.equal(await page.locator('.atlas-record-link').count(),8);
  assert.equal(await page.locator('#atlas-country').count(),0,'obsolete affiliation filter removed');
@@ -409,6 +413,13 @@ try {
  const shared=await corpusPage.locator('#share-input').inputValue();
  assert.ok(shared.includes('q=Spike-HTR'));
  assert.ok(!shared.includes('token='),'dedicated Atlas share strips non-research URL params');
+ // Historical tool-tab URLs now resolve to the separate ecosystem directory.
+ const retired=await browser.newPage({viewport:{width:390,height:840}});
+ await retired.goto(base+'?atlas.format=resource');
+ await retired.waitForURL(url=>url.pathname.endsWith('/ecosystem/'));
+ await retired.locator('.portal-card').first().waitFor();
+ assert.equal(await retired.locator('.portal-card').count(),7);
+ await retired.close();
  // New portal workflow and responsive cross-page discovery.
  const portalPage=await browser.newPage({viewport:{width:1440,height:900}});
  portalPage.on('pageerror',e=>errors.push('Portal '+e.message));
