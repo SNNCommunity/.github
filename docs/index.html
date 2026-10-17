@@ -25,10 +25,10 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"SNN Community","alternateName":"SNNCommunity","url":"https://snncommunity.github.io/.github/","sameAs":["https://github.com/SNNCommunity"],"description":"Independent open community for spiking neural networks and neuromorphic research"}</script>
   <title>SNN Community — Research, Build, Reproduce</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css?v=16">
+  <link rel="stylesheet" href="./styles.css?v=17">
   <script defer src="./neuron-core.js"></script>
   <script defer src="./research-core.js?v=15"></script>
-  <script defer src="./home-research.js?v=15"></script>
+  <script defer src="./home-research.js?v=17"></script>
   <script defer src="./app.js"></script>
   <noscript><style>.lab-controls input,.lab-controls button{opacity:.6;pointer-events:none}.lab-controls::after{content:"The interactive neuron lab requires JavaScript.";display:block;margin-top:15px;font-weight:600;color:#315448}</style></noscript>
 </head>
@@ -103,10 +103,7 @@
           <div class="coverage-item"><strong id="coverage-doi">92</strong><span>DOIs indexed</span></div>
           <button class="coverage-quick" id="atlas-code-quick" type="button" aria-pressed="false" aria-controls="resource-grid">Show papers with code <span aria-hidden="true">↗</span></button>
         </div>
-        <div class="atlas-kind-switch" role="group" aria-label="Choose collection">
-          <button class="atlas-kind is-selected" type="button" data-format="paper" aria-pressed="true">All research <span class="atlas-tab-count">395</span></button>
-          <button class="atlas-kind" type="button" data-format="resource" aria-pressed="false">Tools &amp; guides <span class="atlas-tab-count">9</span></button>
-        </div>
+        <div class="research-index-note"><span>Browse the complete 395-work bibliography below.</span><a href="./ecosystem/">Looking for software? Explore the ecosystem ↗</a></div>
         <div class="atlas-controls" aria-label="Research search and filters">
           <div class="atlas-search-row"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search papers and topics</label><input id="resource-search" type="search" placeholder="Search 395 papers by title, author, DOI or topic…" autocomplete="off"></div>
             <button id="atlas-reset" class="atlas-reset" type="button">Clear filters ↻</button></div>
@@ -197,22 +194,14 @@
       </div>
     </section>
 
-    <section class="section section-paths" id="learn" aria-labelledby="learn-title">
-      <div class="container">
-        <div class="section-heading"><div><p class="eyebrow"><span class="section-index">03 /</span> LEARNING PATHS</p><h2 id="learn-title">Learn the foundations.<br><em>Build the systems.</em></h2></div><p>Follow structured paths from spiking neurons to training, event-based data and evaluation. <a href="./learn/">Open the learning guide ↗</a></p></div>
-        <div class="path-grid">
-          <a class="path-card" href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html" target="_blank" rel="noopener noreferrer"><div class="path-nr">01 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-a" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div><p class="path-type">START HERE · FOUNDATIONS</p><h3>Understand<br>the spike.</h3><p>Encoding, neuron models, gradients and the basic SNN training loop.</p></div><span class="path-source">snnTorch tutorials <span aria-hidden="true">↗</span></span></a>
-          <a class="path-card" href="https://spikingjelly.readthedocs.io/" target="_blank" rel="noopener noreferrer"><div class="path-nr">02 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-b" aria-hidden="true"><span></span><span></span><span></span></div><div><p class="path-type">GO DEEPER · ENGINEERING</p><h3>Build with<br>spikes.</h3><p>Develop networks with reusable components, training methods and real datasets.</p></div><span class="path-source">SpikingJelly docs <span aria-hidden="true">↗</span></span></a>
-          <a class="path-card" href="https://github.com/NeuroBench/neurobench" target="_blank" rel="noopener noreferrer"><div class="path-nr">03 <span aria-hidden="true">↗</span></div><div class="path-illustration path-illustration-c" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div><p class="path-type">GO FURTHER · EVALUATION</p><h3>Measure<br>what matters.</h3><p>Learn how to assess neuromorphic algorithms and systems with clear protocols.</p></div><span class="path-source">NeuroBench <span aria-hidden="true">↗</span></span></a>
+    <section class="section home-learning-link" id="learn" aria-labelledby="learn-title">
+      <div class="container home-learning-inner">
+        <div>
+          <p class="eyebrow">LEARNING PATHS</p>
+          <h2 id="learn-title">Learn the foundations. Build the systems.</h2>
+          <p>Follow a four-stage route through neuron dynamics, SNN training, event-based data and reproducible evaluation.</p>
         </div>
-        <p class="attribution-note">These are independently maintained projects. SNNCommunity links to their official resources; no affiliation or endorsement is implied.</p>
-      </div>
-    </section>
-
-    <section class="section section-statement" aria-labelledby="statement-title">
-      <div class="container statement-inner">
-        <div class="statement-aside"><span class="eyebrow">THE RESEARCH FRONTIER</span><div class="statement-glyph" aria-hidden="true">∴</div></div>
-        <div><h2 id="statement-title">From neural dynamics<br>to <em>intelligent systems.</em></h2><p>Spiking intelligence connects temporal learning, efficient computation, event-driven sensing, and embodied interaction. We want a place where ideas travel across those boundaries.</p><div class="statement-tags"><span>NEURAL DYNAMICS</span><span>TEMPORAL LEARNING</span><span>EVENT VISION</span><span>EMBODIED SYSTEMS</span></div></div>
+        <a class="button button-dark" href="./learn/">Explore the learning guide <span aria-hidden="true">↗</span></a>
       </div>
     </section>
 
