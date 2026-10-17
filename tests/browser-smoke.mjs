@@ -63,7 +63,8 @@ try{
  await home.locator("#resource-search").fill("Spike-HTR");
  assert.equal(await home.locator(".resource-card").count(),1);
  await home.locator("#resource-search").fill("Hongzhi Wang");
- assert.equal(await home.locator(".resource-card").count(),1,"secondary author must be indexed");
+ assert.ok(await home.locator(".resource-card").count()>=1,"secondary author must be indexed");
+ assert.ok((await home.locator(".resource-card").allTextContents()).some(x=>x.includes("Spike-HTR")));
  await home.locator("#resource-search").fill("Spike-HTR");
  assert.match(await home.locator(".atlas-record-link").first().getAttribute("href"),/[?&]paper=/);
  await home.locator("#atlas-reset").click();
