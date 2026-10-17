@@ -65,7 +65,7 @@ test('open source provenance entries use unique structured records',()=>{
  }
  const doi=catalog.items.filter(x=>x.type==='paper').map(x=>x.doi);
  for(const id of ['10.1109/ICCV48922.2021.00266','10.1126/sciadv.adi1480'])assert.ok(doi.includes(id));
- assert.equal(catalog.topics.length,11);
+ assert.equal(catalog.topics.length,11); // Legacy editorial resource taxonomy remains isolated from canonical research.
  assert.ok(catalog.items.filter(x=>x.type==='paper').length>=10);
  assert.ok(catalog.items.some(x=>(x.affiliations||[]).some(a=>a.country==='France')));
 });
@@ -83,7 +83,7 @@ test('progressive enhancement and WCAG-oriented interaction styles',()=>{
  assert.match(css,/:focus-visible/);
  assert.match(css,/@media \(prefers-reduced-motion: reduce\)/);
  assert.match(css,/@media \(max-width: 560px\)/);
- assert.match(read('docs/home-research.js'),/fetch\("\.\/atlas\/works\.json"\)/);
+ assert.match(read("docs/home-research.js"),/fetch\("\.\/atlas\/works\.json"\)/);
  assert.match(js,/\.textContent/);
  assert.match(js,/function shareURL\(\)/);
  assert.match(js,/function toCSV\(main,other\)/);
@@ -102,8 +102,8 @@ test('share preview and avatar are real PNG binaries with specified dimensions',
 
 test('research cards are progressively disclosed without leaving legacy layout code',()=>{
  assert.match(html,/id="resource-more"[^>]+aria-expanded="false" hidden/);
- assert.match(read('docs/home-research.js'),/const minView=8,pageSize=20/);
- assert.match(read('docs/home-research.js'),/matches\.slice\(0,limit\)/);
+ assert.match(read("docs/home-research.js"),/const min=8,step=20/);
+ assert.match(read("docs/home-research.js"),/matches\.slice\(0,visible\)/);
  assert.doesNotMatch(js,/resource-arrow/);
  assert.doesNotMatch(css,/\.resource-card-bottom/);
  assert.doesNotMatch(css,/\.resource-arrow/);
@@ -125,7 +125,7 @@ test('atlas metadata separates university affiliations from software ownership',
     assert.ok(a.university&&a.country&&a.source?.startsWith('https://'));
   }
  }
- assert.match(html,/Most records index only the first author/);
+ assert.match(html,/abstract-supported and do not certify full-text Methods/i);
 });
 
 test('reader typography overrides cover research lists, scientific lab and paper pages',()=>{
@@ -144,11 +144,25 @@ test('homepage research and dedicated Atlas share the canonical public 395-work 
  assert.equal(data.items.length,395);
  assert.equal(new Set(data.items.map(x=>x.id)).size,395);
  assert.match(home,/\.\/atlas\/works\.json/);
- assert.match(html,/395 research works/);
+ assert.match(html,/395 research works/i);
  assert.doesNotMatch(html,/Tools &amp; guides|atlas-kind-switch/);
  assert.doesNotMatch(html,/atlas-country|atlas-university|atlas-format|v31-corpus-banner|research-corpus-banner|All resources/);
  assert.doesNotMatch(read('docs/home-research.js'),/showResource|kind==="resource"|atlas\.format".*,q\.kind/);
- assert.match(read('docs/home-research.js'),/location\.replace\("\.\/ecosystem\/"\)/);
+ assert.match(read("docs/home-research.js"),/location\.replace\("\.\/ecosystem\/"\)/);
  assert.doesNotMatch(home,/19 indexed|resourceCount|curatedData|corpus\.json|metadata\.json/);
  assert.doesNotMatch(html,/mirrored original abstracts/);
+});
+
+test('Research Atlas publishes the new atomic taxonomy without altering curated resources',()=>{
+ const ontology=JSON.parse(read('docs/atlas/ontology.json'));
+ const works=JSON.parse(read('docs/atlas/works.json'));
+ assert.equal(ontology.groups.length,6);
+ assert.equal(ontology.domains.length,13);
+ assert.equal(ontology.techniques.length,69);
+ assert.equal(works.items.length,395);
+ assert.equal(works.items.filter(w=>w.codeUrl).length,159);
+ for(const id of ['atlas-group','atlas-technique','atlas-model','atlas-task','atlas-modality'])
+  assert.match(html,new RegExp('id="'+id+'"'));
+ assert.match(read('docs/atlas/index.html'),/id="group-shortcuts"/);
+ assert.match(read('docs/atlas/index.html'),/id="technique"/);
 });
