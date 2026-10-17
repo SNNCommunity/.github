@@ -30,7 +30,7 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(record,/independent reproduction is not documented/);
  assert.match(record,/class="paper-jump-nav"/);
  assert.doesNotMatch(record,/class="paper-side"/);
- assert.match(record,/atlas.topic=/);
+ assert.match(record,/atlas\/\?topic=D01/);
  assert.match(record,/Wei Fang/);
  assert.match(record,/Parametric leaky integrate-and-fire/);
  assert.match(record,/Research question and method/);

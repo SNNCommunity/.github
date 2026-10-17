@@ -42,7 +42,7 @@ function showPaper(w){
  head.append(node("span","atlas-venue-label",(w.venue||"Venue pending")+" · "+(w.year||"Year pending")));
  const h=node("h3"),a=node("a","atlas-title-link",core.displayTitle(w.title));a.href=atlasURL(w.id);h.append(a);
  const summary=node("div","atlas-card-summary");
- summary.append(node("span","atlas-authors",w.authors[0]+(w.authorCount>1?" et al. · "+w.authorCount+" authors indexed":"")));
+ summary.append(node("span","atlas-authors",w.authors.length===1?w.authors[0]:w.authors[0]+" et al. · "+w.authors.length+" authors"));
  if(w.doi&&/^10\./.test(w.doi)){const doi=source("https://doi.org/"+w.doi,"DOI · "+w.doi,"atlas-affiliation-hint");if(doi)summary.append(doi);}
  const context=node("p",null,domainNames.get(w.primaryDomain)||w.primaryDomain);
  const tags=node("div","atlas-card-topics");
@@ -56,7 +56,7 @@ function showPaper(w){
  const actions=node("div","atlas-card-actions");
  const record=node("a","atlas-record-link","Research record →");record.href=atlasURL(w.id);actions.append(record);
  const p=source(w.paperUrl,"Publication ↗","resource-main-link");if(p)actions.append(p);
- const c=source(w.codeUrl,"Indexed implementation / resource ↗","resource-main-link");if(c)actions.append(c);
+ const c=source(w.codeUrl,w.resourceType==="repository"?"Source repository ↗":w.resourceType==="supplementary"?"Supplement ↗":"Project / resource ↗","resource-main-link");if(c)actions.append(c);
  card.append(head,h,summary,context,tags,detail,actions);return card;
 }
 function topics(){

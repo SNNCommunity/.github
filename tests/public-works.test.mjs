@@ -16,6 +16,11 @@ test("single canonical 395-work public corpus and atomic research vocabulary",()
  assert.equal(data.items.reduce((n,x)=>n+x.techniques.length,0),280);
  assert.equal(data.items.filter(x=>x.techniques.length).length,226);
  assert.equal(data.items.filter(x=>x.codeUrl).length,159);
+ assert.equal(data.items.filter(x=>x.resourceType==="repository").length,153);
+ assert.equal(data.items.filter(x=>x.legacyId).length,394);
+ assert.ok(data.items.every(w=>w.authorCount===w.authors.length));
+ assert.ok(ontology.techniques.every(t=>t.id.startsWith(t.domain+".")&&t.definition&&t.exclude));
+ assert.ok(data.items.every(w=>w.techniques.every(t=>w.domains.includes(t.split(".")[0]))));
  assert.equal(data.items.filter(x=>x.doi).length,92);
  assert.equal(data.items.find(x=>x.title.startsWith("Spikingformer:")).title,
    "Spikingformer: A Key Foundation Model for Spiking Neural Networks");
@@ -38,8 +43,8 @@ test("public files carry no private abstracts, evidence phrases or historic vers
 });
 test("bibliographic source statuses remain transparent",()=>{
  const n=data.items.reduce((o,w)=>(o[w.sourceStatus]=(o[w.sourceStatus]||0)+1,o),{});
- assert.equal(n.publisher_specific_page_not_independently_rechecked,140);
- assert.equal(n.conference_index_or_aggregate_not_paper_specific,205);
- assert.equal(n.not_identified,50);
+ assert.equal(n.publisher_specific_page_not_independently_rechecked,279);
+ assert.equal(n.conference_index_or_aggregate_not_paper_specific,68);
+ assert.equal(n.not_identified,48);
  assert.equal(data.items.length,Object.values(n).reduce((a,b)=>a+b,0));
 });

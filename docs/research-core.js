@@ -11,36 +11,52 @@ const statusText={publisher_specific_page_not_independently_rechecked:"Publisher
  not_identified:"Paper-specific publication link unresolved"};
 const sourceLabel=v=>statusText[v]||"Source status unavailable";
 const keys=new Set(["id","title","year","venue","authors","authorCount","doi","paperUrl","codeUrl","sourceStatus","sourceWarnings",
- "primaryDomain","domains","techniques","facets","snnInvolvement","publicationGenre"]);
+ "primaryDomain","domains","techniques","facets","snnInvolvement","publicationGenre",
+ "legacyId","publisherUrl","indexedSourceUrl","resourceType"]);
 const facetKeys=["model_families","learning_methods","tasks","modalities","platforms","contributions"];
 function validate(data,ontology){
  if(data?.schemaVersion!=="atomic-public-395-v1"||data.count!==395||data.items?.length!==395)
   throw Error("Expected 395 unique canonical research works");
- const ids=new Set(),titles=new Set();let technical=0;const used=new Set();
+ const ids=new Set(),aliases=new Set(),titles=new Set();let technical=0;const used=new Set();
  const dset=new Set((ontology?.domains||[]).map(x=>x.id));
+ const parent=new Map((ontology?.techniques||[]).map(t=>[t.id,t.domain]));
+ if(ontology){
+  const groupDomains=new Set((ontology.groups||[]).flatMap(g=>g.domains));
+  if(ontology.domains.some(d=>!groupDomains.has(d.id)))throw Error("Domain missing from scientific group");
+  if(ontology.techniques.some(t=>t.id.split(".")[0]!==t.domain||!dset.has(t.domain)||!t.definition||!t.exclude))
+   throw Error("Invalid technical concept parent domain or missing definition/exclusion");
+ }
  const tset=new Set((ontology?.techniques||[]).map(x=>x.id));
  for(const w of data.items){
   if(Object.keys(w).some(k=>!keys.has(k)))throw Error("Unexpected or private research field in "+w.id);
   const title=normalize(w.title);
   if(!w.id||ids.has(w.id)||!title||titles.has(title)||!Array.isArray(w.authors)||!w.authors.length||
    !Array.isArray(w.domains)||!w.domains.includes(w.primaryDomain)||!Array.isArray(w.techniques)||!w.facets||
-   !/^https:\/\//.test(w.paperUrl||"")||!("sourceStatus" in w))
+   !/^https:\/\//.test(w.paperUrl||"")||!("sourceStatus" in w)||
+   w.authorCount!==w.authors.length||!w.authors.every(n=>typeof n==="string"&&n.trim())||
+   !/^work-/.test(w.id)||(w.legacyId&&aliases.has(w.legacyId))||
+   (w.doi&&(!/^10\.[0-9]{4,9}\/.+/.test(w.doi)||/\/full$/.test(w.doi))))
    throw Error("Invalid or duplicate public work "+w.id);
-  for(const t of w.techniques){if(ontology&&!tset.has(t))throw Error("Unknown concept "+t);used.add(t);}
+  for(const t of w.techniques){
+   if(ontology&&!tset.has(t))throw Error("Unknown concept "+t);
+   if(ontology&&!w.domains.includes(parent.get(t)))throw Error("Technical concept domain mismatch "+w.id+" "+t);
+   used.add(t);
+  }
   if(ontology&&w.domains.some(d=>!dset.has(d)))throw Error("Unknown domain "+w.id);
   for(const k of facetKeys)if(!Array.isArray(w.facets[k]))throw Error("Invalid facet "+k);
-  ids.add(w.id);titles.add(title);technical+=w.techniques.length;
+  ids.add(w.id);if(w.legacyId)aliases.add(w.legacyId);titles.add(title);technical+=w.techniques.length;
  }
  if(ontology&&(ontology.domains.length!==13||ontology.groups.length!==6||ontology.techniques.length!==69||
     used.size!==69||technical!==280))throw Error("Ontology coverage mismatch");
  if(data.items.filter(w=>w.techniques.length).length!==226)throw Error("Technical evidence count mismatch");
  if(data.items.filter(w=>w.codeUrl).length!==159)throw Error("Indexed code/resource coverage mismatch");
+ if(data.items.filter(w=>w.resourceType==="repository").length!==153)throw Error("Repository link count mismatch");
  return data;
 }
 function domainNames(ontology){return new Map((ontology?.domains||[]).map(x=>[x.id,[x.en,x.zh].join(" ")]));}
 function searchText(w,ontology){
  const d=domainNames(ontology),tech=new Map((ontology?.techniques||[]).map(x=>[x.id,x.label]));
- return normalize([w.title,...w.authors,w.doi,w.year,w.venue,
+ return normalize([w.title,...w.authors,w.doi,w.year,w.venue,w.id,w.legacyId,
   ...w.domains.flatMap(x=>[x,d.get(x)]),...w.techniques.flatMap(x=>[x,tech.get(x)]),
   ...facetKeys.flatMap(k=>w.facets[k]||[]),w.snnInvolvement,w.publicationGenre].filter(x=>x!=null).join(" "));
 }
