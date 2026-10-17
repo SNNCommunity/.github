@@ -761,12 +761,12 @@ body{font-size:var(--type-body);line-height:1.65}
 .portal-hero h1 em{font-family:var(--sans);font-weight:650;letter-spacing:-.06em}
 .portal-hero .hero-description{margin:21px 0 26px;max-width:580px;font-size:17px;line-height:1.65}
 .portal-hero .hero-actions{margin-top:17px}
-.portal-hero .hero-actions .button{font-size:14px}
+.portal-hero .hero-actions .button{font-size:15px}
 .portal-search{display:flex;align-items:center;gap:10px;width:100%;max-width:675px;border:1px solid #9cbab1;border-radius:5px;background:#fff;padding:6px 7px 6px 16px;box-shadow:0 6px 28px #081b1c28}
 .portal-search:focus-within{outline:3px solid #8adfc5;outline-offset:3px}
 .portal-search>span{color:#316854;font-size:25px}
 .portal-search input{flex:1;min-width:0;min-height:43px;padding:8px 0;border:0;outline:0;color:var(--ink);background:transparent;font-size:16px}
-.portal-search button{border:0;border-radius:3px;background:#17533e;color:#fff;min-height:44px;padding:10px 16px;white-space:nowrap;font-weight:740;font-size:14px}
+.portal-search button{border:0;border-radius:3px;background:#17533e;color:#fff;min-height:44px;padding:10px 16px;white-space:nowrap;font-weight:740;font-size:15px}
 .portal-search button:hover{background:#247353}
 .portal-hero .portal-hero-panel{transform:none;padding:8px 20px 2px;background:#16302f;border:1px solid #435d59;box-shadow:0 16px 45px #04191a40}
 .portal-panel-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;letter-spacing:.12em;font-weight:800;color:#a2ccc1;padding:15px 2px}
@@ -819,10 +819,10 @@ body{font-size:var(--type-body);line-height:1.65}
  .portal-hero h1{font-size:clamp(40px,10.4vw,52px);line-height:1.05}
  .portal-hero .hero-description{font-size:15px;line-height:1.55;margin:16px 0 18px}
  .portal-hero .hero-actions{margin-top:13px;gap:9px}
- .portal-hero .hero-actions .button{padding:10px 13px;font-size:13px;min-height:43px}
+ .portal-hero .hero-actions .button{padding:10px 13px;font-size:15px;min-height:44px}
  .portal-search{gap:4px;padding:5px 5px 5px 12px}
  .portal-search input{font-size:15px}
- .portal-search button{font-size:12px;padding:10px 11px}
+ .portal-search button{font-size:14px;padding:10px 11px}
  .portal-hero .hero-bottom{font-size:9px;min-height:37px;letter-spacing:.03em;gap:8px}
  .portal-jump{gap:9px;margin-top:16px}
  .portal-jump-card{padding:13px 12px;gap:4px}
