@@ -96,7 +96,7 @@ function convertOldLinks(){
 function restore(){
  convertOldLinks();const q=new URLSearchParams(location.search);
  for(const k of FIELDS){
-  const el=$(k),value=q.get(k)||"";
+  const el=$(k),value=k==="author"?research.authorKey(q.get(k)||""):(q.get(k)||"");
   el.value=k==="q"?value:([ ...el.options ].some(v=>v.value===value)?value:(k==="sort"?"recent":""));
  }
  const batch=(q.get("topics")||"").split(",").map(normalDomain).filter(Boolean);
