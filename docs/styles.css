@@ -755,3 +755,19 @@ body{font-size:var(--type-body);line-height:1.65}
  .home-learning-inner{align-items:flex-start;flex-direction:column;gap:22px}
  .home-learning-link{padding:36px 0}
 }
+
+
+/* Frequent authors are a first-class public research facet, not a private-person index. */
+.atlas-author-filter{border:1px solid #bddbc7;background:#f0f7f2;border-radius:7px;padding:15px 17px;margin:14px 0 17px;min-width:0}
+.atlas-author-header{display:flex;justify-content:space-between;gap:8px 20px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.atlas-author-header strong{font-size:16px;line-height:1.35;color:#124e38}
+.atlas-author-header span{font-size:12px;letter-spacing:.025em;font-weight:760;color:#43735b}
+.atlas-author-control{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
+.atlas-author-control label{font-size:13px;font-weight:730;color:#284c3b}
+.atlas-author-control select{min-width:min(100%,310px);max-width:100%;min-height:43px;padding:8px 12px;font:inherit;font-size:14px;border:1px solid #83b99a;border-radius:5px;background:#fff;color:#163e2a}
+.atlas-author-filter p{margin:10px 0 0;font-size:12px;line-height:1.55;color:#4b6957}
+@media(max-width:580px){
+ .atlas-author-filter{padding:13px 12px}
+ .atlas-author-control{display:grid;grid-template-columns:minmax(0,1fr)}
+ .atlas-author-control select{width:100%;min-width:0}
+}
