@@ -385,104 +385,104 @@
       "domain": "D06"
     },
     {
-      "id": "D07.T01",
-      "label": "Spiking policy representation",
-      "domain": "D07"
-    },
-    {
       "id": "D08.T01",
-      "label": "GPU simulation and kernel scheduling",
-      "domain": "D08"
-    },
-    {
-      "id": "D08.T02",
-      "label": "Activation-storage optimization",
-      "domain": "D08"
-    },
-    {
-      "id": "D08.T03",
-      "label": "Edge and distributed partitioning",
-      "domain": "D08"
-    },
-    {
-      "id": "D08.T04",
-      "label": "Integer-only inference kernel",
-      "domain": "D08"
-    },
-    {
-      "id": "D08.T05",
-      "label": "Temporal-parallel state execution",
+      "label": "Spiking policy representation",
       "domain": "D08"
     },
     {
       "id": "D09.T01",
-      "label": "Memristive in-memory computing",
+      "label": "GPU simulation and kernel scheduling",
       "domain": "D09"
     },
     {
       "id": "D09.T02",
-      "label": "Neuromorphic chip and accelerator circuits",
+      "label": "Activation-storage optimization",
       "domain": "D09"
     },
     {
       "id": "D09.T03",
-      "label": "Physical spiking neuron and synapse device",
+      "label": "Edge and distributed partitioning",
+      "domain": "D09"
+    },
+    {
+      "id": "D09.T04",
+      "label": "Integer-only inference kernel",
+      "domain": "D09"
+    },
+    {
+      "id": "D09.T05",
+      "label": "Temporal-parallel state execution",
       "domain": "D09"
     },
     {
       "id": "D10.T01",
-      "label": "Neural population dynamics model",
+      "label": "Memristive in-memory computing",
       "domain": "D10"
     },
     {
       "id": "D10.T02",
-      "label": "Brain-signal decoding model",
+      "label": "Neuromorphic chip and accelerator circuits",
       "domain": "D10"
     },
     {
       "id": "D10.T03",
-      "label": "Biophysical circuit modeling",
-      "domain": "D10"
-    },
-    {
-      "id": "D10.T04",
-      "label": "Cortical topographic organization",
-      "domain": "D10"
-    },
-    {
-      "id": "D10.T05",
-      "label": "Latent biological spike process",
+      "label": "Physical spiking neuron and synapse device",
       "domain": "D10"
     },
     {
       "id": "D11.T01",
-      "label": "Adversarial attack mechanisms",
+      "label": "Neural population dynamics model",
       "domain": "D11"
     },
     {
       "id": "D11.T02",
-      "label": "Adversarial defense mechanisms",
+      "label": "Brain-signal decoding model",
       "domain": "D11"
     },
     {
       "id": "D11.T03",
-      "label": "Dynamical stability analysis",
+      "label": "Biophysical circuit modeling",
       "domain": "D11"
     },
     {
       "id": "D11.T04",
-      "label": "Representation and receptive-field analysis",
+      "label": "Cortical topographic organization",
       "domain": "D11"
     },
     {
       "id": "D11.T05",
-      "label": "Spiking combinatorial solver",
+      "label": "Latent biological spike process",
       "domain": "D11"
     },
     {
-      "id": "D11.T06",
+      "id": "D12.T01",
+      "label": "Adversarial attack mechanisms",
+      "domain": "D12"
+    },
+    {
+      "id": "D12.T02",
+      "label": "Adversarial defense mechanisms",
+      "domain": "D12"
+    },
+    {
+      "id": "D12.T03",
+      "label": "Dynamical stability analysis",
+      "domain": "D12"
+    },
+    {
+      "id": "D12.T04",
+      "label": "Representation and receptive-field analysis",
+      "domain": "D12"
+    },
+    {
+      "id": "D12.T05",
+      "label": "Spiking combinatorial solver",
+      "domain": "D12"
+    },
+    {
+      "id": "D12.T06",
       "label": "Energy and quantization formal bounds",
-      "domain": "D11"
+      "domain": "D12"
     }
   ],
   "facets": {
