@@ -43,7 +43,8 @@ try {
  assert.ok(await page.locator('#library').evaluate(el=>el.compareDocumentPosition(document.querySelector('#lab'))&Node.DOCUMENT_POSITION_FOLLOWING),'research comes before Lab');
  assert.match(await page.locator('#resource-count').innerText(),/of 395 papers/);
  assert.equal((await page.locator('.atlas-topic[data-topic="all"]').innerText()).includes('395'),true,'All research topic count must be 395');
- assert.equal(await page.locator('.atlas-kind[data-format="paper"][aria-pressed="true"]').count(),1);
+ assert.equal(await page.locator('.atlas-kind-switch').count(),0,'retired mixed paper/software navigation removed');
+ assert.ok(await page.locator('.research-index-note a[href="./ecosystem/"]').count()>0,'software has its own destination');
  assert.equal(await page.locator('.atlas-record-link').count(),8);
  assert.equal(await page.locator('#atlas-country').count(),0,'obsolete affiliation filter removed');
  assert.equal(await page.locator('#atlas-format').count(),0,'obsolete 19-resource combined format removed');
@@ -54,15 +55,8 @@ try {
  assert.equal(await page.locator('.atlas-record-link').count(),395,'every public paper has its stable canonical research record link');
  await page.locator('#resource-more').click();
  assert.equal(await page.locator('.resource-card').count(),8,'Show fewer returns to readable preview without losing papers');
- await page.locator('.atlas-kind[data-format="resource"]').click();
- assert.match(await page.locator('#resource-count').innerText(),/of 9 tools and guides/);
  assert.equal(await page.locator('.resource-card').count(),8);
- assert.equal(await page.locator('.atlas-record-link').count(),0,'tools are not mistaken for papers');
- assert.equal(await page.locator('[data-paper-facet]:visible').count(),0,'paper-only filters hidden in tools tab');
- await page.locator('#resource-more').click();
- assert.equal(await page.locator('.resource-card').count(),9,'all 9 software and guide resources are discoverable');
- await page.locator('.atlas-kind[data-format="paper"]').click();
- assert.equal(await page.locator('.resource-card').count(),8);
+ assert.equal(await page.locator('.atlas-record-link').count(),8,'paper actions only in public research index');
  assert.match(await page.locator('#resource-count').innerText(),/395 papers/);
  assert.ok(Number(await page.locator('#spike-count').innerText())>0,'default LIF fires');
  assert.ok(Number(await page.locator('#if-count').innerText())>0,'matched IF fires');
@@ -230,7 +224,7 @@ try {
     "eyebrow":".eyebrow",
     "hero action":".hero-actions .button",
     "topic":".atlas-topic",
-    "quick type":".atlas-kind",
+    "collection index":".atlas-topic",
     "research tag":".atlas-tag",
     "search input":"#resource-search",
     "facet label":".atlas-field label",
@@ -248,7 +242,7 @@ try {
    "body":16,"resource description":16,"resource heading":20,
    "model note":16,"parameter label":15,"lab action":15,
    "resource metadata":15,"navigation":16,"footer text":15,
-   "eyebrow":14,"hero action":15,"topic":14,"quick type":15,
+   "eyebrow":14,"hero action":15,"topic":14,"collection index":14,
    "research tag":14,"search input":16,"facet label":14,
    "facet select":15,"metadata source":14,"method help":16,
    "lab legend":14,"lab stats label":14,"community note":15
@@ -266,7 +260,7 @@ try {
   if(width<=390){
     assert.equal(await page.locator('#atlas-advanced').getAttribute('open'),null,'mobile advanced filters initially closed');
     const firstRecordTop=await page.locator('.resource-card').first().evaluate(el=>el.getBoundingClientRect().top+scrollY);
-    const fullCorpusTop=await page.locator('.atlas-kind[data-format="paper"]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    const fullCorpusTop=await page.locator('.research-index-note').evaluate(el=>el.getBoundingClientRect().top+scrollY);
     assert.ok(fullCorpusTop<1450,'full 395-work entry must be visible within two standard phone viewports: '+fullCorpusTop);
     assert.ok(firstRecordTop<2300,'full public research appears within comfortable scrolling distance: '+firstRecordTop);
   }
@@ -283,7 +277,7 @@ try {
   const mobileType=await page.evaluate(()=>{
     const get=sel=>Number.parseFloat(getComputedStyle(document.querySelector(sel)).fontSize);
     return {description:get('.atlas-card > p'),title:get('.atlas-card h3'),
-      topic:get('.atlas-topic'),tag:get('.atlas-tag'),tab:get('.atlas-kind'),
+      topic:get('.atlas-topic'),tag:get('.atlas-tag'),tab:get('.atlas-topic'),
       select:get('.atlas-field select'),action:get('.atlas-card-actions a'),
       model:get('.model-note'),lab:get('.lab-status small'),nav:get('.nav-links > a')};
   });
@@ -314,9 +308,9 @@ try {
   }
  }
 
- // Final V13: one public card per unique work, no original abstracts or private upload controls.
+ // Only one public card per unique work; no original abstracts or private upload controls.
  const corpusPage=await browser.newPage({viewport:{width:1440,height:900}});
- corpusPage.on('pageerror',e=>errors.push('V13 '+e.message));
+ corpusPage.on('pageerror',e=>errors.push('Atlas '+e.message));
  await corpusPage.goto(base+'atlas/',{waitUntil:'load'});
  await corpusPage.locator('.item').first().waitFor();
  assert.match(await corpusPage.locator('#count').innerText(),/395 papers/);
@@ -386,13 +380,13 @@ try {
      title:getComputedStyle(document.querySelector('.item h3')).fontSize,
      search:getComputedStyle(document.querySelector('#q')).fontSize
    }));
-   assert.ok(fit.scroll<=fit.client+1,'V13 horizontal overflow at '+width+': '+JSON.stringify(fit));
-   assert.ok(parseFloat(fit.title)>=19,'V13 title too small at '+width);
-   assert.ok(parseFloat(fit.search)>=14,'V13 search field too small at '+width);
+   assert.ok(fit.scroll<=fit.client+1,'Atlas horizontal overflow at '+width+': '+JSON.stringify(fit));
+   assert.ok(parseFloat(fit.title)>=19,'Atlas title too small at '+width);
+   assert.ok(parseFloat(fit.search)>=14,'Atlas search field too small at '+width);
    if(width===1440)await corpusPage.screenshot({path:resolve(out,'corpus-desktop.png'),fullPage:true});
    if(width===390)await corpusPage.screenshot({path:resolve(out,'corpus-mobile.png'),fullPage:true});
  }
- // V15: carry exact multi-topic filters across the two public research pages.
+ // Preserve multi-topic filtering across both public research pages.
  await page.goto(base+'?atlas.topic=deep-architectures,sequence-language&atlas.mode=all#library');
  await page.locator('.resource-card').first().waitFor();
  const homeCount=Number((await page.locator('#resource-count').innerText()).match(/of (\d+) papers/)[1]);
