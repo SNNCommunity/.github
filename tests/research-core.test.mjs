@@ -91,3 +91,44 @@ test("semantic invariants reject mis-parented concepts and invalid normalized DO
  const bad={...data,items:works.map((x,i)=>i===raw?{...x,doi:x.doi+"/full"}:x)};
  assert.throws(()=>core.validate(bad,ontology),/Invalid or duplicate public work/);
 });
+
+test("prolific-author discovery counts canonical works exactly and keeps name variants together",()=>{
+ const leaders=core.authorIndex(works,10);
+ assert.equal(leaders.length,30);
+ assert.equal(leaders[0].name,"Zhaofei Yu");
+ assert.equal(leaders[0].papers,47);
+ assert.equal(leaders[1].papers,37);
+ assert.equal(leaders[2].papers,34);
+ assert.equal(leaders.at(-1).papers,10);
+ assert.equal(core.authorIndex(works,1).length,1147);
+ const union=new Set();
+ for(const a of leaders){
+  const hits=core.filterWorks(works,{author:a.key},ontology);
+  assert.equal(hits.length,a.papers,a.name);
+  assert.ok(hits.every(w=>w.authors.some(n=>core.authorKey(n)===a.key)),a.name);
+  hits.forEach(w=>union.add(w.id));
+ }
+ assert.equal(union.size,181);
+ assert.equal(core.filterWorks(works,{author:"zhaofei yu"},ontology).length,47);
+ assert.equal(core.filterWorks(works,{author:"Huajin Tang"},ontology).length,17);
+ assert.equal(core.filterWorks(works,{author:"HuaJin Tang"},ontology).length,17);
+ assert.equal(core.filterWorks(works,{author:"BO xu"},ontology).length,11);
+ assert.equal(core.filterWorks(works,{author:"Zhaofei"},ontology).length,0,"exact match, not substring");
+ assert.equal(core.filterWorks(works,{author:"not an indexed author"},ontology).length,0);
+ const selected=core.filterWorks(works,{author:"zhaofei yu",year:"2025"},ontology);
+ assert.ok(selected.length>0&&selected.length<47);
+ assert.ok(selected.every(w=>w.year===2025&&w.authors.some(n=>core.authorKey(n)==="zhaofei yu")));
+});
+test("author facet is present in both site entrypoints and remains abstract-free",()=>{
+ const home=readFileSync(new URL("../docs/index.html",import.meta.url),"utf8");
+ const atlas=readFileSync(new URL("../docs/atlas/index.html",import.meta.url),"utf8");
+ const homeJs=readFileSync(new URL("../docs/home-research.js",import.meta.url),"utf8");
+ const atlasJs=readFileSync(new URL("../docs/atlas/corpus.js",import.meta.url),"utf8");
+ assert.match(home,/id="atlas-author"/);
+ assert.match(atlas,/id="author"/);
+ assert.match(atlas,/id="author-featured"/);
+ assert.match(atlas,/id="author-more-list"/);
+ assert.match(homeJs,/authorIndex\(papers,10\)/);
+ assert.match(atlasJs,/authorIndex\(works,10\)/);
+ for(const js of [homeJs,atlasJs])assert.doesNotMatch(js,/privateLibrary|abstractDisplayText/);
+});

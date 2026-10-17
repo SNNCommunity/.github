@@ -9,7 +9,7 @@ const legacy={"neuron-dynamics":["D01"],"learning-plasticity":["D03"],"deep-arch
  "coding-conversion":["D02"],"efficiency-hardware":["D09","D10"],"event-vision":["D06"],
  "robotics-embodied":["D08"],"sequence-language":["D05","D07"],"neuroscience-bci":["D11"],
  "benchmarks-tools":["D13"],"theory-robustness":["D12"]};
-const ids=["group","technique","model","task","modality","year","venue","source","code","sort"];
+const ids=["author","group","technique","model","task","modality","year","venue","source","code","sort"];
 const idToEl=Object.fromEntries(ids.map(k=>[k,"atlas-"+k]));
 const min=8,step=20;
 let papers=[],ontology=null,selected=new Set(),mode="any",visible=min,domainNames=new Map(),conceptNames=new Map();
@@ -18,7 +18,7 @@ function state(){return {query:$("resource-search").value.trim(),topics:[...sele
  ...Object.fromEntries(ids.map(k=>[k,$(idToEl[k]).value]))};}
 function criteria(skipTopics=false){
  const x=state();return {query:x.query,topics:skipTopics?[]:x.topics,mode:x.mode,group:x.group==="all"?"":x.group,
-  technique:x.technique==="all"?"":x.technique,model:x.model==="all"?"":x.model,
+  author:x.author==="all"?"":x.author,technique:x.technique==="all"?"":x.technique,model:x.model==="all"?"":x.model,
   task:x.task==="all"?"":x.task,modality:x.modality==="all"?"":x.modality,
   year:x.year,venue:x.venue,source:x.source,code:x.code,sort:x.sort};
 }
@@ -28,7 +28,7 @@ function atlasURL(id=null){
  if(s.query)u.searchParams.set("q",s.query);
  if(s.topics.length===1)u.searchParams.set("topic",s.topics[0]);
  else if(s.topics.length>1){u.searchParams.set("topics",s.topics.sort().join(","));if(mode==="all")u.searchParams.set("mode","all");}
- for(const k of ["group","technique","model","task","modality","year","venue","source","code"]){
+ for(const k of ["author","group","technique","model","task","modality","year","venue","source","code"]){
   if(s[k]&&s[k]!=="all")u.searchParams.set(k,s[k]);
  }
  if(s.sort!=="recent")u.searchParams.set("sort",s.sort);
@@ -125,7 +125,7 @@ function restore(){
  selected=new Set(values);mode=q.get("atlas.mode")==="all"?"all":"any";$("atlas-topic-mode").value=mode;
  $("resource-search").value=q.get("atlas.query")||"";
  for(const k of ids){
-  const el=$(idToEl[k]),v=q.get("atlas."+k)||(k==="sort"?"recent":"all");
+  const el=$(idToEl[k]),raw=q.get("atlas."+k)||(k==="sort"?"recent":"all"),v=k==="author"?core.authorKey(raw):raw;
   el.value=[...el.options].some(o=>o.value===v)?v:k==="sort"?"recent":"all";
  }
  visible=min;render();
@@ -136,6 +136,14 @@ async function boot(){
  ontology=await tax.json();papers=core.validate(await records.json(),ontology).items;
  domainNames=new Map(ontology.domains.map(d=>[d.id,d.en]));
  conceptNames=new Map(ontology.techniques.map(t=>[t.id,t.label]));
+ const prolific=core.authorIndex(papers,10);
+ if(prolific.length!==30)throw Error("Author index mismatch: expected 30 names with 10+ papers");
+ fill("author",prolific.map(a=>a.key));
+ for(const option of [...$("atlas-author").options].slice(1)){
+  const p=prolific.find(a=>a.key===option.value);
+  option.textContent=p.name+" · "+p.papers+" papers";
+ }
+ $("atlas-author-total").textContent=prolific.length+" names · ≥10 corpus papers each";
  $("coverage-total").textContent=String(papers.length);
  $("coverage-code").textContent=String(papers.filter(p=>p.codeUrl).length);
  $("coverage-doi").textContent=String(papers.filter(p=>p.doi).length);

@@ -200,3 +200,32 @@
 .technique-explanation strong{font-size:14px;line-height:1.5;color:#175a41;overflow-wrap:anywhere}
 .technique-explanation p{font-size:13px;line-height:1.6;margin:8px 0 0;overflow-wrap:anywhere}
 .technique-explanation .mechanism-exclusion{color:#7b4d30}
+
+
+/* Prolific-author directory: complete, compact, keyboard accessible. */
+.author-directory{border-top:1px solid #c9dbcf;border-bottom:1px solid #c9dbcf;padding:23px 0;margin:4px 0 27px}
+.author-directory-top{display:flex;justify-content:space-between;align-items:end;gap:10px 25px;flex-wrap:wrap}
+.author-directory-top h3{font-size:clamp(20px,2.2vw,27px);line-height:1.2;letter-spacing:-.03em;margin:5px 0 0;color:#1d4636}
+.author-directory-top span{font-size:13px;color:#37654c;font-weight:760;padding-bottom:3px}
+.author-directory-note{font-size:13px;line-height:1.55;color:#516e5d;max-width:900px;margin:10px 0 14px}
+.author-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.author-shortcut{min-width:0;min-height:57px;padding:10px 12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:4px;
+ border-radius:6px;border:1px solid #c7dfcf;background:#f3f8f4;color:#184a35;font:inherit}
+.author-shortcut:hover{background:#e1f2e7;border-color:#609875}
+.author-shortcut[aria-pressed="true"]{background:#1d6346;border-color:#1d6346;color:#fff}
+.author-shortcut:focus-visible{outline:3px solid #d18a4d;outline-offset:2px}
+.author-shortcut-name{font-size:14px;font-weight:790;line-height:1.35;overflow-wrap:anywhere}
+.author-shortcut-count{font-size:12px;opacity:.81}
+#author-directory-more{margin-top:10px}
+#author-directory-more summary{cursor:pointer;display:flex;align-items:center;min-height:43px;font-size:14px;font-weight:700;color:#225e45}
+#author-directory-more summary:focus-visible{outline:3px solid #d18a4d;outline-offset:2px}
+#author-directory-more .author-shortcuts{padding:8px 0}
+.filters>#author{max-width:100%}
+@media(max-width:900px){.author-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){
+ .author-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .author-shortcut{padding:10px;min-height:53px}
+ .filters>label[for="author"],.filters>#author{grid-column:1/-1}
+ .author-directory{padding:18px 0 21px;margin-bottom:19px}
+}
+@media(max-width:375px){.author-shortcuts{grid-template-columns:1fr}}

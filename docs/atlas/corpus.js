@@ -4,7 +4,7 @@ const research=window.SNNResearch;
 if(!research)throw Error("Shared research core unavailable");
 const clean=research.normalize;
 const LIMIT=24;
-const FIELDS=["q","group","topic","technique","model","method","task","modality","platform","snn","genre","year","venue","source","code","sort"];
+const FIELDS=["q","group","topic","author","technique","model","method","task","modality","platform","snn","genre","year","venue","source","code","sort"];
 const facetLookup={model:"model_families",method:"learning_methods",task:"tasks",modality:"modalities",platform:"platforms"};
 const legacyTopics={"neuron-dynamics":["D01"],"learning-plasticity":["D03"],"deep-architectures":["D04"],
  "coding-conversion":["D02"],"efficiency-hardware":["D09","D10"],"event-vision":["D06"],
@@ -25,7 +25,7 @@ const genreLabels={research_article:"Research article",survey_review:"Survey / r
  dataset_benchmark:"Dataset / benchmark",framework_software:"Software / framework",
  theoretical_study:"Theoretical study",perspective_analysis:"Perspective / analysis"};
 let works=[],ontology=null,visible=LIMIT,activeDialogId=null,focusReturn=null,selectedDomains=[],matchMode="any";
-let domains=new Map(),techniques=new Map(),groups=new Map();
+let domains=new Map(),techniques=new Map(),groups=new Map(),prolific=[],authorMap=new Map();
 const element=(tag,text,cls)=>{const x=document.createElement(tag);if(text!==undefined&&text!==null)x.textContent=String(text);if(cls)x.className=cls;return x;};
 const link=(url,text,cls)=>{if(typeof url!=="string"||!/^https:\/\//.test(url))return null;
  const a=element("a",text,cls);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
@@ -33,7 +33,7 @@ const state=()=>Object.fromEntries(FIELDS.map(k=>[k,$(k).value]));
 const normalDomain=s=>/^D(?:0[1-9]|1[0-3])$/.test(s||"")?s:null;
 const selected=()=>selectedDomains.length?selectedDomains:($( "topic").value?[$("topic").value]:[]);
 function criteria(){
- const s=state();return {query:s.q,group:s.group,topics:selected(),mode:matchMode,technique:s.technique,
+ const s=state();return {query:s.q,group:s.group,topics:selected(),mode:matchMode,author:s.author,technique:s.technique,
   model:s.model,method:s.method,task:s.task,modality:s.modality,platform:s.platform,
   snn:s.snn,genre:s.genre,year:s.year,venue:s.venue,source:s.source,code:s.code,sort:s.sort};
 }
@@ -56,6 +56,7 @@ function syncURL(method="push",paper=activeDialogId){
 function labelDomain(id){const d=domains.get(id);return d?d.en:id;}
 function addOption(id,name,values){const target=$(id);for(const [value,text] of values)target.add(new Option(text,value));}
 function fillOptions(){
+ addOption("author","prolific authors",prolific.map(a=>[a.key,a.name+" · "+a.papers+" papers"]));
  addOption("group","groups",ontology.groups.map(x=>[x.id,x.en]));
  addOption("topic","domains",ontology.domains.map(x=>[x.id,x.id+" · "+x.en]));
  addOption("technique","techniques",ontology.techniques.map(x=>[x.id,x.id+" · "+x.label]));
@@ -95,7 +96,7 @@ function convertOldLinks(){
 function restore(){
  convertOldLinks();const q=new URLSearchParams(location.search);
  for(const k of FIELDS){
-  const el=$(k),value=q.get(k)||"";
+  const el=$(k),value=k==="author"?research.authorKey(q.get(k)||""):(q.get(k)||"");
   el.value=k==="q"?value:([ ...el.options ].some(v=>v.value===value)?value:(k==="sort"?"recent":""));
  }
  const batch=(q.get("topics")||"").split(",").map(normalDomain).filter(Boolean);
@@ -141,6 +142,25 @@ function card(w){
  const code=link(w.codeUrl,"Linked implementation / resource ↗","action-code");if(code)actions.append(code);
  art.append(body,actions);return art;
 }
+function buildAuthorDirectory(){
+ const authorsWithPapers=new Set(works.filter(w=>w.authors.some(n=>authorMap.has(research.authorKey(n)))).map(w=>w.id));
+ $("author-directory-total").textContent=prolific.length+" names · "+authorsWithPapers.size+" distinct papers";
+ $("author-directory-more-title").textContent="Show remaining "+Math.max(0,prolific.length-8)+" authors";
+ const button=a=>{
+   const b=element("button",null,"author-shortcut");b.type="button";b.dataset.author=a.key;
+   b.append(element("span",a.name,"author-shortcut-name"));
+   b.append(element("span",a.papers+" papers","author-shortcut-count"));
+   b.setAttribute("aria-label","Filter "+a.papers+" indexed papers by "+a.name);
+   b.setAttribute("aria-pressed","false");
+   b.addEventListener("click",()=>{
+     $("author").value=$("author").value===a.key?"":a.key;
+     visible=LIMIT;render();syncURL();
+     document.querySelector(".result-header").scrollIntoView({behavior:"smooth",block:"start"});
+   });return b;
+ };
+ $("author-featured").replaceChildren(...prolific.slice(0,8).map(button));
+ $("author-more-list").replaceChildren(...prolific.slice(8).map(button));
+}
 function shortcuts(){
  const s=state(),opts=criteria();const groupHost=$("group-shortcuts"),topicHost=$("topic-shortcuts");
  const gc=document.createDocumentFragment();
@@ -171,7 +191,8 @@ function activeChips(){
  for(const k of FIELDS.filter(k=>k!=="sort"&&k!=="topic")){
   if(!s[k])continue;
   let name=k==="group"?groups.get(s[k])?.en:k==="technique"?techniques.get(s[k])?.label:
-    k==="snn"?scopeLabels[s[k]]:k==="genre"?genreLabels[s[k]]:
+    k==="author"?authorMap.get(s[k])?.name+" (≥10 indexed papers)":
+     k==="snn"?scopeLabels[s[k]]:k==="genre"?genreLabels[s[k]]:
     k==="code"?(s[k]==="yes"?"Linked resources":"Unlinked papers"):s[k];
   add(name||s[k],()=>{$(k).value="";});
  }
@@ -182,6 +203,10 @@ function activeChips(){
 }
 function render(){
  const s=state(),opts=criteria(),matches=research.filterWorks(works,opts,ontology);
+ for(const b of document.querySelectorAll(".author-shortcut")){
+   const active=s.author===b.dataset.author;
+   b.setAttribute("aria-pressed",String(active));b.classList.toggle("is-selected",active);
+ }
  const note=$("multi-topic-note");
  note.hidden=!selectedDomains.length;
  note.textContent=selectedDomains.length?"Imported multi-domain filter: "+selectedDomains.map(labelDomain).join(" / ")+
@@ -302,6 +327,9 @@ async function boot(){
  domains=new Map(ontology.domains.map(x=>[x.id,x]));
  techniques=new Map(ontology.techniques.map(x=>[x.id,x]));
  groups=new Map(ontology.groups.map(x=>[x.id,x]));
- fillOptions();connect();applyHistory();
+ prolific=research.authorIndex(works,10);
+ if(prolific.length!==30)throw Error("Expected 30 corpus authors with at least 10 indexed papers");
+ authorMap=new Map(prolific.map(x=>[x.key,x]));
+ fillOptions();buildAuthorDirectory();connect();applyHistory();
 }
 boot().catch(err=>{console.error("Research Atlas:",err);$("count").textContent="Catalog unavailable";$("error").hidden=false;});

@@ -52,6 +52,36 @@ are derived from `docs/atlas/ontology.json`; curated resource metadata in
 `docs/resources.json` serves a separate editorial program and does not redefine the
 canonical ontology.
 
+## Author-based discovery (at least ten indexed papers)
+
+Both the public homepage and Research Atlas offer the **same 30 normalized
+author-name filters** derived entirely from the 395 canonical research works.
+The list is computed at runtime by `SNNResearch.authorIndex(items, 10)` from
+each paper's **complete** ordered author array, not from first-author summaries,
+private analytics files or manually curated rankings.
+
+- Count each `work-*` record once per normalized author key, using the same
+  Unicode/case/punctuation normalizer as search. For example, `HuaJin Tang`
+  and `Huajin Tang` share a key, but their display spellings in publication
+  records remain unchanged.
+- Exactly **30** name keys occur in at least **10** distinct works. Across these
+  names the set of covered publications contains **181** distinct works.
+  Counts are within this collection, not researchers' lifetime productivity.
+- The author filter is **exact** after normalization. It can be combined with
+  domain, model, learning technique, task, year, source and resource filters.
+  Preserve and restore `?author=<normalized-name>` on the Atlas and
+  `?atlas.author=<normalized-name>` on the homepage.
+- Less frequently occurring authors remain discoverable through full-text
+  author-name search; they are only omitted from the dedicated selector.
+- These are normalized **name strings**. No ORCID-level or other identity
+  disambiguation was performed, so different individuals with the same name
+  may be pooled. Do not publish a definitive researcher ranking, affiliation,
+  verified identity or productivity claim based on this filter.
+
+The interface displays the eight highest-count names as convenient shortcuts,
+the remaining 22 in an expandable directory, and all 30 in a select menu.
+Both lists are generated from the same source every time.
+
 ## Compatibility and regeneration
 
 Public work IDs are preserved to prevent broken bookmarks. Inbound historical

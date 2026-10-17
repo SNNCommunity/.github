@@ -53,6 +53,30 @@ function validate(data,ontology){
  if(data.items.filter(w=>w.resourceType==="repository").length!==153)throw Error("Repository link count mismatch");
  return data;
 }
+/* Count distinct corpus works per normalized author name, not raw spelling or authorship slots.
+   This is a name-key index, not a person-identity or ORCID disambiguation service. */
+const authorKey=name=>normalize(name);
+function authorIndex(items,minPapers=10){
+ const records=new Map();
+ for(const w of items){
+  const inPaper=new Set();
+  for(const raw of w.authors||[]){
+   const key=authorKey(raw);
+   if(!key||inPaper.has(key))continue;
+   inPaper.add(key);
+   let entry=records.get(key);
+   if(!entry){entry={key,paperIds:new Set(),spellings:new Map()};records.set(key,entry);}
+   entry.paperIds.add(w.id);
+   entry.spellings.set(raw,(entry.spellings.get(raw)||0)+1);
+  }
+ }
+ return [...records.values()].filter(a=>a.paperIds.size>=minPapers).map(a=>({
+  key:a.key,
+  name:[...a.spellings].sort((x,y)=>y[1]-x[1]||x[0].localeCompare(y[0],"en"))[0][0],
+  papers:a.paperIds.size,
+  variants:[...a.spellings.keys()].sort((x,y)=>x.localeCompare(y,"en"))
+ })).sort((a,b)=>b.papers-a.papers||a.name.localeCompare(b.name,"en"));
+}
 function domainNames(ontology){return new Map((ontology?.domains||[]).map(x=>[x.id,[x.en,x.zh].join(" ")]));}
 function searchText(w,ontology){
  const d=domainNames(ontology),tech=new Map((ontology?.techniques||[]).map(x=>[x.id,x.label]));
@@ -61,7 +85,7 @@ function searchText(w,ontology){
   ...facetKeys.flatMap(k=>w.facets[k]||[]),w.snnInvolvement,w.publicationGenre].filter(x=>x!=null).join(" "));
 }
 function filterWorks(items,opts={},ontology){
- const s={query:"",topics:[],mode:"any",domain:"",group:"",technique:"",model:"",method:"",task:"",modality:"",
+ const s={query:"",topics:[],mode:"any",domain:"",group:"",author:"",technique:"",model:"",method:"",task:"",modality:"",
   platform:"",snn:"",genre:"",year:"",venue:"",source:"",code:"",sort:"recent",...opts};
  const terms=normalize(s.query).split(" ").filter(Boolean);
  const allowedGroup=new Set((ontology?.groups||[]).find(g=>g.id===s.group)?.domains||[]);
@@ -70,6 +94,7 @@ function filterWorks(items,opts={},ontology){
  return items.filter(w=>{
   if(s.group&&(!allowedGroup.size||!w.domains.some(d=>allowedGroup.has(d))))return false;
   if(domains.length&&(s.mode==="all"?!domains.every(d=>w.domains.includes(d)):!domains.some(d=>w.domains.includes(d))))return false;
+  if(s.author&&!w.authors.some(name=>authorKey(name)===authorKey(s.author)))return false;
   if(s.technique&&!w.techniques.includes(s.technique))return false;
   for(const [opt,key] of Object.entries(facetFilters))if(s[opt]&&!w.facets[key].includes(s[opt]))return false;
   if(s.snn&&w.snnInvolvement!==s.snn)return false;
@@ -88,7 +113,7 @@ function topicCounts(items,opts,ontology){
  for(const w of base)for(const d of w.domains)counts.set(d,(counts.get(d)||0)+1);
  return {total:base.length,counts};
 }
-const api=Object.freeze({normalize,displayTitle,validate,searchText,filterWorks,topicCounts,sourceLabel});
+const api=Object.freeze({normalize,authorKey,authorIndex,displayTitle,validate,searchText,filterWorks,topicCounts,sourceLabel});
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.SNNResearch=api;
 })(typeof window!=="undefined"?window:globalThis);
