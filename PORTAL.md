@@ -6,11 +6,17 @@
 
 ## Directory overview
 
-- `docs/index.html` — semantic layout, scientific explanation, social and search metadata.
+- `docs/index.html` — search-first homepage, complete bibliography preview, and interactive neuron experiment.
+- `docs/atlas/` — dedicated 395-work research browser.
+- `docs/ecosystem/` — deduplicated open software directory, fed by `docs/resources.json`.
+- `docs/learn/` and `docs/experiments/` — independent learning and numerical experiment workspaces.
+- `docs/portal.css` — shared layout and typography for standalone workspaces.
 - `docs/styles.css` — responsive design tokens, accessibility and scientific figure styling.
 - `docs/neuron-core.js` — pure numerical reference used by the browser.
-- `docs/app.js` — plot, controls, navigation and resource rendering.
-- `docs/resources.json` — canonical machine-readable, provenance-indexed research links.
+- `docs/app.js` — neuron plot, parameter controls and mobile navigation.
+- `docs/home-research.js` and `docs/research-core.js` — one public bibliography and common research filtering.
+- `docs/atlas/works.json` — authoritative public 395-work bibliography without abstracts.
+- `docs/resources.json` — ten curated paper records and nine external software/learning links.
 - `docs/og-card.svg` and `docs/social-card.png` — editable OG artwork and PNG preview.
 - `docs/favicon.svg` and `docs/avatar.png` — icon source and 512 px avatar export.
 - `docs/404.html`, `docs/.nojekyll` — static Pages maintenance.
@@ -65,11 +71,11 @@ focus remain supported. These design targets are not an independent WCAG
 certification. Browser checks validate computed font sizes and minimum control
 bounds across 1440, 768, 390 and 320 CSS pixel viewports.
 
-The homepage initially renders **eight** paper cards from the shared 395-work bibliography and reveals 20 more per click. A separate tools tab contains nine original resources. The homepage supports full-corpus title, indexed-author, topic and DOI search, Any/All topic matching, source/code/year/venue filters, and shareable URLs. The Atlas initially renders 24 paper cards, with separate code and DOI links and quick topic shortcuts. For most papers only the first author is currently indexed, so search does not yet cover all coauthors. The homepage coverage strip is computed from `docs/atlas/works.json` and can toggle code-only results. In the Atlas, facet chips and the URL retain filter state on Back/Forward navigation.
+The homepage initially renders **eight** paper cards from the shared 395-work bibliography and reveals 20 more per click. Software and learning resources are instead available at `/ecosystem/`, where nine indexed links correspond to seven distinct external projects. The homepage supports full-corpus title, indexed-author, topic and DOI search, Any/All topic matching, source/code/year/venue filters, and shareable URLs. The Atlas initially renders 24 paper cards, with separate code and DOI links and quick topic shortcuts. For most papers only the first author is currently indexed, so search does not yet cover all coauthors. The homepage coverage strip is computed from `docs/atlas/works.json` and can toggle code-only results. In the Atlas, facet chips and the URL retain filter state on Back/Forward navigation.
 
 ## Research resource governance
 
-`docs/resources.json` (schema v2) is the source of 19 featured entries (10 papers within the 395-work corpus plus 9 independent resources); the full 395-work canonical catalog is `docs/atlas/works.json`. It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/atlas-core.js` engine handles deterministic multi-facet filtering. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
+`docs/resources.json` (schema v2) is the source of 19 featured entries (10 papers within the 395-work corpus plus 9 independent resources); the full 395-work canonical catalog is `docs/atlas/works.json`. It records topics, original URLs, formal year and venue for papers, DOI when confirmed, code and license sources, and cited university/country author affiliations where verified. Entries remain `indexed_not_reproduced`. The pure `docs/research-core.js` module handles full-corpus bibliographic search; `docs/atlas-core.js` supports the separately curated records. **Country means academic author affiliation, not nationality**; author affiliation is never inferred for software. Null license means **not validated**, not public domain. See [RESEARCH_ATLAS.md](RESEARCH_ATLAS.md) for the taxonomy, venue/year rules and evidence model.
 
 Paper DOIs are sourced from original publisher or authors' publication records. Resource inclusion is **not a claim of affiliation or of independent technical reproduction**.
 
@@ -107,18 +113,20 @@ No analytics, cookies, external fonts, CDN JavaScript or user-account services a
 
 See [RESEARCH_STANDARDS.md](RESEARCH_STANDARDS.md) for wider scientific contribution policy, and [GOVERNANCE.md](GOVERNANCE.md) for the provisional maintenance model.
 
-## V10 research-first web interface
+## Current page and compatibility contract
 
-The public home page leads with the Research Atlas before the full LIF/IF Lab and educational paths. A compact editorial list replaces three-column research cards; content-type quick switches mirror the advanced format selector. Topic links in dedicated research records return to a shareable filtered Atlas view. On narrow viewports the hero illustration is omitted, advanced facets start collapsed, and papers introduce research methods before institutional evidence. These are presentation changes only; numerical model definitions and verification boundaries remain unchanged. Browser checks assert the research-first section order, mobile discovery distance, responsive paper layout and separated footer text.
+The homepage searches the same **395 unique research works** as `/atlas/`. Source-version metadata represents 396 historic entries because one Spikingformer preprint and its published record are combined. The homepage initially displays eight research cards and expands by 20; the Atlas begins with 24. All advanced research filters and shareable `atlas.*` homepage search parameters remain supported.
 
-## V11 scientific typography and accessible reading
+Standalone pages are `/ecosystem/`, `/learn/` and `/experiments/`. The ecosystem directory groups nine canonical links into seven distinct external projects. The homepage no longer embeds a second software browser or duplicate learning-card section. Old homepage URLs using `atlas.format=resource` redirect to `/ecosystem/`. Existing `/atlas/?paper=<id>` work links and historic positional `?record=` compatibility remain in the dedicated Atlas.
 
-The portal uses a 16px body baseline. Research descriptions and scientific method explanations are at least 16px. Primary controls target 15px, and visible supporting metadata has a 14px minimum. Paper pages follow the same reader type scale in `docs/paper.css`. The interactive neuron Canvas label text grows from 11/12px to 13/14px. Most added type rules use rem units so users can enlarge the root font without breaking the hierarchy. Chromium tests evaluate computed sizes at desktop and mobile widths, check 125% root font scaling and reject unwanted horizontal overflow. Smaller schematic annotations never replace textual scientific definitions.
+The static paper-page generator owns `docs/sitemap.xml`; never hand-edit the sitemap without updating `scripts/build-paper-pages.mjs`. That generator publishes the homepage, Atlas, the three standalone routes and ten curated paper pages. Full original abstracts and offline private research notes must never be included in any public file or generated asset.
 
-## Final 395-paper public research catalogue (V13)
+Run the test suite and confirm that tracked generated files remain deterministic:
 
-The public homepage's **All research 395** directly renders the complete `docs/atlas/works.json` collection, as does `/atlas/`; these are two views of the same 395 unique research works. The editorial 10 papers are featured members, not additional records. Public records show only metadata, primary sources, original code and publication-version lineage. Full abstracts are provided separately in the standalone, offline private 395-work ZIP and are never uploaded to the public website. The stale 396-record dual-mode navigation, upload control and legacy public corpus files have been removed. Deep links use stable work identifiers via `?paper=...` rather than old ordinal positions.
+```bash
+node scripts/build-paper-pages.mjs
+node --test tests/*.test.mjs
+node tests/browser-smoke.mjs
+```
 
-## V14: homepage bibliographic unification
-
-The root page no longer uses the 19-entry `docs/resources.json` as its complete research search universe. `docs/home-research.js` loads `docs/atlas/works.json` and renders all **395 unique works** with title, author, year, venue, DOI, topic, code and source-status filters. A distinct **Tools & guides · 9** tab reads only nine non-paper resources from `docs/resources.json`; the ten deeper curated method notes are linked from their canonical work cards but do not create extra paper entries. Homepage query state uses `atlas.*` and shares clean URLs without unrelated private parameters. The original 395-work `/atlas/` page and Neuron Lab are unchanged. The old combined 19-result renderer, country/university filters (unsupported for most works), and duplicated catalog count code have been removed from the homepage.
+Browser tests require the repository's Playwright dependencies and Chromium installation. Review route links, responsive overflow, filters, paper coverage and the LIF/IF reference before merging.
