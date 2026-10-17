@@ -497,6 +497,7 @@ input[type=range] { width:100%; height:32px; accent-color:#247962; cursor:pointe
 /* V11 / Readability system. Applied after all responsive rules in the editorial theme.
    Primary copy >= 16px; operational metadata >= 14px; prominent actions >= 15px.
    rem units honor browser/user font-size settings. No fixed-height truncation. */
+/* Scientific readability and accessible controls. */
 :root{
   --type-body:1rem;
   --type-ui:.9375rem;
