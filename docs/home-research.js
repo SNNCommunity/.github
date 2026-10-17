@@ -125,7 +125,7 @@ function restore(){
  selected=new Set(values);mode=q.get("atlas.mode")==="all"?"all":"any";$("atlas-topic-mode").value=mode;
  $("resource-search").value=q.get("atlas.query")||"";
  for(const k of ids){
-  const el=$(idToEl[k]),v=q.get("atlas."+k)||(k==="sort"?"recent":"all");
+  const el=$(idToEl[k]),raw=q.get("atlas."+k)||(k==="sort"?"recent":"all"),v=k==="author"?core.authorKey(raw):raw;
   el.value=[...el.options].some(o=>o.value===v)?v:k==="sort"?"recent":"all";
  }
  visible=min;render();
