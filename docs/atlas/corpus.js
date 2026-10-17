@@ -1,4 +1,4 @@
-/* SNN Research Atlas V13: one public, deduplicated 395-work bibliography. */
+/* Source-linked canonical research Atlas: 395 unique public works. */
 const $=id=>document.getElementById(id);
 const research=window.SNNResearch;
 if(!research)throw Error("Shared research index is unavailable");
@@ -227,7 +227,7 @@ function migrateLegacyRecordURL(){
      x.versions?.some(v=>v.sourceIndex===index));
    if(work)u.searchParams.set("paper",work.id);
  }
- // Old positional URLs are canonicalized to stable work IDs; the public list remains 395.
+ // Historic positional links resolve to the canonical 395-work record IDs.
  history.replaceState(history.state,"",u);
 }
 function applyHistory(){
