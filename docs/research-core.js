@@ -1,82 +1,75 @@
-/* Shared, framework-free search and validation for the public 395-work collection.
-   Both the homepage and /atlas/ use these exact inclusion and sorting rules. */
+/* Canonical research search for 395 abstract-free papers and an orthogonal atomic ontology. */
 (function(root){"use strict";
-const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"")
- .toLocaleLowerCase("en").replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
-// Presentation-only normalization; canonical paper titles remain unchanged in works.json.
-const displayTitle=v=>String(v??"")
- .replace(/\$\\mathcal\{O\}\(([^$]+)\)\$/g,"O($1)")
+const normalize=v=>String(v??"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("en")
+ .replace(/[^\p{L}\p{N}]+/gu," ").trim().replace(/\s+/g," ");
+const displayTitle=v=>String(v??"").replace(/\$\\mathcal\{O\}\(([^$]+)\)\$/g,"O($1)")
  .replace(/\$O\(([^$]+)\)\$/g,"O($1)")
  .replace(/\$\^([0-9])\$/g,(_,n)=>["⁰","¹","²","³","⁴","⁵","⁶","⁷","⁸","⁹"][Number(n)])
  .replace(/\$([^$]+)\$/g,"$1");
-const WORK_FIELDS=new Set(["sourceIndex","title","year","venue","authors","authorCount",
- "doi","topics","paperUrl","codeUrl","sourceStatus","sourceWarnings",
- "abstractDetailsIncluded","id","versionCount","versions","editorialSourceChecked20261014"]);
-const VERSION_FIELDS=new Set(["sourceIndex","title","year","venue","authors","authorCount",
- "doi","topics","paperUrl","codeUrl","sourceStatus","sourceWarnings","abstractDetailsIncluded","id"]);
-const TYPES=new Set(["publisher_specific_page_not_independently_rechecked",
- "conference_index_or_aggregate_not_paper_specific","not_identified"]);
-function sourceLabel(s){
- if(s==="publisher_specific_page_not_independently_rechecked")return "Publisher-specific source (source-listed)";
- if(s==="conference_index_or_aggregate_not_paper_specific")return "Venue index / aggregate";
- return "Paper-specific source unresolved";
-}
-function validate(data){
- if(data?.schemaVersion!=="v13-public-395-works"||data.count!==395||
-   !Array.isArray(data.items)||data.items.length!==395)throw Error("Expected exactly 395 canonical works");
- const ids=new Set(),titles=new Set(),sourceIndices=new Set();let versions=0;
- for(const x of data.items){
-   const title=normalize(x.title);
-   if(Object.keys(x).some(k=>!WORK_FIELDS.has(k)))throw Error("Unexpected public research field in "+x.id);
-   if(typeof x.id!=="string"||ids.has(x.id)||!title||titles.has(title)||
-      !Array.isArray(x.authors)||!x.authors.length||!Number.isInteger(x.authorCount)||
-      x.authorCount<x.authors.length||!Array.isArray(x.topics)||!TYPES.has(x.sourceStatus)||
-      typeof x.paperUrl!=="string"||!/^https:\/\//.test(x.paperUrl)||
-      x.abstractDetailsIncluded!==false||"abstract" in x||"abstractDisplayText" in x||
-      "abstractSummaryZh" in x||"abstractOriginal" in x)
-     throw Error("Invalid or duplicate public research record "+x.id);
-   ids.add(x.id);titles.add(title);
-   if(x.versionCount!==1&&x.versionCount!==2)throw Error("Invalid version family "+x.id);
-   if(x.versionCount===2&&(!Array.isArray(x.versions)||x.versions.length!==2))
-     throw Error("Missing version lineage "+x.id);
-   const entries=x.versionCount===2?x.versions:[x];
-   for(const v of entries){
-     if(v!==x&&Object.keys(v).some(k=>!VERSION_FIELDS.has(k)))
-       throw Error("Unexpected public version field "+x.id);
-     if(!Number.isInteger(v.sourceIndex)||v.sourceIndex<0||v.sourceIndex>=396||
-        sourceIndices.has(v.sourceIndex))throw Error("Duplicate or invalid source version index "+x.id);
-     sourceIndices.add(v.sourceIndex);
-   }
-   versions+=x.versionCount;
+const statusText={publisher_specific_page_not_independently_rechecked:"Publisher-specific source (indexed)",
+ conference_index_or_aggregate_not_paper_specific:"Venue index / aggregate",
+ not_identified:"Paper-specific publication link unresolved"};
+const sourceLabel=v=>statusText[v]||"Source status unavailable";
+const keys=new Set(["id","title","year","venue","authors","authorCount","doi","paperUrl","codeUrl","sourceStatus","sourceWarnings",
+ "primaryDomain","domains","techniques","facets","snnInvolvement","publicationGenre"]);
+const facetKeys=["model_families","learning_methods","tasks","modalities","platforms","contributions"];
+function validate(data,ontology){
+ if(data?.schemaVersion!=="atomic-public-395-v1"||data.count!==395||data.items?.length!==395)
+  throw Error("Expected 395 unique canonical research works");
+ const ids=new Set(),titles=new Set();let technical=0;const used=new Set();
+ const dset=new Set((ontology?.domains||[]).map(x=>x.id));
+ const tset=new Set((ontology?.techniques||[]).map(x=>x.id));
+ for(const w of data.items){
+  if(Object.keys(w).some(k=>!keys.has(k)))throw Error("Unexpected or private research field in "+w.id);
+  const title=normalize(w.title);
+  if(!w.id||ids.has(w.id)||!title||titles.has(title)||!Array.isArray(w.authors)||!w.authors.length||
+   !Array.isArray(w.domains)||!w.domains.includes(w.primaryDomain)||!Array.isArray(w.techniques)||!w.facets||
+   !/^https:\/\//.test(w.paperUrl||"")||!("sourceStatus" in w))
+   throw Error("Invalid or duplicate public work "+w.id);
+  for(const t of w.techniques){if(ontology&&!tset.has(t))throw Error("Unknown concept "+t);used.add(t);}
+  if(ontology&&w.domains.some(d=>!dset.has(d)))throw Error("Unknown domain "+w.id);
+  for(const k of facetKeys)if(!Array.isArray(w.facets[k]))throw Error("Invalid facet "+k);
+  ids.add(w.id);titles.add(title);technical+=w.techniques.length;
  }
- if(versions!==396||sourceIndices.size!==396||data.abstractsStored!==0)throw Error("Public version lineage or abstract policy mismatch");
+ if(ontology&&(ontology.domains.length!==13||ontology.groups.length!==6||ontology.techniques.length!==69||
+    used.size!==69||technical!==280))throw Error("Ontology coverage mismatch");
+ if(data.items.filter(w=>w.techniques.length).length!==226)throw Error("Technical evidence count mismatch");
+ if(data.items.filter(w=>w.codeUrl).length!==159)throw Error("Indexed code/resource coverage mismatch");
  return data;
 }
-function searchText(x,names){
- const list=[x.title,...(x.authors||[]),x.doi,x.year,x.venue,
-  ...(x.topics||[]).flatMap(t=>[t,names?.get(t)||""])];
- return normalize(list.filter(x=>x!=null).join(" "));
+function domainNames(ontology){return new Map((ontology?.domains||[]).map(x=>[x.id,[x.en,x.zh].join(" ")]));}
+function searchText(w,ontology){
+ const d=domainNames(ontology),tech=new Map((ontology?.techniques||[]).map(x=>[x.id,x.label]));
+ return normalize([w.title,...w.authors,w.doi,w.year,w.venue,
+  ...w.domains.flatMap(x=>[x,d.get(x)]),...w.techniques.flatMap(x=>[x,tech.get(x)]),
+  ...facetKeys.flatMap(k=>w.facets[k]||[]),w.snnInvolvement,w.publicationGenre].filter(x=>x!=null).join(" "));
 }
-function filterWorks(items,opts={},names=new Map()){
- const s={query:"",topics:[],mode:"any",year:"all",venue:"all",source:"all",code:"all",sort:"recent",...opts};
- const ts=s.topics||[],terms=normalize(s.query).split(" ").filter(Boolean);
- const matches=items.filter(x=>{
-   if(ts.length&&(s.mode==="all"?!ts.every(t=>x.topics.includes(t)):!ts.some(t=>x.topics.includes(t))))return false;
-   if(s.year&&s.year!=="all"&&String(x.year)!==String(s.year))return false;
-   if(s.venue&&s.venue!=="all"&&x.venue!==s.venue)return false;
-   if(s.source&&s.source!=="all"&&x.sourceStatus!==s.source)return false;
-   if(s.code&&s.code!=="all"&&(s.code==="yes"?!x.codeUrl:!!x.codeUrl))return false;
-   const text=searchText(x,names);
-   return terms.every(t=>text.includes(t));
- });
- matches.sort((a,b)=>s.sort==="title"?a.title.localeCompare(b.title,"en"):
-   s.sort==="oldest"?(a.year||9999)-(b.year||9999)||a.title.localeCompare(b.title,"en"):
-   (b.year||-1)-(a.year||-1)||a.title.localeCompare(b.title,"en"));
- return matches;
+function filterWorks(items,opts={},ontology){
+ const s={query:"",topics:[],mode:"any",domain:"",group:"",technique:"",model:"",method:"",task:"",modality:"",
+  platform:"",snn:"",genre:"",year:"",venue:"",source:"",code:"",sort:"recent",...opts};
+ const terms=normalize(s.query).split(" ").filter(Boolean);
+ const allowedGroup=new Set((ontology?.groups||[]).find(g=>g.id===s.group)?.domains||[]);
+ const domains=s.topics.length?s.topics:(s.domain?[s.domain]:[]);
+ const facetFilters={model:"model_families",method:"learning_methods",task:"tasks",modality:"modalities",platform:"platforms"};
+ return items.filter(w=>{
+  if(s.group&&(!allowedGroup.size||!w.domains.some(d=>allowedGroup.has(d))))return false;
+  if(domains.length&&(s.mode==="all"?!domains.every(d=>w.domains.includes(d)):!domains.some(d=>w.domains.includes(d))))return false;
+  if(s.technique&&!w.techniques.includes(s.technique))return false;
+  for(const [opt,key] of Object.entries(facetFilters))if(s[opt]&&!w.facets[key].includes(s[opt]))return false;
+  if(s.snn&&w.snnInvolvement!==s.snn)return false;
+  if(s.genre&&w.publicationGenre!==s.genre)return false;
+  if(s.year&&s.year!=="all"&&String(w.year)!==String(s.year))return false;
+  if(s.venue&&s.venue!=="all"&&w.venue!==s.venue)return false;
+  if(s.source&&s.source!=="all"&&w.sourceStatus!==s.source)return false;
+  if(s.code&&s.code!=="all"&&(s.code==="yes"?!w.codeUrl:!!w.codeUrl))return false;
+  const hay=searchText(w,ontology);return terms.every(t=>hay.includes(t));
+ }).sort((a,b)=>s.sort==="title"?a.title.localeCompare(b.title,"en"):
+  s.sort==="oldest"?(a.year||9999)-(b.year||9999)||a.title.localeCompare(b.title,"en"):
+  (b.year||-1)-(a.year||-1)||a.title.localeCompare(b.title,"en"));
 }
-function topicCounts(items,opts,names){
- const base=filterWorks(items,{...opts,topics:[]},names),counts=new Map();
- for(const x of base)for(const t of x.topics)counts.set(t,(counts.get(t)||0)+1);
+function topicCounts(items,opts,ontology){
+ const base=filterWorks(items,{...opts,topics:[],domain:"",group:""},ontology),counts=new Map();
+ for(const w of base)for(const d of w.domains)counts.set(d,(counts.get(d)||0)+1);
  return {total:base.length,counts};
 }
 const api=Object.freeze({normalize,displayTitle,validate,searchText,filterWorks,topicCounts,sourceLabel});

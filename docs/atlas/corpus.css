@@ -124,3 +124,72 @@
  .section-intro{padding:27px 0 18px}
  .section-intro h2{font-size:32px}
 }
+
+
+/* Research Atlas atomic ontology · canonical 395-work experience */
+.atlas-hero{padding:clamp(45px,5vw,74px) 0}
+.atlas-shortcuts{display:block;padding:7px 0 25px}
+.shortcut-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;
+ font-size:12px;font-weight:780;letter-spacing:.06em;color:#446957;margin:3px 0 14px}
+.group-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.group-shortcut{min-height:62px;text-align:left;display:flex;align-items:center;padding:12px 14px;
+ color:#25543e;border:1px solid #b9d5c3;background:#ecf5ef;border-radius:5px;
+ font-size:14px;font-weight:750;line-height:1.4;cursor:pointer}
+.group-shortcut:hover{background:#d5ecdd;border-color:#599973}
+.group-shortcut[aria-pressed="true"]{background:#185b43;color:#fff;border-color:#185b43}
+.group-shortcut:focus-visible{outline:3px solid #cb7750;outline-offset:3px}
+.topic-shortcuts{gap:7px}
+.topic-shortcut{font-size:13px;min-height:44px;line-height:1.45;text-align:left;letter-spacing:0}
+.workspace{grid-template-columns:minmax(255px,285px) minmax(0,1fr);gap:25px}
+.filters{gap:8px;min-width:0}
+.filters>input,.filters>select{max-width:100%;min-width:0}
+.filters label{font-size:14px;line-height:1.45;margin-top:7px}
+.facet-details{min-width:0;margin-top:12px;padding-top:12px;border-top:1px solid #dce9df}
+.facet-details summary{cursor:pointer;min-height:44px;padding:9px 0;color:#205a44;font-size:14px;font-weight:800}
+.facet-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;padding-bottom:6px}
+.facet-fields label{margin-top:8px}
+.facet-fields select{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.atomic-preview{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:10px 0 13px}
+.atomic-caption{font-size:11px;letter-spacing:.08em;font-weight:800;color:#2a7755}
+.atomic-pill{font-size:12px;color:#185943;background:#e6f2e9;border:1px solid #c4dfcb;
+ padding:5px 9px;border-radius:4px;line-height:1.4}
+.idle-chip{font-size:13px;color:#4c6e5c}
+.item{border-left:3px solid #d2e4d6}
+.item .fine{font-size:13px;line-height:1.55}
+.detail-primary{font-size:15px!important;font-weight:800;color:#175d43!important;
+ padding:11px 13px;background:#e8f3ea;border-left:3px solid #39765c;margin:10px 0 16px}
+.detail-authors{color:#334f40!important}
+.record-facet{border-top:1px solid #d6e4d9;margin:14px 0;padding-top:10px}
+.record-facet h3{font-size:14px;margin:4px 0 10px}
+.record-facet .tags{display:flex;flex-wrap:wrap;gap:6px}
+.record-facet .tags span{font-size:13px;line-height:1.45;overflow-wrap:anywhere;
+ border-radius:3px;background:#f0f7f1;padding:5px 9px;border:1px solid #ceded0}
+.factgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.factgrid strong{font-size:13px;line-height:1.5}
+.detail-content{padding-bottom:32px}
+.detail-content .fine{font-size:13px;color:#587262;line-height:1.6}
+@media(max-width:920px){
+ .group-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .workspace{grid-template-columns:minmax(210px,250px) minmax(0,1fr);gap:14px}
+}
+@media(max-width:680px){
+ .group-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .group-shortcut{min-height:61px;padding:11px;font-size:12px}
+ .shortcut-heading{align-items:start;flex-direction:column;gap:4px}
+ .atlas-shortcuts{padding:0 0 17px}
+ .workspace{grid-template-columns:minmax(0,1fr)}
+ .filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px}
+ .filter-top,.filters>label:first-of-type,.filters>#q,.filters>.facet-details,.filters>.filter-note,#multi-topic-note{grid-column:1/-1}
+ .filters>label[for="group"],.filters>label[for="topic"],.filters>label[for="technique"]{grid-column:1/-1}
+ .filters>#group,.filters>#topic,.filters>#technique{grid-column:1/-1}
+ .facet-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px}
+ .facet-fields label{grid-column:1/-1}
+ .facet-fields select{grid-column:1/-1}
+ .detail-content{padding:18px 18px 25px}
+}
+@media(max-width:375px){
+ .group-shortcuts{grid-template-columns:1fr}
+ .filters{grid-template-columns:1fr}
+ .factgrid{grid-template-columns:1fr}
+ .item .actions{grid-template-columns:1fr}
+}

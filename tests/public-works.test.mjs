@@ -2,51 +2,44 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync,existsSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
-const db=JSON.parse(read("docs/atlas/works.json"));
-const sourceCount=Object.groupBy?Object.groupBy(db.items,x=>x.sourceStatus):null;
-test("public corpus contains exactly 395 unique research works",()=>{
- assert.equal(db.schemaVersion,"v13-public-395-works");
- assert.equal(db.count,395);
- assert.equal(db.items.length,395);
- assert.equal(new Set(db.items.map(x=>x.id)).size,395);
- assert.equal(db.items.reduce((n,x)=>n+(x.versionCount||1),0),396);
- assert.equal(db.items.filter(x=>x.versionCount===2).length,1);
- const merged=db.items.find(x=>x.versionCount===2);
- assert.equal(merged.id,"work-spikingformer-spike-driven-residual-learning");
- assert.equal(merged.versions.length,2);
- assert.match(merged.title,/Key Foundation Model/);
- assert.match(merged.versions[1].title,/Spike-driven Residual Learning/);
- assert.equal(db.items.filter(x=>x.editorialSourceChecked20261014).length,24);
+const data=JSON.parse(read("docs/atlas/works.json"));
+const ontology=JSON.parse(read("docs/atlas/ontology.json"));
+test("single canonical 395-work public corpus and atomic research vocabulary",()=>{
+ assert.equal(data.schemaVersion,"atomic-public-395-v1");
+ assert.equal(data.items.length,395);
+ assert.equal(new Set(data.items.map(x=>x.id)).size,395);
+ assert.equal(ontology.groups.length,6);
+ assert.equal(ontology.domains.length,13);
+ assert.equal(ontology.techniques.length,69);
+ assert.equal(new Set(ontology.techniques.map(x=>x.id)).size,69);
+ assert.equal(new Set(data.items.flatMap(x=>x.techniques)).size,69);
+ assert.equal(data.items.reduce((n,x)=>n+x.techniques.length,0),280);
+ assert.equal(data.items.filter(x=>x.techniques.length).length,226);
+ assert.equal(data.items.filter(x=>x.codeUrl).length,159);
+ assert.equal(data.items.filter(x=>x.doi).length,92);
+ assert.equal(data.items.find(x=>x.title.startsWith("Spikingformer:")).title,
+   "Spikingformer: A Key Foundation Model for Spiking Neural Networks");
 });
-test("every public record has source-linked metadata with zero abstract content",()=>{
- for(const [i,x] of db.items.entries()){
-   assert.ok(x.title?.length>6,"missing title "+i);
-   assert.ok(x.authors?.length&&x.authorCount>=1,"missing author "+i);
-   assert.ok(Array.isArray(x.topics),"missing topic array "+i);
-   assert.ok(Number.isInteger(x.year)||x.year===null,"invalid year "+i);
-   assert.match(x.paperUrl,/^https:\/\//,"missing paper source "+i);
-   assert.equal(x.abstractDetailsIncluded,false);
-   assert.ok(!("abstract" in x)&&!("abstractDisplayText" in x)&&!("abstractSummaryZh" in x));
+test("public files carry no private abstracts, evidence phrases or historic version records",()=>{
+ const raw=read("docs/atlas/works.json");
+ for(const [i,w] of data.items.entries()){
+  assert.ok(w.title?.length>6,"Missing title "+i);
+  assert.ok(Array.isArray(w.authors)&&w.authors.length>0,"Missing authors "+i);
+  assert.ok(w.paperUrl?.startsWith("https://"),"Missing publication source "+i);
+  assert.ok(/^D(0[1-9]|1[0-3])$/.test(w.primaryDomain),"Invalid primary domain "+i);
+  assert.ok(w.domains.includes(w.primaryDomain),"Primary must be among active research domains "+i);
+  for(const name of ["versions","versionCount","sourceIndex","abstract","abstractOriginal","abstractEvidence",
+   "originalAbstract","abstractSummaryZh","abstractDetailsIncluded"])
+   assert.ok(!(name in w),"Retired or private field: "+name+" in "+w.id);
  }
- assert.doesNotMatch(read("docs/atlas/works.json"),/abstractOriginal|abstractDisplayText|abstractSummaryZh|original_abstract|source_grounded_editorial_abstract/);
- assert.equal(db.abstractsStored,0);
- const counts=db.items.reduce((o,x)=>(o[x.sourceStatus]=(o[x.sourceStatus]||0)+1,o),{});
- assert.equal(counts.publisher_specific_page_not_independently_rechecked,140);
- assert.equal(counts.conference_index_or_aggregate_not_paper_specific,205);
- assert.equal(counts.not_identified,50);
+ assert.doesNotMatch(raw,/"abstract"\s*:|"abstractEvidence"\s*:|abstractOriginal|source_grounded_editorial_abstract/);
+ for(const p of ["docs/atlas/corpus.json","docs/atlas/metadata.json","docs/atlas/assignments-staging.json",
+   "docs/atlas/code-links-staging.json"])assert.ok(!existsSync(p),"Unexpected staging/obsolete dataset "+p);
 });
-test("old version database, local upload widgets and ordinal links are absent",()=>{
- for(const path of ["docs/atlas/corpus.json","docs/atlas/metadata.json"])
-   assert.ok(!existsSync(path),"obsolete legacy public file remains: "+path);
- const html=read("docs/atlas/index.html");
- const js=read("docs/atlas/corpus.js");
- assert.match(html,/RESEARCH ATLAS \/ 395 PAPERS/);
- assert.doesNotMatch(html,/396|private-file|private-clear|V31 JSON|id="unit"|id="abstract"/);
- assert.doesNotMatch(js,/privateLibrary|file\.text\(|record=|corpus\.json|metadata\.json|localStorage|sessionStorage/);
- assert.match(js,/works\.json/);
- assert.match(js,/search/);
- const home=read("docs/index.html");
- assert.match(home,/id="resource-grid"/);
- assert.match(home,/class="research-index-note"/);
- assert.doesNotMatch(home,/atlas-kind-switch|data-format="resource"/);
+test("bibliographic source statuses remain transparent",()=>{
+ const n=data.items.reduce((o,w)=>(o[w.sourceStatus]=(o[w.sourceStatus]||0)+1,o),{});
+ assert.equal(n.publisher_specific_page_not_independently_rechecked,140);
+ assert.equal(n.conference_index_or_aggregate_not_paper_specific,205);
+ assert.equal(n.not_identified,50);
+ assert.equal(data.items.length,Object.values(n).reduce((a,b)=>a+b,0));
 });

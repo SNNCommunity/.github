@@ -1,189 +1,174 @@
-/* One public 395-work bibliography. Software and guides live in /ecosystem/. */
+/* Public 395-work discovery. One corpus and one atomic ontology shared with /atlas/. */
 (()=>{"use strict";
 const $=id=>document.getElementById(id);
-const research=window.SNNResearch;
-if(!research)throw Error("Shared research index is unavailable");
-const normalize=research.normalize;
-const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node;};
-const link=(url,label,cls)=>{if(!/^https:\/\//i.test(url||""))return null;const a=make("a",cls,label);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
-const fields=["year","venue","source","code","sort"];
-const opts={year:"atlas-year",venue:"atlas-venue",source:"atlas-source",code:"atlas-code",sort:"atlas-sort"};
-const topicBar=$("atlas-topics"),grid=$("resource-grid"),count=$("resource-count");
-const minView=8,pageSize=20;
-let papers=[],topics=[],selected=new Set(),mode="any",limit=minView;
-const label=id=>topics.find(t=>t.id===id)?.label||id;
-const names=()=>new Map(topics.map(t=>[t.id,[t.label,...(t.aliases||[])].join(" ")]));
-function current(){
- return {query:$("resource-search").value.trim(),topics:[...selected],mode,
-  ...Object.fromEntries(fields.map(k=>[k,$(opts[k]).value]))};
+const core=window.SNNResearch;if(!core)throw Error("Research core missing");
+const node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=String(text);return n;};
+const source=(url,label,cls)=>{if(!/^https:\/\//.test(url||""))return null;
+ const a=node("a",cls,label);a.href=url;a.target="_blank";a.rel="noopener noreferrer";return a;};
+const legacy={"neuron-dynamics":["D01"],"learning-plasticity":["D03"],"deep-architectures":["D04"],
+ "coding-conversion":["D02"],"efficiency-hardware":["D09","D10"],"event-vision":["D06"],
+ "robotics-embodied":["D08"],"sequence-language":["D05","D07"],"neuroscience-bci":["D11"],
+ "benchmarks-tools":["D13"],"theory-robustness":["D12"]};
+const ids=["group","technique","model","task","modality","year","venue","source","code","sort"];
+const idToEl=Object.fromEntries(ids.map(k=>[k,"atlas-"+k]));
+const min=8,step=20;
+let papers=[],ontology=null,selected=new Set(),mode="any",visible=min,domainNames=new Map(),conceptNames=new Map();
+const topicName=id=>domainNames.get(id)||id;
+function state(){return {query:$("resource-search").value.trim(),topics:[...selected],mode,
+ ...Object.fromEntries(ids.map(k=>[k,$(idToEl[k]).value]))};}
+function criteria(skipTopics=false){
+ const x=state();return {query:x.query,topics:skipTopics?[]:x.topics,mode:x.mode,group:x.group==="all"?"":x.group,
+  technique:x.technique==="all"?"":x.technique,model:x.model==="all"?"":x.model,
+  task:x.task==="all"?"":x.task,modality:x.modality==="all"?"":x.modality,
+  year:x.year,venue:x.venue,source:x.source,code:x.code,sort:x.sort};
 }
-function filter(skipTopics=false){
- const q=current();
- return {query:q.query,topics:skipTopics?[]:q.topics,mode:q.mode,year:q.year,venue:q.venue,source:q.source,code:q.code,sort:q.sort};
-}
-const matching=()=>research.filterWorks(papers,filter(),names());
+const matching=()=>core.filterWorks(papers,criteria(),ontology);
 function atlasURL(id=null){
- const u=new URL("./atlas/",location.href),f=current();
- if(f.query)u.searchParams.set("q",f.query);
- if(f.topics.length===1)u.searchParams.set("topic",f.topics[0]);
- else if(f.topics.length>1){
-  u.searchParams.set("topics",f.topics.sort().join(","));
-  if(f.mode==="all")u.searchParams.set("mode","all");
+ const s=state(),u=new URL("./atlas/",location.href);
+ if(s.query)u.searchParams.set("q",s.query);
+ if(s.topics.length===1)u.searchParams.set("topic",s.topics[0]);
+ else if(s.topics.length>1){u.searchParams.set("topics",s.topics.sort().join(","));if(mode==="all")u.searchParams.set("mode","all");}
+ for(const k of ["group","technique","model","task","modality","year","venue","source","code"]){
+  if(s[k]&&s[k]!=="all")u.searchParams.set(k,s[k]);
  }
- for(const k of ["year","venue","source","code"])if(f[k]!=="all")u.searchParams.set(k,f[k]);
- if(f.sort!=="recent")u.searchParams.set("sort",f.sort);
+ if(s.sort!=="recent")u.searchParams.set("sort",s.sort);
  if(id)u.searchParams.set("paper",id);
- u.hash="results";
- return u.pathname+u.search+u.hash;
+ u.hash="results";return u.pathname+u.search+u.hash;
 }
-function topicButtons(){
- const counts=research.topicCounts(papers,filter(true),names()).counts;
- const total=research.filterWorks(papers,filter(true),names()).length;
- const fragment=document.createDocumentFragment();
- for(const [id,text,n] of [["all","All research",total],...topics.map(t=>[t.id,t.label,counts.get(t.id)||0])]){
+function showPaper(w){
+ const card=node("article","resource-card atlas-card");
+ const head=node("div","resource-card-head");
+ head.append(node("span","resource-label","RESEARCH WORK"));
+ head.append(node("span","atlas-venue-label",(w.venue||"Venue pending")+" · "+(w.year||"Year pending")));
+ const h=node("h3"),a=node("a","atlas-title-link",core.displayTitle(w.title));a.href=atlasURL(w.id);h.append(a);
+ const summary=node("div","atlas-card-summary");
+ summary.append(node("span","atlas-authors",w.authors[0]+(w.authorCount>1?" et al. · "+w.authorCount+" authors indexed":"")));
+ if(w.doi&&/^10\./.test(w.doi)){const doi=source("https://doi.org/"+w.doi,"DOI · "+w.doi,"atlas-affiliation-hint");if(doi)summary.append(doi);}
+ const context=node("p",null,domainNames.get(w.primaryDomain)||w.primaryDomain);
+ const tags=node("div","atlas-card-topics");
+ for(const d of w.domains.slice(0,3))tags.append(node("span","atlas-tag",d+" · "+topicName(d)));
+ const detail=node("details","resource-evidence");detail.append(node("summary",null,"Method and scope"));
+ const explanation=node("div","resource-evidence-body");
+ if(w.techniques.length)explanation.append(node("p",null,w.techniques.map(t=>conceptNames.get(t)||t).join(" · ")));
+ else explanation.append(node("p",null,"No specific atomic technique assigned from the author abstract."));
+ explanation.append(node("p",null,"Classification is abstract-supported, not full-Methods verified."));
+ detail.append(explanation);
+ const actions=node("div","atlas-card-actions");
+ const record=node("a","atlas-record-link","Research record →");record.href=atlasURL(w.id);actions.append(record);
+ const p=source(w.paperUrl,"Publication ↗","resource-main-link");if(p)actions.append(p);
+ const c=source(w.codeUrl,"Indexed implementation / resource ↗","resource-main-link");if(c)actions.append(c);
+ card.append(head,h,summary,context,tags,detail,actions);return card;
+}
+function topics(){
+ const counts=core.topicCounts(papers,criteria(true),ontology).counts;
+ const total=core.filterWorks(papers,criteria(true),ontology).length;
+ const f=document.createDocumentFragment();
+ const data=[["all","All research",total],...ontology.domains.map(d=>[d.id,d.en,counts.get(d.id)||0])];
+ for(const [id,name,count] of data){
   const active=id==="all"?!selected.size:selected.has(id);
-  const button=make("button","atlas-topic"+(active?" is-selected":""),text);
-  button.type="button";button.dataset.topic=id;button.setAttribute("aria-pressed",String(active));
-  button.setAttribute("aria-label",text+" · "+n+" results in the research library");
-  button.append(make("span","atlas-topic-count",n));
-  button.addEventListener("click",()=>{
-   if(id==="all")selected.clear();
-   else if(selected.has(id))selected.delete(id);else selected.add(id);
-   limit=minView;render();setUrl("push");
-  });
-  fragment.append(button);
+  const b=node("button","atlas-topic"+(active?" is-selected":""),name);b.type="button";
+  b.dataset.topic=id;b.setAttribute("aria-pressed",String(active));
+  b.setAttribute("aria-label",name+" · "+count+" papers in this research category");
+  b.append(node("span","atlas-topic-count",count));
+  b.addEventListener("click",()=>{
+   if(id==="all")selected.clear();else if(selected.has(id))selected.delete(id);else selected.add(id);
+   visible=min;render();updateURL("push");
+  });f.append(b);
  }
- topicBar.replaceChildren(fragment);
-}
-function paperCard(x){
- const card=make("article","resource-card atlas-card");
- const head=make("div","resource-card-head");
- head.append(make("span","resource-label","RESEARCH WORK"));
- head.append(make("span","atlas-venue-label",(x.venue||"Venue pending")+" · "+(x.year||"Year unverified")));
- const h=make("h3"),a=make("a","atlas-title-link",research.displayTitle(x.title));
- a.href=atlasURL(x.id);h.append(a);
- const summary=make("div","atlas-card-summary");
- summary.append(make("span","atlas-authors",(x.authors?.[0]||"Author pending")+(x.authorCount>1?" et al. · "+x.authorCount+" authors":"")));
- if(x.doi&&/^10\./.test(x.doi)){const doi=link("https://doi.org/"+x.doi,"DOI · "+x.doi,"atlas-affiliation-hint");if(doi)summary.append(doi);}
- const excerpt=make("p",null,research.sourceLabel(x.sourceStatus)+(x.versionCount>1?" · Publication history linked":""));
- const tags=make("div","atlas-card-topics");
- for(const topic of (x.topics||[]).slice(0,4))tags.append(make("span","atlas-tag",label(topic)));
- const details=make("details","resource-evidence"),inner=make("div","resource-evidence-body");
- details.append(make("summary",null,"Source details"));
- if(x.sourceWarnings)inner.append(make("p","resource-review","Source or identity warning: check the publication before citing."));
- if(x.versionCount>1)inner.append(make("p","resource-review","The preprint and published version appear under one paper."));
- if(x.editorialSourceChecked20261014)inner.append(make("p","resource-review","Source checked in the October 2026 bibliography."));
- if(!inner.childNodes.length)inner.append(make("p","resource-review","Link type: "+research.sourceLabel(x.sourceStatus)+"."));
- details.append(inner);
- const actions=make("div","atlas-card-actions");
- const record=make("a","atlas-record-link","Research record →");record.href=atlasURL(x.id);actions.append(record);
- const publication=link(x.paperUrl,"Indexed publication / venue ↗","resource-main-link");if(publication)actions.append(publication);
- const code=link(x.codeUrl,"Indexed code ↗","resource-main-link");if(code)actions.append(code);
- if(x.curatedId){const curated=make("a","atlas-curated-link","Curated method notes →");
-  curated.href="./papers/"+encodeURIComponent(x.curatedId)+"/";actions.append(curated);}
- card.append(head,h,summary,excerpt,tags,details,actions);
- return card;
+ $("atlas-topics").replaceChildren(f);
 }
 function chips(){
- const fragment=document.createDocumentFragment();
- const add=(text,remove)=>{
-  const b=make("button","atlas-active-chip",text+" ×");b.type="button";
-  b.addEventListener("click",()=>{remove();limit=minView;render();setUrl("push");});fragment.append(b);
- };
- for(const t of selected)add(label(t),()=>selected.delete(t));
- const query=$("resource-search").value.trim();if(query)add("Search: "+query,()=>$("resource-search").value="");
- if(mode==="all"&&selected.size)add("Require all topics",()=>{$("atlas-topic-mode").value="any";mode="any";});
- for(const k of ["year","venue","source","code"]){
-  const el=$(opts[k]);
-  if(el.value!=="all")add(el.selectedOptions[0]?.textContent||el.value,()=>el.value="all");
+ const wrap=$("atlas-active-filters"),f=document.createDocumentFragment();
+ const add=(value,remove)=>{const b=node("button","atlas-active-chip",value+" ×");b.type="button";
+  b.addEventListener("click",()=>{remove();visible=min;render();updateURL("push");});f.append(b);};
+ for(const id of selected)add(topicName(id),()=>selected.delete(id));
+ const q=$("resource-search").value.trim();if(q)add("Search: "+q,()=>$("resource-search").value="");
+ if(mode==="all"&&selected.size)add("Require all",()=>{mode="any";$("atlas-topic-mode").value="any";});
+ for(const k of ids.filter(x=>x!=="sort")){
+  const el=$(idToEl[k]);if(el.value!=="all")add(el.selectedOptions[0]?.textContent||el.value,()=>el.value="all");
  }
- if(!fragment.childNodes.length)fragment.append(make("span","atlas-active-idle","Browsing the 395-work research library."));
- $("atlas-active-filters").replaceChildren(fragment);
+ if(!f.childNodes.length)f.append(node("span","atlas-active-idle","Exploring 395 unique research works."));
+ wrap.replaceChildren(f);
 }
 function render(){
  for(const a of document.querySelectorAll("[data-full-atlas-link]"))a.href=atlasURL();
- const matches=matching();topicButtons();chips();
- const quick=$("atlas-code-quick");
- const codeOnly=$(opts.code).value==="yes";
- quick.setAttribute("aria-pressed",String(codeOnly));
- quick.textContent=codeOnly?"Show all indexed papers ↗":"Show papers with code ↗";
- grid.replaceChildren(...matches.slice(0,limit).map(paperCard));
- count.textContent="Showing "+Math.min(limit,matches.length)+" of "+matches.length+" papers";
- $("resource-empty").hidden=matches.length!==0;
- const more=$("resource-more");more.hidden=matches.length<=minView;
- more.setAttribute("aria-expanded",String(limit>=matches.length));
- more.textContent=limit>=matches.length?"Show fewer results ↑":"Load "+Math.min(pageSize,matches.length-limit)+" more results ↓";
+ const matches=matching();topics();chips();
+ const codeOnly=$("atlas-code").value==="yes",button=$("atlas-code-quick");
+ button.setAttribute("aria-pressed",String(codeOnly));
+ button.textContent=codeOnly?"Show all research ↗":"Show works with linked resources ↗";
+ $("resource-grid").replaceChildren(...matches.slice(0,visible).map(showPaper));
+ $("resource-count").textContent="Showing "+Math.min(visible,matches.length)+" of "+matches.length+" papers";
+ $("resource-empty").hidden=matches.length>0;
+ const more=$("resource-more");more.hidden=matches.length<=min;
+ more.setAttribute("aria-expanded",String(visible>=matches.length));
+ more.textContent=visible>=matches.length?"Show fewer results ↑":"Load "+Math.min(step,matches.length-visible)+" more works ↓";
 }
-function searchURL(clean=false){
- const u=clean?new URL(location.pathname,location.origin):new URL(location.href);
- if(clean)u.hash="#library";
- for(const [k] of [...u.searchParams])if(k.startsWith("atlas."))u.searchParams.delete(k);
- const q=current();
- if(q.query)u.searchParams.set("atlas.query",q.query);
- if(q.topics.length)u.searchParams.set("atlas.topic",q.topics.sort().join(","));
- if(q.mode==="all"&&q.topics.length)u.searchParams.set("atlas.mode","all");
- for(const k of ["year","venue","source","code"])if(q[k]!=="all")u.searchParams.set("atlas."+k,q[k]);
- if(q.sort!=="recent")u.searchParams.set("atlas.sort",q.sort);
+function buildURL(cleanURL=false){
+ const u=cleanURL?new URL(location.pathname,location.origin):new URL(location.href);
+ if(cleanURL)u.hash="#library";
+ for(const [key] of [...u.searchParams])if(key.startsWith("atlas."))u.searchParams.delete(key);
+ const s=state();
+ if(s.query)u.searchParams.set("atlas.query",s.query);
+ if(s.topics.length)u.searchParams.set("atlas.topic",s.topics.sort().join(","));
+ if(s.topics.length&&s.mode==="all")u.searchParams.set("atlas.mode","all");
+ for(const k of ids)if(s[k]!=="all"&&s[k]!=="recent")u.searchParams.set("atlas."+k,s[k]);
  return u;
 }
-function setUrl(how){
- const u=searchURL();
- if(u.href!==location.href)history[how==="replace"?"replaceState":"pushState"](null,"",u);
+function updateURL(method){
+ const url=buildURL();if(url.href!==location.href)history[method==="replace"?"replaceState":"pushState"](null,"",url);
 }
-function loadURL(){
+function fill(id,values){const el=$(idToEl[id]);for(const value of values)el.add(new Option(String(value),String(value)));}
+function restore(){
  const q=new URLSearchParams(location.search);
- // Historical homepage software deep links now have a dedicated destination.
  if(q.get("atlas.format")==="resource"){location.replace("./ecosystem/");return;}
- selected=new Set((q.get("atlas.topic")||"").split(",").filter(t=>topics.some(x=>x.id===t)));
- mode=q.get("atlas.mode")==="all"?"all":"any";
- $("atlas-topic-mode").value=mode;
+ const values=(q.get("atlas.topic")||"").split(",").flatMap(s=>legacy[s]||[s]).filter(s=>domainNames.has(s));
+ selected=new Set(values);mode=q.get("atlas.mode")==="all"?"all":"any";$("atlas-topic-mode").value=mode;
  $("resource-search").value=q.get("atlas.query")||"";
- for(const k of fields){
-  const el=$(opts[k]),wanted=q.get("atlas."+k)||(k==="sort"?"recent":"all");
-  el.value=[...el.options].some(o=>o.value===wanted)?wanted:k==="sort"?"recent":"all";
+ for(const k of ids){
+  const el=$(idToEl[k]),v=q.get("atlas."+k)||(k==="sort"?"recent":"all");
+  el.value=[...el.options].some(o=>o.value===v)?v:k==="sort"?"recent":"all";
  }
- limit=minView;render();
+ visible=min;render();
 }
-function fill(select,values){
- for(const option of [...select.options].slice(1))option.remove();
- for(const value of values)select.add(new Option(String(value),String(value)));
-}
-async function load(){
- const [worksResponse,catalogResponse]=await Promise.all([fetch("./atlas/works.json"),fetch("./resources.json")]);
- if(!worksResponse.ok||!catalogResponse.ok)throw Error("Unable to load research source metadata");
- const works=research.validate(await worksResponse.json()),catalog=await catalogResponse.json();
- if(!Array.isArray(catalog.items)||!Array.isArray(catalog.topics))throw Error("Invalid research reference catalog");
- const curated=new Map(catalog.items.filter(x=>x.type==="paper").map(x=>[normalize(x.title),x.id]));
- papers=works.items.map(x=>({...x,curatedId:curated.get(normalize(x.title))||null}));
- topics=catalog.topics;
+async function boot(){
+ const [records,tax]=await Promise.all([fetch("./atlas/works.json"),fetch("./atlas/ontology.json")]);
+ if(!records.ok||!tax.ok)throw Error("Public bibliography unavailable");
+ ontology=await tax.json();papers=core.validate(await records.json(),ontology).items;
+ domainNames=new Map(ontology.domains.map(d=>[d.id,d.en]));
+ conceptNames=new Map(ontology.techniques.map(t=>[t.id,t.label]));
  $("coverage-total").textContent=String(papers.length);
- $("coverage-code").textContent=String(papers.filter(x=>x.codeUrl).length);
- $("coverage-doi").textContent=String(papers.filter(x=>x.doi).length);
- fill($("atlas-year"),[...new Set(papers.map(x=>x.year).filter(Boolean))].sort((a,b)=>b-a));
- fill($("atlas-venue"),[...new Set(papers.map(x=>x.venue).filter(Boolean))].sort((a,b)=>a.localeCompare(b)));
+ $("coverage-code").textContent=String(papers.filter(p=>p.codeUrl).length);
+ $("coverage-doi").textContent=String(papers.filter(p=>p.doi).length);
+ fill("group",ontology.groups.map(g=>g.id)); // add descriptive labels below
+ for(const opt of [...$("atlas-group").options].slice(1)){opt.textContent=ontology.groups.find(g=>g.id===opt.value).en;}
+ fill("technique",ontology.techniques.map(t=>t.id));
+ for(const opt of [...$("atlas-technique").options].slice(1)){opt.textContent=ontology.techniques.find(t=>t.id===opt.value).label;}
+ for(const [key,values] of [["model",ontology.facets.model_families],["task",ontology.facets.tasks],
+   ["modality",ontology.facets.modalities]])fill(key,values);
+ fill("year",[...new Set(papers.map(p=>p.year).filter(Boolean))].sort((a,b)=>b-a));
+ fill("venue",[...new Set(papers.map(p=>p.venue).filter(Boolean))].sort((a,b)=>a.localeCompare(b)));
  $("atlas-code-quick").addEventListener("click",()=>{
-  $(opts.code).value=$(opts.code).value==="yes"?"all":"yes";
-  limit=minView;render();setUrl("push");
+  const el=$("atlas-code");el.value=el.value==="yes"?"all":"yes";visible=min;render();updateURL("push");
  });
- for(const k of fields)$(opts[k]).addEventListener("change",()=>{limit=minView;render();setUrl("push");});
- $("atlas-topic-mode").addEventListener("change",e=>{mode=e.target.value;limit=minView;render();setUrl("push");});
- $("resource-search").addEventListener("input",()=>{limit=minView;render();setUrl("replace");});
+ for(const k of ids)$(idToEl[k]).addEventListener("change",()=>{visible=min;render();updateURL("push");});
+ $("atlas-topic-mode").addEventListener("change",v=>{mode=v.target.value;visible=min;render();updateURL("push");});
+ $("resource-search").addEventListener("input",()=>{visible=min;render();updateURL("replace");});
  $("atlas-reset").addEventListener("click",()=>{
   selected.clear();mode="any";$("atlas-topic-mode").value="any";$("resource-search").value="";
-  for(const k of fields)$(opts[k]).value=k==="sort"?"recent":"all";
-  limit=minView;render();setUrl("push");$("resource-search").focus();
+  for(const k of ids)$(idToEl[k]).value=k==="sort"?"recent":"all";
+  visible=min;render();updateURL("push");$("resource-search").focus();
  });
  $("resource-more").addEventListener("click",()=>{
-  const n=matching().length;limit=limit>=n?minView:Math.min(limit+pageSize,n);render();
+  const n=matching().length;visible=visible>=n?min:Math.min(visible+step,n);render();
  });
  $("atlas-copy").addEventListener("click",async()=>{
-  const url=searchURL(true).href;
-  try{await navigator.clipboard.writeText(url);$("atlas-copy-fallback").hidden=true;$("atlas-copy-status").textContent="Research search link copied.";}
-  catch{$("atlas-copy-input").value=url;$("atlas-copy-fallback").hidden=false;$("atlas-copy-input").select();$("atlas-copy-status").textContent="Copy the selected URL.";}
+  const url=buildURL(true).href;
+  try{await navigator.clipboard.writeText(url);$("atlas-copy-fallback").hidden=true;$("atlas-copy-status").textContent="Research link copied.";}
+  catch{$("atlas-copy-input").value=url;$("atlas-copy-fallback").hidden=false;$("atlas-copy-input").select();$("atlas-copy-status").textContent="Copy the selected research URL.";}
  });
- window.addEventListener("popstate",loadURL);
+ window.addEventListener("popstate",restore);
  if(window.matchMedia("(max-width:680px)").matches)$("atlas-advanced").open=false;
- loadURL();
+ restore();
 }
-load().catch(e=>{console.error("Research index:",e);count.textContent="Research catalog unavailable";$("resource-fallback").hidden=false;});
+boot().catch(err=>{console.error("Home research:",err);$("resource-count").textContent="Bibliography unavailable";$("resource-fallback").hidden=false;});
 })();

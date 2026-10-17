@@ -1,39 +1,37 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
-const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
-const html=read("docs/index.html");
-const css=read("docs/styles.css");
-const home=read("docs/home-research.js");
-const atlas=read("docs/atlas/corpus.js");
+import {readFileSync,existsSync} from "node:fs";
+const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
+const html=read("docs/index.html"),css=read("docs/styles.css");
+const home=read("docs/home-research.js"),atlas=read("docs/atlas/corpus.js");
 const data=JSON.parse(read("docs/atlas/works.json"));
-test("home contains one research discovery UI and routes software to its own workspace",()=>{
+test("homepage retains research-only discovery and legacy software redirects",()=>{
  assert.match(html,/action="\.\/atlas\/" method="get" role="search"/);
  assert.match(html,/id="resource-grid"/);
  assert.match(html,/class="research-index-note"/);
  assert.match(html,/href="\.\/ecosystem\/"/);
- assert.doesNotMatch(html,/class="atlas-kind-switch"|data-format="resource"|Tools &amp; guides/);
- assert.doesNotMatch(home,/function showResource|let papers=\[\],resources=|kind==="resource"|resources=catalog/);
+ assert.doesNotMatch(html,/atlas-kind-switch|data-format="resource"/);
+ assert.doesNotMatch(home,/function showResource|kind==="resource"|resources=catalog/);
  assert.match(home,/location\.replace\("\.\/ecosystem\/"\)/);
 });
-test("retired homepage promotional and duplicate-learning components have no live styles",()=>{
- assert.doesNotMatch(html,/section-statement|class="ticker"|class="path-grid"|class="hero-visual" aria-label="Illustration/);
+test("obsolete homepage components and static datasets are not present",()=>{
+ assert.doesNotMatch(html,/section-statement|class="ticker"|class="path-grid"/);
  assert.match(html,/class="home-learning-inner"/);
- for(const selector of [/\.section-statement\b/,/\.statement-inner\b/,/\.path-card\b/,/\.ticker\b/,/\.visual-heading\b/,/\.atlas-kind\b/])
-   assert.doesNotMatch(css,selector,selector.source+" is a retired selector");
- for(const required of [".portal-search",".resource-grid",".atlas-card-actions",".lab-layout",".home-learning-inner"])
-   assert.ok(css.includes(required),required+" style must remain");
+ for(const p of ["docs/atlas/corpus.json","docs/atlas/metadata.json",
+   "docs/atlas/assignments-staging.json","docs/atlas/code-links-staging.json"])
+  assert.ok(!existsSync(new URL("../"+p,import.meta.url)),p);
+ for(const select of [/\.section-statement\b/,/\.statement-inner\b/,/\.path-card\b/,/\.ticker\b/,/\.atlas-kind\b/])
+  assert.doesNotMatch(css,select);
+ assert.match(css,/\.portal-search/);
+ assert.match(css,/\.resource-grid/);
 });
-test("catalog and compatibility routes survive cleanup",()=>{
+test("395-work canonical IDs and historic inbound deep-link mapping remain stable",()=>{
  assert.equal(data.items.length,395);
- assert.equal(data.items.reduce((n,x)=>n+x.versionCount,0),396);
- assert.equal(data.abstractsStored,0);
- assert.ok(data.items.every(x=>!x.abstract&&!x.originalAbstract));
- assert.match(home,/research\.filterWorks/);
- assert.match(home,/research\.validate/);
- assert.match(atlas,/migrateLegacyRecordURL/);
- const root=read("docs/sitemap.xml");
+ assert.ok(data.items.every(w=>!w.versions&&!w.versionCount&&!w.abstract));
+ assert.match(atlas,/convertOldLinks/);
+ assert.match(atlas,/n===360\?75/);
+ assert.match(atlas,/legacyTopics/);
+ assert.match(read("docs/atlas/index.html"),/69<\/strong>/);
  for(const route of ["atlas","ecosystem","learn","experiments"])
-   assert.ok(root.includes("/.github/"+route+"/"),route);
- assert.equal(JSON.parse(read("docs/resources.json")).items.filter(x=>x.type!=="paper").length,9);
+  assert.ok(read("docs/sitemap.xml").includes("/.github/"+route+"/"));
 });

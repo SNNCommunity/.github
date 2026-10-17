@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#103d32">
-<meta name="description" content="Search 395 SNN research papers by title, author, venue, year, topic and source code.">
-<title>SNN Research Atlas · 395 Research Works</title>
+<meta name="description" content="Explore 395 unique SNN and adjacent neuromorphic research works across 6 groups, 13 domains and 69 atomic technical concepts. Filter methods, model families, tasks and sensing modalities.">
+<title>Research Atlas · 395 Papers · SNN Community</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://snncommunity.github.io/.github/atlas/">
-<link rel="stylesheet" href="./corpus.css?v=16"></head>
+<link rel="stylesheet" href="./corpus.css?v=18"></head>
 <body>
 <a class="skip" href="#results">Skip to research results</a>
 <header class="mast"><div class="wrap mastrow">
@@ -13,53 +14,66 @@
 <nav aria-label="Main navigation"><a aria-current="page" href="../atlas/">Research</a><a href="../ecosystem/">Ecosystem</a><a href="../learn/">Learn</a><a href="../experiments/">Experiments</a><a href="../#community">Community</a><a class="mast-github" href="https://github.com/SNNCommunity/.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
 </div></header>
 <main>
-<section class="hero"><div class="wrap hero-grid"><div>
-<p class="overline">RESEARCH ATLAS / 395 PAPERS</p>
-<h1>Research Atlas.<br><em>395 works, one index.</em></h1>
-<p class="lead">Search source-linked SNN research by methods, indexed authors, venues and topics. Each record connects to its available publication, DOI and code.</p>
-<div class="hero-actions"><a class="hero-primary" href="#results">Find research ↓</a><a href="../ecosystem/">Explore open tools ↗</a></div>
+<section class="hero atlas-hero"><div class="wrap hero-grid"><div>
+<p class="overline">RESEARCH ATLAS / CANONICAL 395-WORK BIBLIOGRAPHY</p>
+<h1>Research by mechanism.<br><em>Not just keywords.</em></h1>
+<p class="lead">Explore spiking neural networks through their scientific contributions, architectures and real-world tasks. Every paper has one canonical record, with linked publications and implementation resources where indexed.</p>
+<div class="hero-actions"><a class="hero-primary" href="#results">Explore the literature ↓</a><a href="#taxonomy">Understand the taxonomy ↗</a></div>
 </div><div class="metrics" aria-label="Research collection metrics">
 <div><strong>395</strong><span>Unique research works</span></div>
-<div><strong>11</strong><span>Research areas</span></div>
-<div><strong>92</strong><span>DOIs indexed</span></div>
-<div><strong>106</strong><span>Entries with code links</span></div>
+<div><strong>6 / 13</strong><span>Groups / research domains</span></div>
+<div><strong>69</strong><span>Atomic technical concepts</span></div>
+<div><strong>159</strong><span>Indexed code / resource links</span></div>
 </div></div></section>
-<div class="disclosure"><div class="wrap"><strong>Source coverage.</strong> Preprints and published versions are grouped by research work. Some links lead to proceedings indexes; check bibliographic details at the linked source.</div></div>
+<div class="disclosure"><div class="wrap"><strong>Evidence boundary.</strong> Classification uses paper titles and abstracts, not an independent audit of full Methods. Public records include no abstract text or personal notes. Some neighboring sensing and neuroscience studies are explicitly distinguished from core SNN methods.</div></div>
 <section class="wrap explorer" id="results" aria-labelledby="results-title">
-<div class="section-intro"><div><p class="overline darker">FULL PUBLIC BIBLIOGRAPHY</p><h2 id="results-title">Find a research work.</h2></div>
-<p>Filter by topic, year, venue and source. Records link to original publications and code when indexed.</p></div>
-<div class="atlas-shortcuts wrap" aria-label="Quick research filters"><span>EXPLORE TOPICS</span><div id="topic-shortcuts" class="topic-shortcuts"></div></div>
+<div class="section-intro"><div><p class="overline darker">ONE INDEX · MULTIPLE DIMENSIONS</p><h2 id="results-title">Find a research work.</h2></div>
+<p>Start with a research domain, then refine by atomic technique, model, training method, task, modality, platform or bibliographic metadata.</p></div>
+<div id="taxonomy" class="atlas-shortcuts" aria-label="Six scientific group shortcuts">
+<div class="shortcut-heading"><span>EXPLORE BY SCIENTIFIC GROUP</span><span>6 groups · 13 domains</span></div>
+<div id="group-shortcuts" class="group-shortcuts"></div>
+<div id="topic-shortcuts" class="topic-shortcuts"></div>
+</div>
 <div class="workspace">
 <aside class="filters" aria-label="Research filters">
-<div class="filter-top"><h3>Refine results</h3><button id="reset" type="button">Reset</button></div>
-<label for="q">Search title, indexed author, topic or DOI</label><input id="q" type="search" placeholder="e.g. PLIF, Spikformer, SEW-ResNet" autocomplete="off">
-<label for="topic">Research topic</label><select id="topic"><option value="">All scientific areas</option></select>
+<div class="filter-top"><h3>Refine the corpus</h3><button id="reset" type="button">Reset</button></div>
+<label for="q">Search research work, author, method or DOI</label><input id="q" type="search" placeholder="e.g. PLIF, Spike-HTR, time-parallel…" autocomplete="off">
+<label for="group">Scientific group</label><select id="group"><option value="">All six groups</option></select>
+<label for="topic">Research domain</label><select id="topic"><option value="">All 13 domains</option></select>
 <p id="multi-topic-note" class="multi-topic-note" role="status" aria-live="polite" hidden></p>
+<label for="technique">Atomic technical concept</label><select id="technique"><option value="">All 69 techniques</option></select>
+<details class="facet-details" id="facet-details" open><summary>Models, tasks and other filters</summary><div class="facet-fields">
+<label for="model">Model family</label><select id="model"><option value="">All model families</option></select>
+<label for="method">Learning method</label><select id="method"><option value="">All learning methods</option></select>
+<label for="task">Research task</label><select id="task"><option value="">All tasks</option></select>
+<label for="modality">Input modality / sensor</label><select id="modality"><option value="">All modalities</option></select>
+<label for="platform">Execution platform</label><select id="platform"><option value="">All platforms</option></select>
+<label for="snn">SNN participation</label><select id="snn"><option value="">All research scopes</option></select>
+<label for="genre">Publication genre</label><select id="genre"><option value="">All genres</option></select>
 <label for="year">Publication year</label><select id="year"><option value="">All years</option></select>
 <label for="venue">Conference / journal</label><select id="venue"><option value="">All venues</option></select>
-<label for="source">Bibliographic source type</label><select id="source">
-<option value="">All source types</option>
+<label for="source">Publication link specificity</label><select id="source"><option value="">All source types</option>
 <option value="publisher_specific_page_not_independently_rechecked">Publisher-specific source</option>
 <option value="conference_index_or_aggregate_not_paper_specific">Venue index / aggregate</option>
-<option value="not_identified">Paper-specific source unresolved</option>
-</select>
-<label for="code">Software source</label><select id="code"><option value="">All papers</option><option value="yes">Code linked</option><option value="no">Code not indexed</option></select>
-<p class="filter-note">Source labels describe the links on file, not the status of scientific verification. Complete author lists may be available in the linked publications.</p>
+<option value="not_identified">Paper-specific source unresolved</option></select>
+<label for="code">Indexed code / resource link</label><select id="code"><option value="">All papers</option><option value="yes">Has a linked resource</option><option value="no">Not indexed</option></select>
+</div></details>
+<p class="filter-note">Atomic techniques are marked only when the abstract supports an identifiable mechanism. An empty technique list does not imply a paper lacks a contribution.</p>
 </aside>
 <div class="result-col">
-<div class="result-header"><div><strong id="count" role="status" aria-live="polite">Loading all 395 research works…</strong><p id="scope-label">All indexed papers</p></div>
+<div class="result-header"><div><strong id="count" role="status" aria-live="polite">Loading 395 research works…</strong><p id="scope-label">All indexed research</p></div>
 <div class="sortbox"><label for="sort">Sort</label><select id="sort"><option value="recent">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select><button id="share" type="button">Share search ↗</button></div></div>
-<div id="share-fallback" hidden class="share-fallback"><label for="share-input">Copy the research link</label><input id="share-input" type="text" readonly></div>
-<div id="chips" class="chips" aria-label="Applied filters"></div>
-<div id="papers" class="papers" aria-label="Matching unique research papers"></div>
-<p id="none" class="notice" hidden>No matching research works. Remove filters or try another search.</p>
-<p id="error" class="notice error" role="alert" hidden>Research metadata could not be loaded. Check the public source repository.</p>
+<div id="share-fallback" hidden class="share-fallback"><label for="share-input">Copy this filtered research URL</label><input id="share-input" type="text" readonly></div>
+<div id="chips" class="chips" aria-label="Active filters"></div>
+<div id="papers" class="papers" aria-label="Matching canonical research works"></div>
+<p id="none" class="notice" hidden>No research works match these filters. Remove a condition or try another scientific term.</p>
+<p id="error" class="notice error" role="alert" hidden>Research metadata is unavailable. You can inspect the public corpus files in the repository.</p>
 <div class="pagination"><button id="more" type="button" hidden>Load more papers ↓</button></div>
 </div></div>
 </section></main>
-<dialog id="detail" aria-labelledby="detail-title"><div class="detail-top"><span>PAPER RECORD</span><button id="close" type="button" aria-label="Close research record">×</button></div><div id="detail-body"></div></dialog>
+<dialog id="detail" aria-labelledby="detail-title"><div class="detail-top"><span>CANONICAL RESEARCH RECORD</span><button id="close" type="button" aria-label="Close research record">×</button></div><div id="detail-body"></div></dialog>
 <div id="announce" role="status" aria-live="polite" class="sr"></div>
-<footer><div class="wrap footer-in"><span>SNN<span>/</span>COMMUNITY · 395 research works</span><span>Bibliography snapshot · October 2026</span><a href="../ecosystem/">Open ecosystem →</a></div></footer>
-<script src="../research-core.js?v=15"></script>
-<script type="module" src="./corpus.js?v=17"></script>
+<footer><div class="wrap footer-in"><span>SNN<span>/</span>COMMUNITY · 395 research works</span><span>Abstract-informed taxonomy · October 2026</span><a href="../ecosystem/">Explore open tooling →</a></div></footer>
+<script src="../research-core.js?v=18"></script>
+<script type="module" src="./corpus.js?v=18"></script>
 </body></html>
