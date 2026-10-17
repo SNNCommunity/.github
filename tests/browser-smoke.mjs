@@ -12,8 +12,9 @@ const server=createServer((req,res)=>{
  const path=u.pathname.startsWith('/.github/')?u.pathname.slice(9):'';
  const name=path||'index.html';
  const isAtlas=/^atlas\/(?:|index\.html|corpus\.js|corpus\.css|works\.json)$/.test(name);
+ const isPortal=/^(?:ecosystem|learn|experiments)\/(?:|index\.html)$/.test(name)||name==='ecosystem/ecosystem.js';
  const isPaper=/^papers\/[a-z0-9-]+\/(?:index\.html)?$/.test(name);
- if(!['index.html','styles.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','research-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas){
+ if(!['index.html','styles.css','portal.css','paper.css','sitemap.xml','app.js','neuron-core.js','atlas-core.js','home-research.js','research-core.js','resources.json','favicon.svg','social-card.png','og-card.svg','404.html'].includes(name)&&!isPaper&&!isAtlas&&!isPortal){
   res.writeHead(404);res.end('Not found');return;
  }
  const file=resolve('docs',name.endsWith('/')?name+'index.html':name);
@@ -414,6 +415,44 @@ try {
  const shared=await corpusPage.locator('#share-input').inputValue();
  assert.ok(shared.includes('q=Spike-HTR'));
  assert.ok(!shared.includes('token='),'dedicated Atlas share strips non-research URL params');
+ // New portal workflow and responsive cross-page discovery.
+ const portalPage=await browser.newPage({viewport:{width:1440,height:900}});
+ portalPage.on('pageerror',e=>errors.push('Portal '+e.message));
+ await portalPage.goto(base,{waitUntil:'load'});
+ await portalPage.locator('#portal-search-input').fill('Spike-HTR');
+ await Promise.all([
+  portalPage.waitForURL(url=>url.pathname.endsWith('/atlas/')&&url.searchParams.get('q')==='Spike-HTR'),
+  portalPage.locator('.portal-search button').click()
+ ]);
+ await portalPage.locator('.item').first().waitFor();
+ assert.equal(await portalPage.locator('.item').count(),1,'hero search leads to actual research results');
+ for(const route of ['ecosystem','learn','experiments']){
+  for(const width of [1440,390,320]){
+   await portalPage.setViewportSize({width,height:850});
+   await portalPage.goto(base+route+'/',{waitUntil:'load'});
+   assert.equal(await portalPage.locator('.portal-global-nav [aria-current="page"]').count(),1,route+' nav');
+   const bounds=await portalPage.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));
+   assert.ok(bounds.scroll<=bounds.width+1,route+' overflow '+width+': '+JSON.stringify(bounds));
+   if(route==='ecosystem'){
+    await portalPage.waitForFunction(()=>document.querySelectorAll('#ecosystem-grid .portal-card').length===7);
+    assert.equal(await portalPage.locator('#resource-count').innerText(),'9');
+    await portalPage.locator('[data-kind="framework"]').click();
+    assert.equal(await portalPage.locator('.portal-card').count(),3);
+    await portalPage.locator('[data-kind="all"]').click();
+    await portalPage.locator('#ecosystem-search').fill('NeuroBench');
+    assert.equal(await portalPage.locator('.portal-card').count(),1);
+    await portalPage.locator('#ecosystem-search').fill('');
+   }else if(route==='learn'){
+    assert.equal(await portalPage.locator('.portal-track').count(),4);
+    assert.ok(await portalPage.locator('.portal-track a[href="../#lab"]').count()>0);
+   }else{
+    assert.equal(await portalPage.locator('.portal-experiment').count(),1);
+    assert.ok(await portalPage.locator('a[href="../#lab"]').count()>0);
+   }
+   if(width===390)await portalPage.screenshot({path:resolve(out,'portal-'+route+'-mobile.png'),fullPage:true});
+  }
+ }
+ await portalPage.close();
  await corpusPage.close();
  assert.deepEqual(errors,[]);
  console.log('PASS 768/390/320 widths, mobile nav, and browser errors');
