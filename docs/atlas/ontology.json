@@ -1,0 +1,597 @@
+{
+  "schema": "snncommunity-ontology/1.0",
+  "description": "Public abstract-level research taxonomy; categories do not certify full Methods or code reproduction.",
+  "groups": [
+    {
+      "id": "G1",
+      "en": "Neural mechanisms and learning",
+      "zh": "基础机制与学习",
+      "domains": [
+        "D01",
+        "D02",
+        "D03"
+      ]
+    },
+    {
+      "id": "G2",
+      "en": "Architectures and temporal modeling",
+      "zh": "网络架构与时序建模",
+      "domains": [
+        "D04",
+        "D05"
+      ]
+    },
+    {
+      "id": "G3",
+      "en": "Perception, generation and action",
+      "zh": "感知、生成与行动",
+      "domains": [
+        "D06",
+        "D07",
+        "D08"
+      ]
+    },
+    {
+      "id": "G4",
+      "en": "Software systems and neuromorphic hardware",
+      "zh": "软件与神经形态硬件",
+      "domains": [
+        "D09",
+        "D10"
+      ]
+    },
+    {
+      "id": "G5",
+      "en": "Neuroscience and neurointerfaces",
+      "zh": "脑科学与神经接口",
+      "domains": [
+        "D11"
+      ]
+    },
+    {
+      "id": "G6",
+      "en": "Theory and research infrastructure",
+      "zh": "理论与科研基础设施",
+      "domains": [
+        "D12",
+        "D13"
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "id": "D01",
+      "en": "Neuron and synaptic dynamics",
+      "zh": "神经元与突触动力学",
+      "group": "G1"
+    },
+    {
+      "id": "D02",
+      "en": "Spike coding and model conversion",
+      "zh": "脉冲编码与模型转换",
+      "group": "G1"
+    },
+    {
+      "id": "D03",
+      "en": "Learning, optimization and plasticity",
+      "zh": "训练、优化与可塑性",
+      "group": "G1"
+    },
+    {
+      "id": "D04",
+      "en": "Architectures and representation",
+      "zh": "网络架构与表示",
+      "group": "G2"
+    },
+    {
+      "id": "D05",
+      "en": "Temporal state and memory",
+      "zh": "时序状态、记忆与动态计算",
+      "group": "G2"
+    },
+    {
+      "id": "D06",
+      "en": "Vision, event perception and 3D",
+      "zh": "视觉、事件感知与空间智能",
+      "group": "G3"
+    },
+    {
+      "id": "D07",
+      "en": "Language, multimodal and generation",
+      "zh": "语言、多模态与生成",
+      "group": "G3"
+    },
+    {
+      "id": "D08",
+      "en": "Reinforcement learning and embodied AI",
+      "zh": "强化学习与具身智能",
+      "group": "G3"
+    },
+    {
+      "id": "D09",
+      "en": "Software systems and high-performance computing",
+      "zh": "软件系统与高性能计算",
+      "group": "G4"
+    },
+    {
+      "id": "D10",
+      "en": "Neuromorphic devices and chips",
+      "zh": "神经形态芯片与器件",
+      "group": "G4"
+    },
+    {
+      "id": "D11",
+      "en": "Computational neuroscience and BCI",
+      "zh": "计算神经科学与脑机接口",
+      "group": "G5"
+    },
+    {
+      "id": "D12",
+      "en": "Theory, robustness and security",
+      "zh": "理论、鲁棒性与安全",
+      "group": "G6"
+    },
+    {
+      "id": "D13",
+      "en": "Datasets, evaluation and reproducibility",
+      "zh": "数据集、评测与可复现性",
+      "group": "G6"
+    }
+  ],
+  "techniques": [
+    {
+      "id": "D01.T01",
+      "label": "Adaptive firing threshold",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T02",
+      "label": "Dendritic compartment dynamics",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T03",
+      "label": "Learnable membrane time constant",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T04",
+      "label": "Resonant and oscillatory neuron",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T05",
+      "label": "Neuron heterogeneity and homeostasis",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T06",
+      "label": "Gated membrane state",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T07",
+      "label": "Inhibitory neuron dynamics",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T08",
+      "label": "Parallelizable neuron state updates",
+      "domain": "D01"
+    },
+    {
+      "id": "D01.T09",
+      "label": "Multilevel spike outputs",
+      "domain": "D01"
+    },
+    {
+      "id": "D02.T01",
+      "label": "ANN-to-SNN mapping procedure",
+      "domain": "D02"
+    },
+    {
+      "id": "D02.T02",
+      "label": "Conversion calibration and error correction",
+      "domain": "D02"
+    },
+    {
+      "id": "D02.T03",
+      "label": "Latency and TTFS coding",
+      "domain": "D02"
+    },
+    {
+      "id": "D02.T04",
+      "label": "Rate coding",
+      "domain": "D02"
+    },
+    {
+      "id": "D02.T05",
+      "label": "Phase coding",
+      "domain": "D02"
+    },
+    {
+      "id": "D02.T06",
+      "label": "Input-to-spike encoding",
+      "domain": "D02"
+    },
+    {
+      "id": "D03.T01",
+      "label": "Surrogate-gradient estimator",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T02",
+      "label": "Temporal credit assignment",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T03",
+      "label": "STDP and Hebbian synaptic update",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T04",
+      "label": "Local error and eligibility learning",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T05",
+      "label": "Self-supervised learning objective",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T06",
+      "label": "Contrastive representation objective",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T07",
+      "label": "Knowledge distillation",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T08",
+      "label": "Continual learning",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T09",
+      "label": "Federated learning",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T10",
+      "label": "Online learning",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T11",
+      "label": "Normalization for SNN optimization",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T12",
+      "label": "Training initialization",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T13",
+      "label": "Training regularization",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T14",
+      "label": "Structured pruning and sparse training",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T15",
+      "label": "Zeroth-order and gradient-free optimization",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T16",
+      "label": "Spike-aware training losses",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T17",
+      "label": "Binary-weight optimization",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T18",
+      "label": "Progressive training schedule",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T19",
+      "label": "Data augmentation",
+      "domain": "D03"
+    },
+    {
+      "id": "D03.T20",
+      "label": "Domain adaptation",
+      "domain": "D03"
+    },
+    {
+      "id": "D04.T01",
+      "label": "Spike-driven attention operator",
+      "domain": "D04"
+    },
+    {
+      "id": "D04.T02",
+      "label": "Spiking positional encoding",
+      "domain": "D04"
+    },
+    {
+      "id": "D04.T03",
+      "label": "Neural architecture search",
+      "domain": "D04"
+    },
+    {
+      "id": "D04.T04",
+      "label": "Quantized computation architecture",
+      "domain": "D04"
+    },
+    {
+      "id": "D04.T05",
+      "label": "Multi-scale feature integration",
+      "domain": "D04"
+    },
+    {
+      "id": "D04.T06",
+      "label": "Token pruning and dynamic inference",
+      "domain": "D04"
+    },
+    {
+      "id": "D05.T01",
+      "label": "Persistent recurrent state mechanism",
+      "domain": "D05"
+    },
+    {
+      "id": "D05.T02",
+      "label": "Long-horizon and multi-timescale memory",
+      "domain": "D05"
+    },
+    {
+      "id": "D05.T03",
+      "label": "Temporal information regularization",
+      "domain": "D05"
+    },
+    {
+      "id": "D05.T04",
+      "label": "Oscillatory sequence dynamics",
+      "domain": "D05"
+    },
+    {
+      "id": "D06.T01",
+      "label": "Event-stream temporal aggregation",
+      "domain": "D06"
+    },
+    {
+      "id": "D06.T02",
+      "label": "Spike-camera intensity recovery",
+      "domain": "D06"
+    },
+    {
+      "id": "D06.T03",
+      "label": "Neural 3D/4D rendering with spike supervision",
+      "domain": "D06"
+    },
+    {
+      "id": "D06.T04",
+      "label": "Motion-guided visual reconstruction",
+      "domain": "D06"
+    },
+    {
+      "id": "D07.T01",
+      "label": "Spiking policy representation",
+      "domain": "D07"
+    },
+    {
+      "id": "D08.T01",
+      "label": "GPU simulation and kernel scheduling",
+      "domain": "D08"
+    },
+    {
+      "id": "D08.T02",
+      "label": "Activation-storage optimization",
+      "domain": "D08"
+    },
+    {
+      "id": "D08.T03",
+      "label": "Edge and distributed partitioning",
+      "domain": "D08"
+    },
+    {
+      "id": "D08.T04",
+      "label": "Integer-only inference kernel",
+      "domain": "D08"
+    },
+    {
+      "id": "D08.T05",
+      "label": "Temporal-parallel state execution",
+      "domain": "D08"
+    },
+    {
+      "id": "D09.T01",
+      "label": "Memristive in-memory computing",
+      "domain": "D09"
+    },
+    {
+      "id": "D09.T02",
+      "label": "Neuromorphic chip and accelerator circuits",
+      "domain": "D09"
+    },
+    {
+      "id": "D09.T03",
+      "label": "Physical spiking neuron and synapse device",
+      "domain": "D09"
+    },
+    {
+      "id": "D10.T01",
+      "label": "Neural population dynamics model",
+      "domain": "D10"
+    },
+    {
+      "id": "D10.T02",
+      "label": "Brain-signal decoding model",
+      "domain": "D10"
+    },
+    {
+      "id": "D10.T03",
+      "label": "Biophysical circuit modeling",
+      "domain": "D10"
+    },
+    {
+      "id": "D10.T04",
+      "label": "Cortical topographic organization",
+      "domain": "D10"
+    },
+    {
+      "id": "D10.T05",
+      "label": "Latent biological spike process",
+      "domain": "D10"
+    },
+    {
+      "id": "D11.T01",
+      "label": "Adversarial attack mechanisms",
+      "domain": "D11"
+    },
+    {
+      "id": "D11.T02",
+      "label": "Adversarial defense mechanisms",
+      "domain": "D11"
+    },
+    {
+      "id": "D11.T03",
+      "label": "Dynamical stability analysis",
+      "domain": "D11"
+    },
+    {
+      "id": "D11.T04",
+      "label": "Representation and receptive-field analysis",
+      "domain": "D11"
+    },
+    {
+      "id": "D11.T05",
+      "label": "Spiking combinatorial solver",
+      "domain": "D11"
+    },
+    {
+      "id": "D11.T06",
+      "label": "Energy and quantization formal bounds",
+      "domain": "D11"
+    }
+  ],
+  "facets": {
+    "model_families": [
+      "Dendritic/multicompartment",
+      "Diffusion/generative model",
+      "Gaussian Splatting",
+      "Hybrid ANN-SNN",
+      "LIF/IF",
+      "PLIF/ALIF/adaptive neuron",
+      "Recurrent SNN",
+      "Reservoir/LSM",
+      "Spiking CNN",
+      "Spiking GNN",
+      "Spiking SSM/Mamba",
+      "Spiking Transformer",
+      "Spiking residual network"
+    ],
+    "learning_methods": [
+      "ANN-SNN conversion",
+      "BPTT",
+      "Continual learning",
+      "Knowledge distillation",
+      "Local/online learning",
+      "Reinforcement learning",
+      "STDP/Hebbian",
+      "Self-supervised/contrastive",
+      "Surrogate gradient",
+      "Unsupervised learning"
+    ],
+    "tasks": [
+      "3D/4D reconstruction",
+      "Anomaly detection",
+      "Biological neural activity generation",
+      "Control/manipulation",
+      "Event processing",
+      "Generative synthesis",
+      "Image recognition",
+      "Industrial fault diagnosis",
+      "Language modeling",
+      "Multimodal fusion",
+      "Neural decoding",
+      "OCR/HTR",
+      "Object detection",
+      "Object tracking",
+      "Optical flow/depth",
+      "Robotic navigation",
+      "Scientific simulation",
+      "Segmentation",
+      "Sequential recommendation",
+      "Speech/audio",
+      "Time-series forecasting",
+      "Visual reconstruction/restoration"
+    ],
+    "modalities": [
+      "3D point cloud",
+      "Biological spike trains",
+      "EEG/ECoG",
+      "Event camera/DVS",
+      "Frame image",
+      "Multimodal",
+      "Physiological/wearable signal",
+      "Robot action/state",
+      "Speech/audio",
+      "Spike camera",
+      "Text",
+      "Time-series sensor",
+      "Video",
+      "Wireless/mmWave radar"
+    ],
+    "platforms": [
+      "ASIC/neuromorphic chip",
+      "CPU/simulator",
+      "Edge device",
+      "FPGA",
+      "GPU/CUDA",
+      "Memristor/crossbar"
+    ],
+    "contributions": [
+      "Dataset/evaluation",
+      "Learning algorithm",
+      "Model architecture",
+      "Neural mechanism",
+      "Perception/application",
+      "Physical hardware",
+      "Software/runtime",
+      "Temporal state/memory",
+      "Theory/robustness"
+    ]
+  },
+  "involvement": [
+    "biological_spike_data_no_snn_established",
+    "hybrid_snn_described_in_abstract",
+    "neuromorphic_non_snn_method",
+    "non_snn_binary_network_inspired_by_snn",
+    "physical_neuromorphic_synaptic_device",
+    "physical_spiking_neuron_device",
+    "sensor_adjacent_snn_unconfirmed",
+    "snn_evaluation_only",
+    "snn_involvement_unconfirmed_from_abstract",
+    "snn_method_described_in_abstract",
+    "snn_software_infrastructure"
+  ],
+  "genres": [
+    "dataset_benchmark",
+    "framework_software",
+    "perspective_analysis",
+    "research_article",
+    "survey_review",
+    "theoretical_study"
+  ]
+}
