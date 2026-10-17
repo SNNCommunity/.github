@@ -78,7 +78,7 @@ function paperCard(x){
  const actions=make("div","atlas-card-actions");
  const record=make("a","atlas-record-link","Research record →");record.href=atlasURL(x.id);actions.append(record);
  const publication=link(x.paperUrl,"Indexed publication / venue ↗","resource-main-link");if(publication)actions.append(publication);
- const code=link(x.codeUrl,"Original code ↗","resource-main-link");if(code)actions.append(code);
+ const code=link(x.codeUrl,"Indexed code ↗","resource-main-link");if(code)actions.append(code);
  if(x.curatedId){const curated=make("a","atlas-curated-link","Curated method notes →");
   curated.href="./papers/"+encodeURIComponent(x.curatedId)+"/";actions.append(curated);}
  card.append(head,h,summary,excerpt,tags,details,actions);
