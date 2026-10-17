@@ -7,6 +7,14 @@ const data=read("docs/atlas/works.json"),ontology=read("docs/atlas/ontology.json
 const works=data.items;
 test("canonical validator enforces 395 unique abstract-free papers and complete ontology",()=>{
  assert.equal(core.validate(data,ontology),data);
+ assert.equal(works.filter(x=>x.authorCount>1&&x.authors.length===1).length,0);
+ assert.equal(works.filter(x=>x.legacyId).length,394);
+ assert.equal(ontology.techniques.filter(x=>x.id.split(".")[0]!==x.domain).length,0);
+ assert.equal(works.filter(x=>x.techniques.some(t=>!x.domains.includes(t.split(".")[0]))).length,0);
+ const spike=works.find(x=>x.title.startsWith("Spike-HTR:"));
+ assert.equal(spike.authors.length,6);
+ assert.equal(spike.id,"work-8e70ea8ccf3d62c");
+ assert.match(spike.paperUrl,/proceedings\.mlr\.press\/v306\/liang26j\.html/);
  for(const [key,value] of [["abstract","Confidential abstract"],["versions",[{}]],["sourceIndex",42]])
   assert.throws(()=>core.validate({...data,items:works.map((x,i)=>i?x:{...x,[key]:value})},ontology),/Unexpected|Invalid/);
  assert.throws(()=>core.validate({...data,count:396},ontology),/395/);
@@ -47,8 +55,8 @@ test("title, author, temporal methods and scientific model families are searchab
  const dual=core.filterWorks(works,{topics:["D04","D03"],mode:"all"},ontology);
  assert.ok(dual.every(x=>x.domains.includes("D04")&&x.domains.includes("D03")));
  assert.ok(core.filterWorks(works,{topics:["D04","D03"],mode:"any"},ontology).length>=dual.length);
- assert.equal(core.filterWorks(works,{source:"not_identified"},ontology).length,50);
- assert.equal(core.filterWorks(works,{source:"publisher_specific_page_not_independently_rechecked"},ontology).length,140);
+ assert.equal(core.filterWorks(works,{source:"not_identified"},ontology).length,48);
+ assert.equal(core.filterWorks(works,{source:"publisher_specific_page_not_independently_rechecked"},ontology).length,279);
  const codeSearch=core.filterWorks(works,{query:"Spike-HTR",code:"yes"},ontology);
  assert.equal(codeSearch.length,1);
 });
@@ -72,4 +80,14 @@ test("home and Atlas share same core but never expose private abstract data",()=
   assert.doesNotMatch(s,/localStorage|sessionStorage|privateLibrary|abstractDisplayText/);
  }
  assert.equal(core.displayTitle("A$^2$SG"),"A²SG");
+});
+
+test("semantic invariants reject mis-parented concepts and invalid normalized DOI",()=>{
+ const incorrect={...ontology,techniques:ontology.techniques.map((t,i)=>i? t:{...t,domain:"D08"})};
+ assert.throws(()=>core.validate(data,incorrect),/Invalid technical concept parent/);
+ const swapped={...data,items:works.map((x,i)=>i?x:{...x,techniques:["D12.T01"]})};
+ assert.throws(()=>core.validate(swapped,ontology),/Technical concept domain mismatch/);
+ const raw=works.findIndex(x=>x.doi);
+ const bad={...data,items:works.map((x,i)=>i===raw?{...x,doi:x.doi+"/full"}:x)};
+ assert.throws(()=>core.validate(bad,ontology),/Invalid or duplicate public work/);
 });
