@@ -10,7 +10,13 @@ const render=function render(p,papers,topics){
  const affs=p.affiliations||[];
  const rel=papers.filter(x=>x.id!==p.id).map(x=>({x,common:x.topics.filter(t=>p.topics.includes(t))}))
    .filter(x=>x.common.length).sort((a,b)=>b.common.length-a.common.length||a.x.title.localeCompare(b.x.title)).slice(0,3);
- const label=id=>topics.find(t=>t.id===id)?.label||id;
+ const alias={"neuron-dynamics":["D01"],"learning-plasticity":["D03"],"deep-architectures":["D04"],
+  "coding-conversion":["D02"],"efficiency-hardware":["D09","D10"],"event-vision":["D06"],
+  "robotics-embodied":["D08"],"sequence-language":["D05","D07"],"neuroscience-bci":["D11"],
+  "benchmarks-tools":["D13"],"theory-robustness":["D12"]};
+ const ontology=JSON.parse(readFileSync(resolve(process.cwd(),"docs/atlas/ontology.json"),"utf8"));
+ const label=id=>ontology.domains.find(d=>d.id===(alias[id]||[])[0])?.en||id;
+ const canonicalTopics=[...new Set(p.topics.flatMap(t=>alias[t]||[]))];
  const linked=action(p.researchContentSource||p.bibliographySource,"Publication source");
  const sourceLinks=(()=>{const seen=new Set();return [[p.url,"Original paper"],[p.bibliographySource,"Bibliography"],[p.authorshipSource,"Author listing"],[p.code,"Linked source code"],[p.doi&&"https://doi.org/"+p.doi,"DOI resolver"]].map(([url,label])=>{
    if(typeof url!=="string"||!url.startsWith("https://")||seen.has(url))return "";
@@ -42,14 +48,14 @@ const render=function render(p,papers,topics){
 <script type="application/ld+json">${json}</script></head>
 <body class="paper-view"><a class="skip-link" href="#main">Skip to research record</a>
 <header class="paper-nav"><div class="container paper-nav-inner"><a class="paper-brand" href="../../">SNN<span>/</span>COMMUNITY</a>
-<nav aria-label="Research navigation"><a href="../../#library">← Research Atlas</a><a href="../../#lab">Neuron lab</a><a href="${esc(correction)}" target="_blank" rel="noopener noreferrer">Correct this record ↗</a></nav></div></header>
+<nav aria-label="Research navigation"><a href="../../atlas/">← Research Atlas</a><a href="../../#lab">Neuron lab</a><a href="${esc(correction)}" target="_blank" rel="noopener noreferrer">Correct this record ↗</a></nav></div></header>
 <main id="main">
 <section class="paper-hero"><div class="container"><p class="paper-eyebrow">RESEARCH ATLAS / SCIENTIFIC RECORD</p>
 <div class="paper-hero-main"><div><p class="paper-venue">${esc(p.publication.kind)} · ${esc(p.publication.venue)} · ${p.publication.year}</p>
 <h1>${esc(p.title)}</h1>
 <p class="paper-authors">${authors.length?authors.map(esc).join(", ")+" "+action(p.authorshipSource,"Author source"):"Author list pending source verification."}</p>
 <p class="paper-deck">${esc(p.description)}</p>
-<div class="paper-tags">${p.topics.map(t=>`<a href="../../?atlas.topic=${encodeURIComponent(t)}#library">${esc(label(t))}</a>`).join("")}</div>
+<div class="paper-tags">${canonicalTopics.map(t=>`<a href="../../atlas/?topic=${t}#results">${esc(t+" · "+ontology.domains.find(d=>d.id===t)?.en)}</a>`).join("")}</div>
 <div class="paper-actions">${action(p.url,"Original paper","primary")}${action(p.code,"Linked code")}${p.doi?action("https://doi.org/"+p.doi,"DOI"):""}</div></div>
 </div></div></section>
 <section class="paper-content"><div class="container paper-content-grid"><article class="paper-main">
@@ -66,7 +72,7 @@ ${affs.length?'<p class="paper-muted">Institution records from linked sources; a
 ${sourceLinks}</div></section></article>
 <aside class="paper-aside"><div class="paper-panel"><p class="paper-eyebrow">RELATED CATALOG WORK</p><h2>Shared research areas</h2>
 <p class="paper-muted">Papers sharing a research topic.</p><div class="paper-related">${related||"<p>No related indexed papers.</p>"}</div>
-<a class="paper-back" href="../../#library">← Browse all research</a></div>
+<a class="paper-back" href="../../atlas/">← Browse all research</a></div>
 <div class="paper-panel paper-small"><p class="paper-eyebrow">IMPROVE THIS RECORD</p><p>Correct metadata or propose better scientific notes with a citable source.</p>
 <a class="paper-back" href="${esc(correction)}" target="_blank" rel="noopener noreferrer">Submit correction ↗</a></div></aside></div></section>
 </main><footer class="paper-footer"><div class="container"><span>SNNCommunity · Research Atlas</span><span>Selected papers · Research Atlas</span></div></footer>
