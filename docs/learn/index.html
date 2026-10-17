@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d23"><meta name="description" content="A structured learning path for spiking neural networks: neuron dynamics, training, event-based data and reproducible evaluation.">
+<link rel="canonical" href="https://snncommunity.github.io/.github/learn/"><link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../portal.css?v=16"><title>Learning paths · SNNCommunity</title></head>
+<body><a class="portal-skip" href="#main">Skip to content</a>
+<header class="portal-head"><div class="portal-wrap portal-head-main">
+<a class="portal-brand" href="../" aria-label="SNN Community homepage">SNN<span>/</span>COMMUNITY</a>
+<nav class="portal-global-nav" aria-label="Main navigation"><a href="../atlas/" >Research</a>
+<a href="../ecosystem/" >Ecosystem</a>
+<a href="../learn/" aria-current="page">Learn</a>
+<a href="../experiments/" >Experiments</a>
+<a href="../#community" >Community</a><a class="portal-github" href="https://github.com/SNNCommunity/.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
+</div></header>
+<main id="main">
+<div class="portal-wrap portal-breadcrumb"><a href="../">Home</a><span aria-hidden="true">/</span><span>Learning paths</span></div>
+
+<section class="portal-wrap portal-intro" aria-labelledby="page-title"><p class="portal-eyebrow">LEARNING PATHS / SNN FUNDAMENTALS TO SYSTEMS</p>
+<h1 id="page-title">Learn by building, not just reading.</h1>
+<p class="portal-deck">A practical route from membrane dynamics to SNN training, asynchronous data and reproducible evaluation. Follow the official sources and use the live numerical experiment to check your understanding.</p>
+<div class="portal-intro-actions"><a class="portal-button primary" href="#path">Follow the path ↓</a><a class="portal-button" href="../#lab">Open the neuron lab ↗</a></div></section>
+<div class="portal-wrap portal-strip"><span><strong>4</strong> learning stages</span><span><strong>5</strong> source-linked starting points</span><span>Self-paced · no enrollment</span></div>
+<section class="portal-wrap portal-section" id="path" aria-labelledby="path-title"><div class="portal-section-head"><div><p class="portal-eyebrow">GUIDED CURRICULUM</p><h2 id="path-title">From spikes to reproducible results.</h2><p>These are learning objectives and reading routes, not SNNCommunity-issued courses or certifications.</p></div></div>
+<article class="portal-track"><div class="portal-track-num">STAGE / 01</div><div class="portal-track-main"><h3>Membrane dynamics and spike generation</h3><p>Understand integrate-and-fire dynamics, leak, thresholds, reset rules and discrete-time simulation. Compare LIF and IF under controlled inputs.</p><ul><li>Derive the update rule and distinguish membrane leakage from integration gain.</li><li>Check spike times, membrane traces and the effect of timestep choice.</li></ul><a href="../#lab">Run the interactive LIF/IF model ↗</a><a href="https://snntorch.readthedocs.io/en/latest/tutorials/index.html" target="_blank" rel="noopener noreferrer">Read snnTorch tutorials ↗</a></div></article>
+<article class="portal-track"><div class="portal-track-num">STAGE / 02</div><div class="portal-track-main"><h3>Training spiking networks</h3><p>Move from neuron dynamics to multi-layer SNNs, time-dependent state updates and surrogate-gradient training.</p><ul><li>Explain forward spiking decisions and the surrogate-gradient backward path.</li><li>Compare temporal state handling and resets between training sequences.</li></ul><a href="https://spikingjelly.readthedocs.io/" target="_blank" rel="noopener noreferrer">Explore SpikingJelly documentation ↗</a><a href="https://github.com/norse/norse" target="_blank" rel="noopener noreferrer">Explore Norse components ↗</a></div></article>
+<article class="portal-track"><div class="portal-track-num">STAGE / 03</div><div class="portal-track-main"><h3>Event-based data and systems</h3><p>Understand sparse asynchronous events and the choices involved in converting event streams into tensors or temporal representations.</p><ul><li>Inspect sensor events, time bins and transformations.</li><li>Understand how event preprocessing changes latency and temporal fidelity.</li></ul><a href="https://github.com/neuromorphs/tonic" target="_blank" rel="noopener noreferrer">Explore Tonic event data tools ↗</a></div></article>
+<article class="portal-track"><div class="portal-track-num">STAGE / 04</div><div class="portal-track-main"><h3>Evaluation and reproducibility</h3><p>Record timestep, datasets, preprocessing, network configuration, runtime and hardware before comparing SNN results.</p><ul><li>Separate author-reported numbers from independently reproduced measurements.</li><li>Understand task-level metrics and system-level efficiency constraints.</li></ul><a href="https://neurobench.readthedocs.io/" target="_blank" rel="noopener noreferrer">Read NeuroBench documentation ↗</a><a href="../experiments/">Review the experiment workspace ↗</a></div></article>
+</section>
+<div class="portal-wrap portal-info-band"><h2>Continue with the research literature.</h2><p>Use the <a href="../atlas/">395-work Research Atlas</a> to follow each subject into source-linked publications. The bibliography keeps private reading notes and full abstracts outside the public site.</p></div>
+</main>
+<footer class="portal-foot"><div class="portal-wrap portal-foot-main"><a class="portal-brand" href="../">SNN<span>/</span>COMMUNITY</a><nav aria-label="Footer navigation"><a href="../atlas/">Research</a><a href="../ecosystem/">Ecosystem</a><a href="../learn/">Learn</a><a href="../experiments/">Experiments</a><a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">Contribute</a></nav></div><div class="portal-wrap">Independent open initiative for spiking neural networks. Research links do not imply endorsement or independent reproduction.</div></footer>
+</body></html>

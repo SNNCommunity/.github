@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d23"><meta name="description" content="Run a transparent LIF versus nonleaky IF simulation and inspect its reproducible Python reference code and numerical protocol.">
+<link rel="canonical" href="https://snncommunity.github.io/.github/experiments/"><link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../portal.css?v=16"><title>Experiments · SNNCommunity</title></head>
+<body><a class="portal-skip" href="#main">Skip to content</a>
+<header class="portal-head"><div class="portal-wrap portal-head-main">
+<a class="portal-brand" href="../" aria-label="SNN Community homepage">SNN<span>/</span>COMMUNITY</a>
+<nav class="portal-global-nav" aria-label="Main navigation"><a href="../atlas/" >Research</a>
+<a href="../ecosystem/" >Ecosystem</a>
+<a href="../learn/" >Learn</a>
+<a href="../experiments/" aria-current="page">Experiments</a>
+<a href="../#community" >Community</a><a class="portal-github" href="https://github.com/SNNCommunity/.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav>
+</div></header>
+<main id="main">
+<div class="portal-wrap portal-breadcrumb"><a href="../">Home</a><span aria-hidden="true">/</span><span>Experiments</span></div>
+
+<section class="portal-wrap portal-intro" aria-labelledby="page-title"><p class="portal-eyebrow">OPEN EXPERIMENTS / NUMERICAL MODELS</p>
+<h1 id="page-title">Inspect the method. Run the experiment.</h1>
+<p class="portal-deck">Interactive numerical models are useful only when their equations, assumptions and reference implementations are clear. Start with the live leaky versus nonleaky integrate-and-fire comparison.</p>
+<div class="portal-intro-actions"><a class="portal-button primary" href="#available">View available experiment ↓</a><a class="portal-button" href="https://github.com/SNNCommunity/.github/tree/main/experiments/lif-reference" target="_blank" rel="noopener noreferrer">Reference code ↗</a></div></section>
+<div class="portal-wrap portal-strip"><span><strong>1</strong> interactive numerical experiment</span><span>Independent Python reference</span><span>CSV and PNG exports</span></div>
+<section class="portal-wrap portal-section" id="available" aria-labelledby="available-title"><div class="portal-section-head"><div><p class="portal-eyebrow">AVAILABLE NOW</p><h2 id="available-title">LIF versus nonleaky IF.</h2><p>A controlled, dimensionless Euler comparison. Not a hardware benchmark or biological validation.</p></div></div>
+<div class="portal-experiment"><div><span class="portal-overline">EXPERIMENT 001 · FOUNDATIONS</span><h2>One controlled difference: leak.</h2><p>Both models receive the same input, integration gain, firing threshold and zero-reset rule. The nonleaky IF reference removes the membrane leak term while leaving the other conditions matched.</p><div class="portal-intro-actions"><a href="../#lab" class="portal-button primary">Launch live simulation ↗</a><a href="https://github.com/SNNCommunity/.github/tree/main/experiments/lif-reference" target="_blank" rel="noopener noreferrer" class="portal-button">Inspect Python implementation ↗</a></div></div>
+<div class="portal-experiment-facts"><p class="portal-overline">NUMERICAL PROTOCOL</p><dl><div><dt>Integration</dt><dd>Euler</dd></div><div><dt>Step size</dt><dd>1 ms</dd></div><div><dt>Updates</dt><dd>200</dd></div><div><dt>Reset</dt><dd>Hard zero</dd></div></dl><p class="portal-note">Normalized variables; no measured energy consumption or network-level accuracy.</p></div></div>
+</section>
+<div class="portal-wrap portal-info-band"><h2>Help develop the next reproducible study.</h2><p>Proposals should specify hypotheses, data, runtime, measurement conditions and expected artifacts before claiming results. See the <a href="https://github.com/SNNCommunity/.github/issues/4">open experiment-planning issue</a> and <a href="https://github.com/SNNCommunity/.github/blob/main/RESEARCH_STANDARDS.md">research standards</a>.</p></div>
+</main>
+<footer class="portal-foot"><div class="portal-wrap portal-foot-main"><a class="portal-brand" href="../">SNN<span>/</span>COMMUNITY</a><nav aria-label="Footer navigation"><a href="../atlas/">Research</a><a href="../ecosystem/">Ecosystem</a><a href="../learn/">Learn</a><a href="../experiments/">Experiments</a><a href="https://github.com/SNNCommunity/.github/blob/main/CONTRIBUTING.md">Contribute</a></nav></div><div class="portal-wrap">Independent open initiative for spiking neural networks. Research links do not imply endorsement or independent reproduction.</div></footer>
+</body></html>

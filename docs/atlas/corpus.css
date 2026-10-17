@@ -84,3 +84,43 @@
  .metrics>div{min-height:86px}
  .section-intro{padding-top:34px}
 }
+
+/* Product-consistent portal header and denser research-first Atlas layout. */
+.mast{background:#101d23}
+.mastrow{min-height:74px}
+.mast nav{gap:clamp(10px,1.7vw,24px)}
+.mast nav a{font-size:14px;font-weight:650;white-space:nowrap;color:#d0dad6}
+.mast nav a[aria-current="page"]{color:#fff;border-bottom:2px solid #9ce9c7;padding-block:9px}
+.mast nav .mast-github{border:1px solid #789e91;padding:8px 12px;border-radius:3px;color:#f6fff9}
+.mast nav a:focus-visible{outline:3px solid #cb7750;outline-offset:3px}
+.hero{background:#142b2c;padding:35px 0}
+.hero-grid{grid-template-columns:minmax(0,1.5fr) minmax(290px,.75fr);gap:35px}
+.hero h1{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ font-size:clamp(38px,4vw,55px);font-weight:700;line-height:1.08;letter-spacing:-.049em;margin-bottom:14px}
+.hero h1 em{font-style:normal;font-weight:670;color:#b8edce}
+.hero .overline{margin-bottom:12px}
+.hero .lead{font-size:16px;line-height:1.6;margin-bottom:18px}
+.metrics>div{min-height:80px;padding:14px 17px}
+.metrics strong{font-size:30px}
+.metrics span{font-size:12px}
+.disclosure{padding:12px 0}
+.section-intro{padding:40px 0 18px}
+.section-intro h2{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ font-size:clamp(31px,3.2vw,43px);font-weight:700}
+.atlas-shortcuts{padding-bottom:18px}
+.item h3{font-size:19px}
+.workspace{gap:19px}
+.filters{border-radius:4px}
+@media(max-width:900px){.mastrow{flex-wrap:wrap;padding:12px 0 7px;gap:10px}.mast nav{flex:1 1 100%;min-width:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}.hero-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}.metrics strong{font-size:25px}.metrics span{font-size:12px}}
+@media(max-width:680px){.mastrow{align-items:stretch;gap:5px;padding:14px 0 0}
+ .mast nav{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;gap:18px;max-width:100%;padding-bottom:8px;min-height:45px}
+ .mast nav a{font-size:14px;white-space:nowrap}
+ .hero{padding:26px 0}
+ .hero h1{font-size:clamp(35px,9.5vw,46px)}
+ .hero .lead{font-size:15px}
+ .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .metrics>div{min-height:70px;padding:11px}
+ .disclosure{font-size:13px}
+ .section-intro{padding:27px 0 18px}
+ .section-intro h2{font-size:32px}
+}

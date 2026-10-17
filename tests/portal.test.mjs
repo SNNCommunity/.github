@@ -33,6 +33,24 @@ test('production files, metadata and required controls are present',()=>{
  assert.match(record,/Parametric leaky integrate-and-fire/);
  assert.match(record,/Research question and method/);
 });
+test('portal workspaces expose navigable public research routes',()=>{
+ const html=read('docs/index.html');
+ assert.match(html,/action="\.\/atlas\/" method="get" role="search"/);
+ for(const name of ['ecosystem','learn','experiments']){
+  const child=read('docs/'+name+'/index.html');
+  assert.match(child,/portal-global-nav/);
+  assert.match(child,/rel="canonical"/);
+  assert.match(child,/portal\.css/);
+  assert.match(child,/\.\.\/atlas\//);
+  assert.match(child,/\.\.\/ecosystem\//);
+  assert.match(child,/\.\.\/learn\//);
+  assert.match(child,/\.\.\/experiments\//);
+  assert.ok(html.includes('href="./'+name+'/"'));
+  assert.ok(read('docs/sitemap.xml').includes('/.github/'+name+'/'));
+ }
+ assert.match(read('docs/ecosystem/ecosystem.js'),/fetch\("\.\.\/resources\.json"\)/);
+ assert.match(read('docs/ecosystem/ecosystem.js'),/replaceChildren/);
+});
 test('open source provenance entries use unique structured records',()=>{
  assert.equal(catalog.schemaVersion,2);
  assert.ok(catalog.items.length>=19);
