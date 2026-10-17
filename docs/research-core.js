@@ -34,7 +34,7 @@ function validate(data,ontology){
    !Array.isArray(w.domains)||!w.domains.includes(w.primaryDomain)||!Array.isArray(w.techniques)||!w.facets||
    !/^https:\/\//.test(w.paperUrl||"")||!("sourceStatus" in w)||
    w.authorCount!==w.authors.length||!w.authors.every(n=>typeof n==="string"&&n.trim())||
-   !/^work-/.test(w.id)||!w.legacyId||aliases.has(w.legacyId)||
+   !/^work-/.test(w.id)||(w.legacyId&&aliases.has(w.legacyId))||
    (w.doi&&(!/^10\.[0-9]{4,9}\/.+/.test(w.doi)||/\/full$/.test(w.doi))))
    throw Error("Invalid or duplicate public work "+w.id);
   for(const t of w.techniques){
@@ -44,7 +44,7 @@ function validate(data,ontology){
   }
   if(ontology&&w.domains.some(d=>!dset.has(d)))throw Error("Unknown domain "+w.id);
   for(const k of facetKeys)if(!Array.isArray(w.facets[k]))throw Error("Invalid facet "+k);
-  ids.add(w.id);aliases.add(w.legacyId);titles.add(title);technical+=w.techniques.length;
+  ids.add(w.id);if(w.legacyId)aliases.add(w.legacyId);titles.add(title);technical+=w.techniques.length;
  }
  if(ontology&&(ontology.domains.length!==13||ontology.groups.length!==6||ontology.techniques.length!==69||
     used.size!==69||technical!==280))throw Error("Ontology coverage mismatch");
