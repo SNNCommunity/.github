@@ -25,10 +25,10 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"SNN Community","alternateName":"SNNCommunity","url":"https://snncommunity.github.io/.github/","sameAs":["https://github.com/SNNCommunity"],"description":"Independent open community for spiking neural networks and neuromorphic research"}</script>
   <title>SNN Community — Research, Build, Reproduce</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css?v=19">
+  <link rel="stylesheet" href="./styles.css?v=20">
   <script defer src="./neuron-core.js"></script>
-  <script defer src="./research-core.js?v=19"></script>
-  <script defer src="./home-research.js?v=19"></script>
+  <script defer src="./research-core.js?v=20"></script>
+  <script defer src="./home-research.js?v=20"></script>
   <script defer src="./app.js"></script>
   <noscript><style>.lab-controls input,.lab-controls button{opacity:.6;pointer-events:none}.lab-controls::after{content:"The interactive neuron lab requires JavaScript.";display:block;margin-top:15px;font-weight:600;color:#315448}</style></noscript>
 </head>
@@ -107,6 +107,11 @@
         <div class="atlas-controls" aria-label="Research search and filters">
           <div class="atlas-search-row"><div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="resource-search">Search papers and topics</label><input id="resource-search" type="search" placeholder="Search 395 papers by title, author, DOI or topic…" autocomplete="off"></div>
             <button id="atlas-reset" class="atlas-reset" type="button">Clear filters ↻</button></div>
+          <div class="atlas-author-filter" aria-label="High-publication author filter">
+            <div class="atlas-author-header"><strong>Explore by author</strong><span id="atlas-author-total">Authors with ≥10 indexed papers</span></div>
+            <div class="atlas-author-control"><label for="atlas-author">Author (≥10 papers in this collection)</label><select id="atlas-author"><option value="all">All authors · 395 papers</option></select></div>
+            <p>Names are normalized for search; counts are from these 395 works, not lifetime publication totals or verified author identities.</p>
+          </div>
           <div class="atlas-topic-heading"><span>EXPLORE BY RESEARCH DOMAIN</span><span>6 groups · 13 domains · 69 technical concepts</span></div>
           <div id="atlas-topics" class="atlas-topics" role="group" aria-label="Research topics" aria-describedby="atlas-topic-help"><button class="atlas-topic is-selected" type="button" data-topic="all" aria-pressed="true">All research <span class="atlas-topic-count">395</span></button></div>
           <p id="atlas-topic-help" class="atlas-hint">Select multiple research areas. Counts reflect other active filters.</p>
