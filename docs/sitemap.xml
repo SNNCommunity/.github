@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://snncommunity.github.io/.github/</loc></url>
   <url><loc>https://snncommunity.github.io/.github/atlas/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/ecosystem/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/learn/</loc></url>
+  <url><loc>https://snncommunity.github.io/.github/experiments/</loc></url>
   <url><loc>https://snncommunity.github.io/.github/papers/sew-resnet-2021/</loc></url>
   <url><loc>https://snncommunity.github.io/.github/papers/plif-2021/</loc></url>
   <url><loc>https://snncommunity.github.io/.github/papers/spikformer-2023/</loc></url>
